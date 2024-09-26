@@ -1,4 +1,4 @@
-import { TouchableOpacity, View, StyleSheet } from 'react-native'
+import { Text, View, StyleSheet } from 'react-native'
 import { useState, useEffect } from 'react'
 import MapView, { Marker, MapPressEvent } from 'react-native-maps'
 import * as Location from 'expo-location'
@@ -63,7 +63,7 @@ export default function AppleMap() {
             <Marker
               coordinate={markerCoordinate}
               image={require('../../assets/maps/currentLocation.png')}
-              style={{ width: 10, height: 20 }}
+              style={{ width: 10, height: 10 }}
             />
           )}
           {planList &&

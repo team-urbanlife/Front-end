@@ -4,4 +4,6 @@ export default interface ScheduleSpotType {
   hashtag: string[]
   imageUrl: string
   buttonName: string
+  setSubmit: React.Dispatch<React.SetStateAction<boolean>>
+  submit: boolean
 }

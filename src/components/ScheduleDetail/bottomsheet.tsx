@@ -7,14 +7,29 @@ import {
   Image,
   Dimensions,
 } from 'react-native'
-import { styles, text } from './bottomSheetStyle'
-
+import { styles, text } from './styles/bottomSheetStyle'
+import { PlanData } from '@/types/SchedulePlanType'
+import ScheduleDetailComponent from './ScheduleDetailComponent'
+import { useNavigation } from '@react-navigation/native'
+import {
+  PanGestureHandler,
+  GestureHandlerStateChangeEvent,
+  State,
+  ScrollView,
+} from 'react-native-gesture-handler'
+import { TouchableOpacity } from 'react-native'
 interface BottomSheetProps {
-  index: number
-  setBottomSheet: Dispatch<SetStateAction<boolean[]>>
+  setBottomSheet: Dispatch<SetStateAction<boolean>>
+  plans: PlanData[]
 }
 
-function BottomSheet({ index, setBottomSheet }: BottomSheetProps) {
+export default function BottomSheet({
+  setBottomSheet,
+  plans,
+}: BottomSheetProps) {
+  const navigation = useNavigation()
+  const innerGestureHandlerRef = useRef<TouchableOpacity | null>(null)
+
   //높이를 auto로 설정해도 높이가 동적으로 바뀌지 않아서 자식 컴포넌트에 props로 내려서 해당 자식 컴포넌트 길이 가져오게
   const [termsHeight, setTermsHeight] = useState<number>(500)
   // 폰 스크린 높이
@@ -24,6 +39,11 @@ function BottomSheet({ index, setBottomSheet }: BottomSheetProps) {
   const translateY = useRef(new Animated.Value(508)).current
   //스크롤해서 내려간 마지막 위치 기억
   const lastY = useRef<number>(0)
+
+  //세부 일정 배열의 길이 만큼의 배열 특정 일자 클릭시에 계획 등장
+  const [isClicked, setIsClicked] = useState<boolean[]>(
+    new Array(plans.length).fill(false),
+  )
 
   // 팬 리스폰더 설정
   const panResponder = useRef(
@@ -37,11 +57,11 @@ function BottomSheet({ index, setBottomSheet }: BottomSheetProps) {
         useNativeDriver: false,
       }), //드래그할 때마다
       onPanResponderRelease: (_, gestureState) => {
-        const minDragVelocity = 0.5
+        const minDragVelocity = 0.98
 
         if (gestureState.vy > minDragVelocity) {
           //빠르게 스와이프하는 경우
-          setBottomSheet([false, false]) // 바텀 시트 상태 업데이트
+          setBottomSheet(false) // 바텀 시트 상태 업데이트
           // 바텀 시트를 드래그해서 닫을 때 부모 컴포넌트에서 뒷배경 어둡게 해놓은 것도 변화가 가도록
           Animated.spring(translateY, {
             toValue: screenHeight,
@@ -62,55 +82,130 @@ function BottomSheet({ index, setBottomSheet }: BottomSheetProps) {
             translateY.removeListener(listenerId)
           })
         } else {
-          // 바텀 시트 터치만 하는 경우 바로 위로 올라가게
-          Animated.spring(translateY, {
-            toValue: 0,
-            friction: 7,
-            useNativeDriver: true,
-          }).start()
+          //바텀시트 터치 이벤트가 내부 터치 이벤트와 겹쳐서 제거
         }
       },
     }),
   ).current
+  const handleGestureEvent = Animated.event(
+    [{ nativeEvent: { translationY: translateY } }], // translationY를 translateY 애니메이션 값에 바인딩
+    { useNativeDriver: true }, // 성능 향상을 위해 useNativeDriver 사용
+  )
 
-  //바텀 시트 컴포넌트에 props로 넘길 제목 속성 키 배열
-  const bottomSheetTitles: ('termsOfService' | 'individualInfo')[] = [
-    'termsOfService',
-    'individualInfo',
-  ]
+  const handleStateChange = (event: GestureHandlerStateChangeEvent) => {
+    if (event.nativeEvent.state === State.END) {
+      // 제스처가 끝났을 때 실행할 동작
+    }
+  }
 
   return (
-    <Animated.View
-      style={{
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        height: termsHeight,
-        width: '100%',
-        transform: [{ translateY }],
-        backgroundColor: '#F4F9D9',
-        zIndex: 10,
-        borderRadius: 20,
-        justifyContent: 'center',
-      }}
-      {...panResponder.panHandlers}
+    <PanGestureHandler
+      waitFor={[innerGestureHandlerRef]}
+      simultaneousHandlers={innerGestureHandlerRef}
+      onGestureEvent={handleGestureEvent}
+      onHandlerStateChange={handleStateChange}
     >
-      <Image
-        style={styles.topLine}
-        source={require('@/public/assets/agreeTop.png')}
-      />
-      <View style={styles.titleContainer}>
-        <Text style={text.titleText}></Text>
-      </View>
-      <View style={styles.contentContainer}></View>
-      <View style={styles.businessInfoContainer}>
-        <Text style={text.businessInfoText}></Text>
-      </View>
-      {/* 여기에 바텀 시트 내부 컴포넌트를 배치합니다. */}
-    </Animated.View>
+      <Animated.View
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
+          height: 'auto',
+          width: '100%',
+          transform: [{ translateY }],
+          backgroundColor: '#FFFFFF',
+          zIndex: 10,
+          borderRadius: 20,
+          justifyContent: 'center',
+        }}
+        {...panResponder.panHandlers}
+      >
+        <ScrollView>
+          <View style={styles.setCenter}>
+            <View style={styles.topLine} />
+          </View>
+          {plans &&
+            plans.map((plan, index) => {
+              const date = plan.travelDate.split('-').slice(1) // 날짜 배열의 월과 일만을 추출
+              return (
+                <View key={index} style={styles.container}>
+                  <View
+                    style={[
+                      styles.flexRow,
+                      {
+                        justifyContent: 'space-between',
+                      },
+                    ]}
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        const temp = [...isClicked]
+                        temp[index] = !isClicked[index]
+                        setIsClicked(temp)
+                      }}
+                    >
+                      <View style={styles.flexRow}>
+                        <Text style={text.dayText}>{`Day. ${index + 1}`}</Text>
+                        <View style={styles.flexRow}>
+                          <Text
+                            style={
+                              isClicked[index]
+                                ? text.clickText
+                                : text.unclickText
+                            }
+                          >
+                            {date[0] + '/' + date[1]} {/* 월/일 형식으로 */}
+                          </Text>
+                          <Image
+                            source={
+                              isClicked[index]
+                                ? require('@/assets/schedule/clickUnderArrow.png')
+                                : require('@/assets/schedule/underArrow.png')
+                            }
+                            style={styles.arrowIcon}
+                          />
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                    {/* 특정 plan의 id가 0일 때(최상단인 경우에) 편집 표시 */}
+                    {plan.id === 0 && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          //편집 버튼을 누른 경우에 드래그 앤 드랍이 활성화됨
+                        }}
+                      >
+                        <Text style={text.editText}>편집</Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                  {isClicked[index] &&
+                    plan.detailedPlans &&
+                    plan.detailedPlans.map((schedule, scheduleIndex) => (
+                      <ScheduleDetailComponent
+                        key={scheduleIndex}
+                        data={schedule}
+                        ref={innerGestureHandlerRef}
+                      />
+                    ))}
+                  {isClicked[index] && (
+                    <View style={styles.setCenter}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          navigation.navigate('SceduleSpot' as never)
+                        }}
+                        style={styles.buttonContainer}
+                      >
+                        <Text style={text.buttonText}>장소 새로 추가하기</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+              )
+            })}
+        </ScrollView>
+      </Animated.View>
+    </PanGestureHandler>
   )
 }
-
-export default BottomSheet

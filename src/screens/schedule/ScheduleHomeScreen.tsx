@@ -2,6 +2,7 @@ import { TouchableOpacity, View, Image, Text, ScrollView } from 'react-native'
 import { styles, text } from './Styles/ScheduleHomeStyles'
 import ScheduleHomeComponent from '@/components/ScheduleHome/scheduleHomeComponent'
 import ScheduleDetailType from '@/types/ScheduleDetailType'
+import FloatingButton from '@/components/Common/floatingButton'
 
 // ScheduleDetail 객체 배열 예시
 const schedules: ScheduleDetailType[] = [
@@ -62,7 +63,7 @@ export default function ScheduleHome() {
             }}
           >
             <Image
-              source={require('@/assets/search.png')}
+              source={require('@/assets/schedule/search.png')}
               style={styles.searchNotiIcon}
             />
           </TouchableOpacity>
@@ -102,6 +103,7 @@ export default function ScheduleHome() {
             </View>
           ))}
       </ScrollView>
+      <FloatingButton route="SceduleSpot" />
     </View>
   )
 }

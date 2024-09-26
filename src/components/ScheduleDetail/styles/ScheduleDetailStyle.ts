@@ -1,5 +1,5 @@
 import { StyleProp, StyleSheet, TextStyle } from 'react-native'
-import { GlobalStyles } from '../../constants/colors'
+import { GlobalStyles } from '../../../constants/colors'
 const color = {
   primary: '#52A35D',
   normal: '#232323',
@@ -11,17 +11,21 @@ const color = {
 }
 
 export const styles = StyleSheet.create({
-  container: {
+  unclickContainer: {
     backgroundColor: '#fff',
     flexDirection: 'row',
-    width: 392,
-    height: 132,
-    borderRadius: 20,
-    marginBottom: 15,
-    marginHorizontal: 10,
+    width: '100%',
+    height: 67,
     justifyContent: 'space-between',
-    borderBottomColor: GlobalStyles.colors.moreFaintGray,
-    borderBottomWidth: 1,
+    marginTop: 10,
+  },
+  clickContainer: {
+    backgroundColor: 'rgba(240, 127, 89, 0.3)',
+    flexDirection: 'row',
+    width: '100%',
+    height: 67,
+    justifyContent: 'space-between',
+    marginTop: 10,
   },
   pictureContainer: {
     justifyContent: 'center',
@@ -30,22 +34,14 @@ export const styles = StyleSheet.create({
     width: '23%',
   },
   picture: {
-    width: 68,
-    height: 68,
-    borderRadius: 10,
+    width: 32,
+    height: 42,
+    marginHorizontal: 16,
   },
   middleContainer: {
-    flexDirection: 'column',
-    paddingHorizontal: 20,
-    width: 170,
+    width: 342,
     height: '100%',
     justifyContent: 'center',
-  },
-  rightContainer: {
-    paddingHorizontal: 15,
-    width: 284,
-    height: 112,
-    paddingTop: 85,
   },
   bookmarkIcon: {
     width: 7,
@@ -53,8 +49,7 @@ export const styles = StyleSheet.create({
     marginRight: 10,
   },
   spotContainer: {
-    marginTop: 10,
-    paddingBottom: 15,
+    paddingBottom: 5,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -65,22 +60,36 @@ export const styles = StyleSheet.create({
     width: 95,
     height: 32,
   },
+  inputPositionContainer: {
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    height: 50,
+  },
   InputContainer: {
-    position: 'absolute',
-    top: 364,
-    width: '92.2%',
-    height: 179,
-    borderRadius: 8,
-    borderWidth: 1,
-    padding: 13,
+    width: 342,
+    height: 39,
+    backgroundColor: GlobalStyles.colors.moreFaintGray,
+    color: GlobalStyles.colors.normalDark,
+    borderTopLeftRadius: 0, // 왼쪽 상단 굴곡 없음
+    borderTopRightRadius: 24, // 나머지 굴곡 유지
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   InputStyles: {
-    width: '100%',
-    color: color.normal,
+    width: 300,
     fontSize: 15,
     lineHeight: 24,
     letterSpacing: -0.5,
+    paddingHorizontal: 19,
     fontFamily: 'Pretendard',
+    textAlignVertical: 'center',
+  },
+  pencilIcon: {
+    width: 14,
+    height: 14,
   },
 })
 

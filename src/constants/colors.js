@@ -16,7 +16,10 @@ export const GlobalStyles = {
     gray700: '#221c30',
     signature: '#F07F59',
     normalDark: '#323232',
+    moreFaintGray: '#E0E0E0',
     faintGray: '#AAAAAA',
     gray: '#EAEAEA',
+    darkGray: '#666666',
+    white: '#ffffff',
   },
 }
