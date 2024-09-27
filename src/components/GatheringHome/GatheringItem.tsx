@@ -2,11 +2,12 @@ import React from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import Gathering from './gatheringclass'
+import Gathering from '../../screens/gathering/type/GatheringType'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { GlobalStyles } from '@/constants/colors'
 // 네비게이션 스택 타입 정의
 type RootStackParamList = {
-  GatheringDetail: { gatheringId?: string }
+  GatheringDetail: { gatheringId?: number }
   // 다른 스크린 타입이 있다면 여기에 추가
 }
 
@@ -17,21 +18,28 @@ type GatheringDetailScreenNavigationProp = NativeStackNavigationProp<
 >
 
 const GatheringItem: React.FC<Gathering> = ({
-  id,
-  period,
+  accompanyId,
+  startDate,
+  endDate,
   title,
   content,
-  author,
-  commentCnt,
-  registerDate,
+  userName,
+  registeredDateTime,
+  views,
+  likeCount,
   location,
+  personnel,
+  gender,
+  startAge,
+  endAge,
+  cost,
 }) => {
   // navigation에 타입 지정
   const navigation = useNavigation<GatheringDetailScreenNavigationProp>()
 
   function gatheringPressHandler() {
     navigation.navigate('GatheringDetail', {
-      gatheringId: id,
+      gatheringId: accompanyId,
     })
   }
 
@@ -44,10 +52,12 @@ const GatheringItem: React.FC<Gathering> = ({
         <Icon
           name="calendar-outline"
           size={16}
-          color="#FF6B6B"
+          color={GlobalStyles.colors.signature}
           style={styles.icon}
         />
-        <Text style={styles.periodText}>{period}</Text>
+        <Text style={styles.periodText}>
+          {startDate} ~ {endDate}
+        </Text>
       </View>
       <View>
         <Text style={styles.title}>{title}</Text>
@@ -59,27 +69,27 @@ const GatheringItem: React.FC<Gathering> = ({
       </View>
       <View style={styles.bottomContainer}>
         <Icon name="person" size={16} color="#999" style={styles.icon} />
-        <Text style={styles.bottomText}>{author}</Text>
+        <Text style={styles.bottomText}>{userName}</Text>
 
         {/* 구분선 */}
         <Text style={styles.separator}>|</Text>
 
         {/* 경과 시간 */}
         <Text style={styles.bottomText}>
-          {new Date().getDate() - registerDate.getDate()}일 전
+          {new Date().getDate() - new Date(registeredDateTime).getDate()}일 전
         </Text>
 
         {/* 구분선 */}
-        <Text style={styles.separator}>|</Text>
+        {/*  <Text style={styles.separator}>|</Text> */}
 
         {/* 댓글 수 */}
-        <Icon
+        {/* <Icon
           name="chatbubble-outline"
           size={16}
           color="#999"
           style={styles.commentIcon}
         />
-        <Text style={styles.bottomText}>{commentCnt}</Text>
+        <Text style={styles.bottomText}>댓글 수</Text> */}
       </View>
 
       {/* 하단 수평바 */}
@@ -109,7 +119,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   periodText: {
-    color: '#FF6B6B',
+    color: GlobalStyles.colors.signature,
     fontSize: 14,
     fontWeight: 'bold',
   },

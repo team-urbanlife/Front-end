@@ -1,18 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   StyleSheet,
   TouchableOpacity,
   View,
   Text,
   TextInput,
-  TextInputProps,
 } from 'react-native'
-import { GatheringLocations } from '../../components/GatheringHome/dummy-location'
 import GatheringSearchLocationOutput from '../../components/GatheringLocation/GatheringSearchLocationOutput'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation, NavigationProp } from '@react-navigation/native'
+import { GatheringLocations } from '../../components/GatheringHome/dummy-location'
 import GatheringLocation from '../../components/GatheringHome/gatheringlocationclass'
 
 interface GatheringLocationHeaderProps {
@@ -72,23 +71,42 @@ const GatheringLocationSearch: React.FC<GatheringLocationSearchProps> = ({
   navigation,
 }) => {
   const [searchText, setSearchText] = useState<string>('')
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([])
 
   const handleTextChange = (inputText: string) => {
     setSearchText(inputText)
   }
 
+  useEffect(() => {
+    console.log('현재 선택된 지역 개수: ', selectedLocations.length)
+  }, [selectedLocations]) // selectedLocations 상태 변경 시마다 콘솔에 출력
+
   const searchedLocations: GatheringLocation[] = GatheringLocations.filter(
     (ele: GatheringLocation) => ele.location.startsWith(searchText),
   )
-
+  function completeHandler() {
+    navigation.navigate('BtRecentGathering', {
+      selectedLocations: selectedLocations,
+    })
+  }
   return (
     <View style={styles.container}>
       <GatheringLocationHeader onChangeText={handleTextChange} />
       <GatheringSearchLocationOutput
         searchLocations={searchedLocations}
         fallbackText="No Data Here"
+        selectedLocations={selectedLocations}
+        setLocations={setSelectedLocations}
       />
-      <TouchableOpacity style={styles.completeButton}>
+      <TouchableOpacity
+        style={[
+          styles.completeButton,
+          selectedLocations.length > 0
+            ? styles.completeButtonActive // 조건에 따른 스타일 적용
+            : styles.completeButtonInactive, // 기본 비활성화 스타일
+        ]}
+        onPress={completeHandler}
+      >
         <Text style={styles.completeButtonText}>선택 완료</Text>
       </TouchableOpacity>
     </View>
@@ -107,11 +125,16 @@ const styles = StyleSheet.create({
     bottom: 30,
     width: '90%',
     height: 50,
-    backgroundColor: '#D3D3D3',
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
+  },
+  completeButtonActive: {
+    backgroundColor: '#FF6347', // 선택된 항목이 있을 때 활성화된 배경색
+  },
+  completeButtonInactive: {
+    backgroundColor: '#D3D3D3', // 선택된 항목이 없을 때 기본 배경색
   },
   completeButtonText: {
     color: '#FFFFFF',

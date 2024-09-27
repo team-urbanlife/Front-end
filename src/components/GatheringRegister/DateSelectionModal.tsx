@@ -20,7 +20,7 @@ interface DayObject {
 interface DateSelectionModalProps {
   isVisible: boolean
   onClose: () => void
-  onConfirm: (startDate: string | null, endDate: string) => void
+  onConfirm: (startDate: string, endDate: string) => void
 }
 
 const DateSelectionModal: React.FC<DateSelectionModalProps> = ({
@@ -35,9 +35,6 @@ const DateSelectionModal: React.FC<DateSelectionModalProps> = ({
   const [isMonthPickerVisible, setIsMonthPickerVisible] = useState(false)
   const [currentYear, setCurrentYear] = useState(2024)
   const [currentMonth, setCurrentMonth] = useState(9) // 현재 월 (9월)
-
-  // 월 선택을 위한 배열 생성
-  const months = Array.from({ length: 12 }, (_, i) => i + 1)
 
   function onDayPress(day: DayObject) {
     if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
@@ -57,52 +54,10 @@ const DateSelectionModal: React.FC<DateSelectionModalProps> = ({
     }
   }
 
-  function handleMonthSelect(month: number) {
-    setCurrentMonth(month)
-    setIsMonthPickerVisible(false) // 월 선택 후 모달 닫기
-  }
-
-  // 사용자 정의 요일 렌더링
-  function renderDayNames() {
-    const days = ['일', '월', '화', '수', '목', '금', '토']
-    return (
-      <View style={styles.weekDaysContainer}>
-        {days.map((day, index) => (
-          <Text key={index} style={styles.weekDayText}>
-            {day}
-          </Text>
-        ))}
-      </View>
-    )
-  }
-
   return (
     <Modal visible={isVisible} transparent={true} animationType="fade">
       <View style={styles.modalBackground}>
         <View style={styles.modalContainer}>
-          {/* 월 선택 모달 */}
-          <Modal
-            visible={isMonthPickerVisible}
-            transparent={true}
-            animationType="slide"
-          >
-            <View style={styles.monthPickerModal}>
-              <ScrollView>
-                {months.map((month) => (
-                  <TouchableOpacity
-                    key={month}
-                    style={styles.monthOption}
-                    onPress={() => handleMonthSelect(month)}
-                  >
-                    <Text style={styles.monthPickerText}>
-                      {currentYear}/{month < 10 ? `0${month}` : month}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-          </Modal>
-
           {/* 캘린더 상단 */}
           <View style={styles.header}>
             <TouchableOpacity
@@ -119,15 +74,11 @@ const DateSelectionModal: React.FC<DateSelectionModalProps> = ({
             </Text>
           </View>
 
-          {/* 한글 요일 표시 */}
-          {renderDayNames()}
-
           {/* 캘린더 */}
           <Calendar
             current={`${currentYear}-${currentMonth < 10 ? `0${currentMonth}` : currentMonth}-01`}
             onDayPress={onDayPress}
             hideExtraDays={true} // 불필요한 날짜 숨김
-            monthFormat={''} // 월과 연도를 제거
             markedDates={{
               [selectedStartDate || '']: {
                 selected: true,
@@ -150,8 +101,6 @@ const DateSelectionModal: React.FC<DateSelectionModalProps> = ({
               textDayHeaderFontSize: 16,
             }}
             style={styles.calendarStyle}
-            renderHeader={() => null} // 상단 헤더 제거
-            dayHeaderStyle={{ display: 'none' }} // 기존 요일 텍스트를 숨김
           />
 
           {/* 선택된 날짜 */}
@@ -230,33 +179,5 @@ const styles = StyleSheet.create({
   confirmButtonText: {
     color: '#FFF',
     fontSize: 16,
-  },
-  monthPickerModal: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  monthOption: {
-    backgroundColor: 'white',
-    padding: 10,
-    marginVertical: 5,
-    borderRadius: 5,
-    alignItems: 'center',
-    width: 150,
-  },
-  monthPickerText: {
-    fontSize: 18,
-    color: '#FF6B6B',
-  },
-  weekDaysContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingBottom: 10,
-  },
-  weekDayText: {
-    color: '#FF6B6B',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 })

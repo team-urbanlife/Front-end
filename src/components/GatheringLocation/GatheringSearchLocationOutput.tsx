@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import GatheringLocationList from './GatheringLocationList'
 
@@ -12,15 +12,23 @@ interface GatheringLocation {
 interface GatheringSearchLocationOutputProps {
   searchLocations: GatheringLocation[]
   fallbackText: string
+  selectedLocations: string[]
+  setLocations: React.Dispatch<React.SetStateAction<string[]>> // 상태 변경 함수
 }
 
 const GatheringSearchLocationOutput: React.FC<
   GatheringSearchLocationOutputProps
-> = ({ searchLocations, fallbackText }) => {
+> = ({ searchLocations, fallbackText, selectedLocations, setLocations }) => {
   let content = <Text style={styles.infoText}>{fallbackText}</Text>
 
   if (searchLocations.length > 0) {
-    content = <GatheringLocationList locations={searchLocations} />
+    content = (
+      <GatheringLocationList
+        locations={searchLocations}
+        selectedLocations={selectedLocations}
+        setLocations={setLocations}
+      />
+    )
   }
 
   return <View style={styles.container}>{content}</View>

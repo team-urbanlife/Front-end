@@ -1,22 +1,14 @@
-import React from 'react'
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-} from 'react-native'
-import { useNavigation } from '@react-navigation/native'
-import Icon from 'react-native-vector-icons/Ionicons'
+import React, { useState, useEffect } from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import GatheringLocation from '../../components/GatheringHome/gatheringlocationclass'
-// GatheringLocationItem의 props 타입 정의
+
 interface GatheringLocationItemProps {
   id: string
   imgURL: string
   hashtag: string
   location: string
+  selectedLocations: string[]
+  setLocations: React.Dispatch<React.SetStateAction<string[]>>
 }
 
 const GatheringLocationItem: React.FC<GatheringLocationItemProps> = ({
@@ -24,24 +16,48 @@ const GatheringLocationItem: React.FC<GatheringLocationItemProps> = ({
   imgURL,
   hashtag,
   location,
+  selectedLocations,
+  setLocations,
 }) => {
-  const navigation = useNavigation()
+  const [isBookmarked, setIsBookmarked] = useState(false) // 북마크 상태 관리
+
+  // 상태가 변경될 때마다 selectedLocations 값을 추적
+  useEffect(() => {
+    console.log('선택한 지역 정보들:', selectedLocations)
+  }, [selectedLocations])
+
+  function addLocations() {
+    const alreadySelected = selectedLocations.includes(location)
+
+    if (!alreadySelected) {
+      setLocations([...selectedLocations, location]) // 선택된 지역이 없으면 추가
+    } else {
+      setLocations(selectedLocations.filter((item) => item !== location)) // 선택된 지역이 있으면 제거
+    }
+
+    setIsBookmarked(!isBookmarked) // 상태를 토글하여 아이콘 및 스타일 변경
+  }
 
   return (
     <View style={styles.itemContainer}>
-      {/* 대표 이미지 */}
       <Image source={{ uri: imgURL }} style={styles.image} />
-
-      {/* 텍스트 정보 */}
       <View style={styles.textContainer}>
         <Text style={styles.locationName}>{location}</Text>
         <Text style={styles.hashtags}>{hashtag}</Text>
       </View>
-
-      {/* 북마크 아이콘과 지역 선택 버튼을 타원이 감싸는 레이아웃 */}
       <View style={styles.actionsContainer}>
-        <TouchableOpacity style={styles.selectButton}>
-          <FontAwesome name="bookmark-o" size={18} color="#FFA07A" />
+        <TouchableOpacity
+          style={[
+            styles.selectButton,
+            isBookmarked ? styles.bookmarkedButton : null, // 상태에 따라 스타일 적용
+          ]}
+          onPress={addLocations}
+        >
+          <FontAwesome
+            name={isBookmarked ? 'bookmark' : 'bookmark-o'} // 북마크 상태에 따른 아이콘 변경
+            size={18}
+            color="#FFA07A"
+          />
           <Text style={styles.selectButtonText}>지역 선택</Text>
         </TouchableOpacity>
       </View>
@@ -67,7 +83,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   textContainer: {
-    flex: 1, // 남은 공간을 차지하게 설정
+    flex: 1,
     justifyContent: 'center',
   },
   locationName: {
@@ -87,21 +103,18 @@ const styles = StyleSheet.create({
   selectButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#D3D3D3', // 타원의 배경색 (아주 연한 회색)
-    borderRadius: 50, // 타원형을 위한 borderRadius 설정
+    backgroundColor: '#D3D3D3',
+    borderRadius: 50,
     paddingVertical: 5,
     paddingHorizontal: 10,
-    marginTop: 20, // 타원을 아래로 내리기 위한 여백 설정
+    marginTop: 20,
+  },
+  bookmarkedButton: {
+    backgroundColor: '#FF6347', // 북마크된 상태일 때의 배경색
   },
   selectButtonText: {
-    color: '#FFA07A', // 연한 주황색 텍스트
+    color: '#FFA07A',
     fontSize: 14,
-    marginLeft: 5, // 아이콘과 텍스트 사이의 간격
-  },
-  largeSeperator: {
-    width: '100%', // 화면 너비만큼 구분선 설정
-    height: 1, // 구분선의 두께
-    backgroundColor: '#ccc', // 구분선의 색상 (연한 회색)
-    marginVertical: 10, // 위아래 여백 (선의 위, 아래 간격)
+    marginLeft: 5,
   },
 })

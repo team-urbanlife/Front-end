@@ -1,30 +1,52 @@
 import axios from 'axios'
-import Gathering from '../../components/GatheringHome/gatheringclass'
+import Gathering from './type/GatheringType'
 import { GatheringData } from '../../components/GatheringRegister/GatheringRegisterForm'
-const BACKEND_URL = ''
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export async function storeGathering(gatheringData: Gathering) {
-  const response = await axios.post(BACKEND_URL + '/??.json', gatheringData)
-  const id = response.data.name
-  return id
+const BACKEND_URL = 'https://dev.wegotoo.net'
+
+export async function storeGathering(gatheringData: GatheringData) {
+  //const response = await axios.post(BACKEND_URL + '/v1/accompanies', gatheringData)
+
+  const accessToken = await AsyncStorage.getItem('accessToken')
+  const response = await axios.post(
+    BACKEND_URL + '/v1/accompanies',
+    gatheringData,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`, // 액세스 토큰을 헤더에 포함
+      },
+    },
+  )
+  //console.log('모집글 생성 후 응답데이터', response)
+  const id = response.data.data.accompanyId
+  const registeredDateTime = response.data.data.registeredDateTime
+  const userName = response.data.data.userName
+  return [+id, registeredDateTime, userName]
 }
 
 export async function fetchGatherings() {
-  const response = await axios.get(BACKEND_URL + '/??.json')
-
+  const response = await axios.get(
+    BACKEND_URL + '/v1/accompanies?page=1&size=4',
+  )
+  console.log('모집글 목록 조회', response.data)
   const gatheringS = []
 
-  for (const key in response.data) {
-    const gatheringObj = {
-      id: key,
-      title: response.data[key].title,
-      period: new Date(response.data[key].period),
-      content: response.data[key].content,
-    }
-    gatheringS.push(gatheringObj)
+  for (const item of response.data.data.content) {
+    console.log('모집글 목록 조회 시 각각의 모집글 확인', item)
+    gatheringS.push(item)
   }
 
   return gatheringS
+}
+
+export async function fetchGatheringDetail(gatheringId: number) {
+  const response = await axios.get(
+    BACKEND_URL + '/v1/accompanies/' + gatheringId.toString(),
+  )
+  console.log('모집글 단건 조회', response.data)
+
+  return response.data.data
 }
 
 export function updateGathering(id: string, gatheringData: Gathering) {

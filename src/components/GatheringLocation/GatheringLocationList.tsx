@@ -12,15 +12,27 @@ interface GatheringLocation {
 
 interface GatheringsLocationListProps {
   locations: GatheringLocation[]
-}
-
-const renderGatheringLocationItem = (itemData: { item: GatheringLocation }) => {
-  return <GatheringLocationItem {...itemData.item} />
+  selectedLocations: string[]
+  setLocations: React.Dispatch<React.SetStateAction<string[]>> // 상태 변경 함수
 }
 
 const GatheringsLocationList: React.FC<GatheringsLocationListProps> = ({
   locations,
+  selectedLocations,
+  setLocations,
 }) => {
+  const renderGatheringLocationItem = (itemData: {
+    item: GatheringLocation
+  }) => {
+    return (
+      <GatheringLocationItem
+        {...itemData.item}
+        selectedLocations={selectedLocations}
+        setLocations={setLocations}
+      />
+    )
+  }
+
   return (
     <FlatList
       data={locations}
