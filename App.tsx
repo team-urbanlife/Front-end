@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native'
+
 import {
   NavigationContainer,
   useNavigation,
@@ -21,15 +22,12 @@ import RecentGatherings from './src/screens/gathering/GatheringHomeScreen'
 import { GlobalStyles } from './src/constants/colors'
 import GatheringsContextProvider from './src/context/gathering-context'
 import Icon from 'react-native-vector-icons/MaterialIcons' // MaterialIcons 아이콘 사용
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { Ionicons } from '@expo/vector-icons'
 
 import GatheringLocationSearch from './src/screens/gathering/GatheringLocationSearchScreen'
+import { useState } from 'react'
 import GatheringRegister from './src/screens/gathering/GatheringRegisterScreen'
 import GatheringDetailScreen from './src/screens/gathering/GatheringDetailScreen'
-import ScheduleHome from '@/screens/schedule/ScheduleHomeScreen'
-import ScheduleSpot from '@/screens/schedule/ScheduleSpotScreen'
-import ScheduleDetail from '@/screens/schedule/ScheduleDetailScreen'
-import ScheduleCalendar from '@/screens/schedule/ScheduleCalendarScreen'
 
 const Stack = createNativeStackNavigator<RootStackParamList>() // 네비게이션 스택에 타입 정의 적용
 const Drawer = createDrawerNavigator()
@@ -64,10 +62,6 @@ type RootStackParamList = {
   GatheringLocationSearch: undefined
   GatheringRegister: undefined
   GatheringDetail: { gatheringId: string } // GatheringDetail에 전달되는 파라미터 정의
-  ScheduleHome: undefined
-  SceduleSpot: undefined
-  SceduleDetail: undefined
-  SceduleCalendar: undefined
 }
 
 interface GatheringHomeHeaderProps {
@@ -141,78 +135,56 @@ export default function App() {
   return (
     <>
       <StatusBar style="dark" />
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <GatheringsContextProvider>
-          <NavigationContainer>
-            <Stack.Navigator>
-              <Stack.Screen
-                name="ScheduleHome"
-                component={ScheduleHome}
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="SceduleCalendar"
-                component={ScheduleCalendar}
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="SceduleSpot"
-                component={ScheduleSpot}
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="SceduleDetail"
-                component={ScheduleDetail}
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="RecentGathering"
-                component={RecentGatherings}
-                options={{
-                  header: ({ navigation }) => (
-                    <GatheringHomeHeader navigation={navigation} />
-                  ),
-                  contentStyle: { backgroundColor: 'white' },
-                }}
-              />
-              <Stack.Screen
-                name="GatheringLocationSearch"
-                component={GatheringLocationSearch}
-                options={{
-                  animation: 'slide_from_left',
-                  headerBackTitleVisible: false,
-                  headerTitleAlign: 'center',
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="GatheringRegister"
-                component={GatheringRegister}
-                options={{
-                  headerBackTitleVisible: false,
-                  headerTitleAlign: 'center',
-                }}
-              />
-              <Stack.Screen
-                name="GatheringDetail"
-                component={GatheringDetailScreen} // 타입이 정의된 컴포넌트 전달
-                options={{
-                  headerBackTitleVisible: false,
-                  headerTitleAlign: 'center',
-                }}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </GatheringsContextProvider>
-      </GestureHandlerRootView>
+      <GatheringsContextProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerTitleStyle: {
+                fontSize: 20,
+              },
+              headerTitleAlign: 'center',
+              headerTintColor: 'black',
+            }}
+          >
+            <Stack.Screen
+              name="RecentGathering"
+              component={RecentGatherings}
+              options={{
+                header: ({ navigation }) => (
+                  <GatheringHomeHeader navigation={navigation} />
+                ),
+                contentStyle: { backgroundColor: 'white' },
+              }}
+            />
+            <Stack.Screen
+              name="GatheringLocationSearch"
+              component={GatheringLocationSearch}
+              options={{
+                animation: 'slide_from_left',
+                headerBackTitleVisible: false,
+                headerTitleAlign: 'center',
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="GatheringRegister"
+              component={GatheringRegister}
+              options={{
+                headerBackTitleVisible: false,
+                headerTitleAlign: 'center',
+              }}
+            />
+            <Stack.Screen
+              name="GatheringDetail"
+              component={GatheringDetailScreen} // 타입이 정의된 컴포넌트 전달
+              options={{
+                headerBackTitleVisible: false,
+                headerTitleAlign: 'center',
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </GatheringsContextProvider>
     </>
   )
 }
