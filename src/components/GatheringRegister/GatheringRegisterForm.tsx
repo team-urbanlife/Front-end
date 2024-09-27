@@ -5,23 +5,32 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  ScrollView, // Add ScrollView
 } from 'react-native'
-import Icon from 'react-native-vector-icons/Ionicons' // 아이콘 사용을 위한 패키지
+import Icon from 'react-native-vector-icons/Ionicons'
 import DateSelectionModal from './DateSelectionModal'
-import Gathering from '../../components/GatheringHome/gatheringclass'
 
 interface GatheringRegisterFormProps {
-  onSubmit: (gatheringData: Gathering) => void
+  onSubmit: (gatheringData: GatheringData) => void
 }
 
 export interface GatheringData {
+  startDate: string
+  endDate: string
   title: string
-  period: string
+  location: string
+  latitude: number
+  longitude: number
+  personnel: number
+  gender: string
+  startAge: number
+  endAge: number
+  cost: number
   content: string
 }
 
 interface SelectedDates {
-  start: string | null // 수정된 타입
+  start: string
   end: string
 }
 
@@ -33,7 +42,19 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
       value: '',
       isValid: true,
     },
-    period: {
+    personnel: {
+      value: '',
+      isValid: true,
+    },
+    startAge: {
+      value: '',
+      isValid: true,
+    },
+    endAge: {
+      value: '',
+      isValid: true,
+    },
+    cost: {
       value: '',
       isValid: true,
     },
@@ -43,29 +64,42 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
     },
   })
 
+  const [selectedGender, setSelectedGender] = useState<string | null>(null)
   const [isDisabled, setIsDisabled] = useState(true)
+  const [isModalVisible, setModalVisible] = useState(false)
+  const [selectedDates, setSelectedDates] = useState<SelectedDates>({
+    start: '',
+    end: '',
+  })
 
   useEffect(() => {
     const gatheringData = {
       title: inputs.title.value,
-      period: inputs.period.value,
+      personnel: inputs.personnel.value,
+      gender: selectedGender,
+      startAge: inputs.startAge.value,
+      endAge: inputs.endAge.value,
+      cost: inputs.cost.value,
       content: inputs.content.value,
     }
     const shouldDisable =
-      !gatheringData.title.trim() || !gatheringData.content.trim() // 필수값이 없으면 비활성화
+      !gatheringData.title.trim() || !gatheringData.content.trim()
 
     setIsDisabled(shouldDisable)
-  }, [inputs])
+  }, [inputs, selectedGender])
 
-  const [isModalVisible, setModalVisible] = useState(false)
-  const [selectedDates, setSelectedDates] = useState<SelectedDates | null>(null)
-
-  function handleDateSelection(start: string | null, end: string) {
+  function handleDateSelection(start: string, end: string) {
     setSelectedDates({ start, end })
   }
 
   function inputChangedHandler(
-    inputIdentifier: 'title' | 'period' | 'content',
+    inputIdentifier:
+      | 'title'
+      | 'personnel'
+      | 'startAge'
+      | 'endAge'
+      | 'cost'
+      | 'content',
     enteredValue: string,
   ) {
     setInputs((curInputs) => ({
@@ -75,124 +109,204 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
   }
 
   function submitHandler() {
-    const gatheringData: Gathering = {
+    const gatheringData: GatheringData = {
       title: inputs.title.value,
-      period: inputs.period.value,
+      personnel: +inputs.personnel.value,
+      gender:
+        selectedGender === '남자만'
+          ? 'MAN'
+          : selectedGender === '여자만'
+            ? 'WOMAN'
+            : 'null', // Set default value
+      startAge: +inputs.startAge.value,
+      endAge: +inputs.endAge.value,
+      cost: +inputs.cost.value,
       content: inputs.content.value,
-      id: '',
-      registerDate: new Date(),
-    }
-
-    const titleIsValid = !!gatheringData.title
-    const periodIsValid = !!gatheringData.period
-    const contentIsValid = !!gatheringData.content
-
-    if (!titleIsValid || !periodIsValid || !contentIsValid) {
-      setInputs((curInputs) => ({
-        title: { value: curInputs.title.value, isValid: titleIsValid },
-        period: { value: curInputs.period.value, isValid: periodIsValid },
-        content: { value: curInputs.content.value, isValid: contentIsValid },
-      }))
-      return
+      startDate: selectedDates.start,
+      endDate: selectedDates.end,
+      location: '오사카',
+      latitude: 0.0,
+      longitude: 0.0,
     }
 
     onSubmit(gatheringData)
   }
 
   return (
-    <View>
-      <View style={styles.datePickerContainer}>
-        <TouchableOpacity
-          style={styles.datePicker}
-          onPress={() => setModalVisible(true)}
-        >
-          <Icon name="calendar-outline" size={16} color="#FF6B6B" />
-          <Text style={styles.dateText}>
-            {selectedDates
-              ? `${selectedDates.start} ~ ${selectedDates.end}`
-              : '날짜 선택'}
-          </Text>
-          <Icon name="chevron-down" size={16} color="#FF6B6B" />
-        </TouchableOpacity>
+    <View style={styles.container}>
+      {/* Scrollable form content */}
+      <ScrollView contentContainerStyle={styles.formContent}>
+        <View style={styles.datePickerContainer}>
+          <TouchableOpacity
+            style={styles.datePicker}
+            onPress={() => setModalVisible(true)}
+          >
+            <Icon name="calendar-outline" size={16} color="#FF6B6B" />
+            <Text style={styles.dateText}>
+              {selectedDates.start && selectedDates.end
+                ? `${selectedDates.start} ~ ${selectedDates.end}`
+                : '날짜 선택'}
+            </Text>
+            <Icon name="chevron-down" size={16} color="#FF6B6B" />
+          </TouchableOpacity>
 
-        <DateSelectionModal
-          isVisible={isModalVisible}
-          onClose={() => setModalVisible(false)}
-          onConfirm={handleDateSelection}
-        />
-      </View>
-
-      {/* Title Input */}
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={[styles.input, !inputs.title.isValid && styles.invalidInput]}
-          placeholder="제목을 입력해주세요"
-          placeholderTextColor="#C0C0C0"
-          onChangeText={inputChangedHandler.bind(this, 'title')}
-          value={inputs.title.value}
-        />
-      </View>
-
-      {/* Form Section */}
-      <View style={styles.formSection}>
-        <View style={styles.formSectionHeader}>
-          <Text style={styles.sectionTitle}>모집 정보를 적어주세요</Text>
-          <Text style={styles.sectionRequired}>
-            *위치정보는 필수 기입란입니다
-          </Text>
+          <DateSelectionModal
+            isVisible={isModalVisible}
+            onClose={() => setModalVisible(false)}
+            onConfirm={handleDateSelection}
+          />
         </View>
 
-        {/* Location Info */}
-        <View style={styles.infoItem}>
-          <Icon name="location-outline" size={20} color="#FF6B6B" />
-          <Text style={styles.infoText}>위치 정보</Text>
+        {/* Title Input */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[styles.input, !inputs.title.isValid && styles.invalidInput]}
+            placeholder="제목을 입력해주세요"
+            placeholderTextColor="#C0C0C0"
+            onChangeText={inputChangedHandler.bind(this, 'title')}
+            value={inputs.title.value}
+          />
         </View>
 
-        {/* Personnel Info */}
-        <View style={styles.infoItem}>
-          <Icon name="person-outline" size={20} color="#C0C0C0" />
-          <Text style={styles.infoText}>인원정보</Text>
+        {/* Form Section */}
+        <View style={styles.formSection}>
+          <View style={styles.formSectionHeader}>
+            <Text style={styles.sectionTitle}>모집 정보를 적어주세요</Text>
+            <Text style={styles.sectionRequired}>
+              *위치정보는 필수 기입란입니다
+            </Text>
+          </View>
+
+          {/* Location Info */}
+          <View style={styles.infoItem}>
+            <Icon name="location-outline" size={20} color="#FF6B6B" />
+            <Text style={styles.infoText}>위치 정보</Text>
+          </View>
+
+          {/* Personnel Info */}
+          <View style={styles.infoItem}>
+            <Icon name="person-outline" size={20} color="#C0C0C0" />
+            <TextInput
+              style={styles.infoText}
+              placeholder="인원정보"
+              keyboardType="numeric"
+              onChangeText={inputChangedHandler.bind(this, 'personnel')}
+              value={inputs.personnel.value}
+            />
+            <Text> 명</Text>
+          </View>
+
+          {/* Gender Info - Radio Button */}
+          <View style={styles.infoItem}>
+            <Icon name="information-circle-outline" size={20} color="#C0C0C0" />
+            <Text style={styles.infoText}>희망 성별</Text>
+          </View>
+          <View style={styles.radioGroup}>
+            <TouchableOpacity
+              style={styles.radioItem}
+              onPress={() => setSelectedGender('남자만')}
+            >
+              <Icon
+                name={
+                  selectedGender === '남자만'
+                    ? 'radio-button-on'
+                    : 'radio-button-off'
+                }
+                size={20}
+                color="#FF6B6B"
+              />
+              <Text style={styles.radioLabel}>남자만</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.radioItem}
+              onPress={() => setSelectedGender('여자만')}
+            >
+              <Icon
+                name={
+                  selectedGender === '여자만'
+                    ? 'radio-button-on'
+                    : 'radio-button-off'
+                }
+                size={20}
+                color="#FF6B6B"
+              />
+              <Text style={styles.radioLabel}>여자만</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.radioItem}
+              onPress={() => setSelectedGender('상관없음')}
+            >
+              <Icon
+                name={
+                  selectedGender === '상관없음'
+                    ? 'radio-button-on'
+                    : 'radio-button-off'
+                }
+                size={20}
+                color="#FF6B6B"
+              />
+              <Text style={styles.radioLabel}>상관없음</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Start Age Info */}
+          <View style={styles.infoItem}>
+            <Icon name="information-circle-outline" size={20} color="#C0C0C0" />
+            <TextInput
+              style={styles.infoText}
+              placeholder="최소 나이"
+              keyboardType="numeric"
+              onChangeText={inputChangedHandler.bind(this, 'startAge')}
+              value={inputs.startAge.value}
+            />
+          </View>
+
+          {/* End Age Info */}
+          <View style={styles.infoItem}>
+            <Icon name="information-circle-outline" size={20} color="#C0C0C0" />
+            <TextInput
+              style={styles.infoText}
+              placeholder="최대 나이"
+              keyboardType="numeric"
+              onChangeText={inputChangedHandler.bind(this, 'endAge')}
+              value={inputs.endAge.value}
+            />
+          </View>
+
+          {/* Expected Amount */}
+          <View style={styles.infoItem}>
+            <Icon name="cash-outline" size={20} color="#C0C0C0" />
+            <TextInput
+              style={styles.infoText}
+              placeholder="예상금액"
+              keyboardType="numeric"
+              onChangeText={inputChangedHandler.bind(this, 'cost')}
+              value={inputs.cost.value}
+            />
+            <Text> 만원</Text>
+          </View>
         </View>
 
-        {/* Gender and Age */}
-        <View style={styles.infoItem}>
-          <Icon name="information-circle-outline" size={20} color="#C0C0C0" />
-          <Text style={styles.infoText}>희망 성별, 나이</Text>
+        {/* Content Input */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[
+              styles.input,
+              styles.inputMultiline,
+              !inputs.content.isValid && styles.invalidInput,
+            ]}
+            placeholder="내용을 입력해주세요."
+            placeholderTextColor="#C0C0C0"
+            multiline={true}
+            onChangeText={inputChangedHandler.bind(this, 'content')}
+            value={inputs.content.value}
+          />
         </View>
-
-        {/* Expected Amount */}
-        <View style={styles.infoItem}>
-          <Icon name="cash-outline" size={20} color="#C0C0C0" />
-          <Text style={styles.infoText}>
-            예상 금액을 최대한 구체적으로 적어주세요
-          </Text>
-        </View>
-      </View>
-
-      {/* Content Input */}
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={[
-            styles.input,
-            styles.inputMultiline,
-            !inputs.content.isValid && styles.invalidInput,
-          ]}
-          placeholder="내용을 입력해주세요. 커뮤니티 이용 규칙에 의해 부적절한 게시물은 숨김, 삭제 처리될 수 있습니다."
-          placeholderTextColor="#C0C0C0"
-          multiline={true}
-          onChangeText={inputChangedHandler.bind(this, 'content')}
-          value={inputs.content.value}
-        />
-      </View>
-
-      {/* Add Map Button */}
-      <TouchableOpacity style={styles.mapButton}>
-        <Text style={styles.mapButtonText}>+ 지도 추가(선택)</Text>
-      </TouchableOpacity>
+      </ScrollView>
 
       {/* Submit Button */}
       <TouchableOpacity
-        style={[styles.submitButton, isDisabled && styles.submitButtonDisabled]} // 비활성화 시 스타일 변경
+        style={[styles.submitButton, isDisabled && styles.submitButtonDisabled]}
         disabled={isDisabled}
         onPress={submitHandler}
       >
@@ -205,6 +319,12 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
 export default GatheringRegisterForm
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  formContent: {
+    paddingBottom: 100, // Ensures space for the button
+  },
   datePickerContainer: {
     marginBottom: 10,
   },
@@ -221,12 +341,13 @@ const styles = StyleSheet.create({
   dateText: {
     marginHorizontal: 8,
     color: '#FF6B6B',
+    fontSize: 16,
   },
   inputContainer: {
     marginBottom: 20,
   },
   input: {
-    fontSize: 16,
+    fontSize: 18,
     borderBottomWidth: 1,
     borderBottomColor: '#C0C0C0',
     padding: 8,
@@ -239,10 +360,15 @@ const styles = StyleSheet.create({
     borderBottomColor: 'red',
   },
   formSection: {
-    marginBottom: 10,
     padding: 16,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'white',
     borderRadius: 10,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
   },
   formSectionHeader: {
     flexDirection: 'row',
@@ -266,27 +392,40 @@ const styles = StyleSheet.create({
   infoText: {
     marginLeft: 8,
     color: '#333',
+    fontSize: 16,
+    flex: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: '#C0C0C0',
+    paddingBottom: 4,
   },
-  mapButton: {
-    borderColor: '#C0C0C0',
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 10,
+  radioGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 16,
+  },
+  radioItem: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
-  mapButtonText: {
-    color: '#C0C0C0',
+  radioLabel: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: '#333',
   },
   submitButton: {
+    position: 'absolute',
+    bottom: 30,
+    width: '100%', // Increased width
+    height: 50, // Fixed height
     backgroundColor: '#ff6347',
-    borderRadius: 50,
-    paddingVertical: 16,
+    borderRadius: 25,
+    justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'center',
   },
   submitButtonText: {
     color: '#FFF',
-    fontSize: 16,
+    fontSize: 20,
   },
   submitButtonDisabled: {
     backgroundColor: '#E0E0E0',

@@ -1,12 +1,15 @@
 import { createContext, useReducer, ReactNode } from 'react'
-import Gathering from '../components/GatheringHome/gatheringclass'
+import Gathering from '../screens/gathering/type/GatheringType'
 import { GatheringData } from '../components/GatheringRegister/GatheringRegisterForm'
 export interface GatheringsContextType {
   gatherings: Gathering[]
   addGathering: (gatheringData: Gathering) => void
   setGatherings: (gatherings: Gathering[]) => void
-  deleteGathering: (id: string) => void
-  updateGathering: (id: string, gatheringData: Omit<Gathering, 'id'>) => void
+  deleteGathering: (id: number) => void
+  updateGathering: (
+    id: number,
+    gatheringData: Omit<Gathering, 'accompanyId'>,
+  ) => void
 }
 
 export const GatheringsContext = createContext<GatheringsContextType>({
@@ -20,8 +23,11 @@ export const GatheringsContext = createContext<GatheringsContextType>({
 type Action =
   | { type: 'ADD'; payload: Gathering }
   | { type: 'SET'; payload: Gathering[] }
-  | { type: 'UPDATE'; payload: { id: string; data: Omit<Gathering, 'id'> } }
-  | { type: 'DELETE'; payload: string }
+  | {
+      type: 'UPDATE'
+      payload: { id: number; data: Omit<Gathering, 'accompanyId'> }
+    }
+  | { type: 'DELETE'; payload: number }
 
 function gatheringReducer(state: Gathering[], action: Action): Gathering[] {
   switch (action.type) {
@@ -31,7 +37,7 @@ function gatheringReducer(state: Gathering[], action: Action): Gathering[] {
       return action.payload.reverse()
     case 'UPDATE':
       const updatableGatheringIndex = state.findIndex(
-        (gathering) => gathering.id === action.payload.id,
+        (gathering) => gathering.accompanyId === action.payload.id,
       )
       const updatedItem = {
         ...state[updatableGatheringIndex],
@@ -41,7 +47,9 @@ function gatheringReducer(state: Gathering[], action: Action): Gathering[] {
       updatedState[updatableGatheringIndex] = updatedItem
       return updatedState
     case 'DELETE':
-      return state.filter((gathering) => gathering.id !== action.payload)
+      return state.filter(
+        (gathering) => gathering.accompanyId !== action.payload,
+      )
     default:
       return state
   }
@@ -64,11 +72,14 @@ function GatheringsContextProvider({ children }: Props) {
     dispatch({ type: 'SET', payload: gatherings })
   }
 
-  function deleteGathering(id: string) {
+  function deleteGathering(id: number) {
     dispatch({ type: 'DELETE', payload: id })
   }
 
-  function updateGathering(id: string, gatheringData: Omit<Gathering, 'id'>) {
+  function updateGathering(
+    id: number,
+    gatheringData: Omit<Gathering, 'accompanyId'>,
+  ) {
     dispatch({ type: 'UPDATE', payload: { id, data: gatheringData } })
   }
 
