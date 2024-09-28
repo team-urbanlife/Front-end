@@ -38,6 +38,21 @@ const regions = [
     hashtags: ['#런던', '#역사', '#왕궁'],
     imageUrl: '',
   },
+  {
+    name: '파리',
+    hashtags: ['#파리', '#사랑의도시', '#에펠탑'],
+    imageUrl: '',
+  },
+  {
+    name: '도쿄',
+    hashtags: ['#도쿄', '#기술', '#스시라이프'],
+    imageUrl: '',
+  },
+  {
+    name: '런던',
+    hashtags: ['#런던', '#역사', '#왕궁'],
+    imageUrl: '',
+  },
 ]
 
 const touristSpots = [
@@ -49,6 +64,36 @@ const touristSpots = [
   {
     name: '자유의 여신상',
     hashtags: ['#자유의여신상', '#뉴욕', '#랜드마크'],
+    imageUrl: '',
+  },
+  {
+    name: '후지산',
+    hashtags: ['#후지산', '#일본', '#후지산'],
+    imageUrl: '',
+  },
+  {
+    name: '버킹엄 궁전',
+    hashtags: ['#버킹엄궁전', '#런던', '#왕실가족'],
+    imageUrl: '',
+  },
+  {
+    name: '남산타워',
+    hashtags: ['#남산타워', '#서울', '#한국'],
+    imageUrl: '',
+  },
+  {
+    name: '후지산',
+    hashtags: ['#후지산', '#일본', '#후지산'],
+    imageUrl: '',
+  },
+  {
+    name: '버킹엄 궁전',
+    hashtags: ['#버킹엄궁전', '#런던', '#왕실가족'],
+    imageUrl: '',
+  },
+  {
+    name: '남산타워',
+    hashtags: ['#남산타워', '#서울', '#한국'],
     imageUrl: '',
   },
   {
@@ -132,6 +177,7 @@ export default function ScheduleSpot() {
         style={
           submit ? styles.nextSchedulesContainer : styles.schedulesContainer
         }
+        bounces={false}
       >
         {!submit
           ? regions.map((region, index) => (

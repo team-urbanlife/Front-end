@@ -55,9 +55,15 @@ const PlaceSearchComponent: React.FC = () => {
           components: 'country:kr',
         }}
         fetchDetails={true}
-        renderRow={(data) => (
+        renderRow={(data: GooglePlaceData) => (
           <View
-            style={{ flexDirection: 'row', padding: 10, alignItems: 'center' }}
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              padding: 10,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
           >
             {/* <Image
               source={{

@@ -147,13 +147,13 @@ export default function App() {
         <GatheringsContextProvider>
           <NavigationContainer>
             <Stack.Navigator>
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="Google"
                 component={PlaceSearchComponent}
                 options={{
                   headerShown: false,
                 }}
-              />
+              /> */}
               <Stack.Screen
                 name="ScheduleHome"
                 component={ScheduleHome}
