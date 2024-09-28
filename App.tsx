@@ -32,44 +32,110 @@ import ScheduleDetail from '@/screens/schedule/ScheduleDetailScreen'
 import ScheduleCalendar from '@/screens/schedule/ScheduleCalendarScreen'
 import PlaceSearchComponent from '@/screens/schedule/googlePlace'
 
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import { MainDummyHome } from '@/screens/dummyHome/mainHomeDummy'
+import { ChatHomeDummy } from '@/screens/dummyHome/ChatHomeDummy'
+import { MypageHomeDummy } from '@/screens/dummyHome/MyPageHomeDummy'
+import LoginHomeScreen from '@/screens/login/LoginHomeScreen'
+import KakaoLoginView from '@/screens/login/KakaoLoginView'
 const Stack = createNativeStackNavigator<RootStackParamList>() // 네비게이션 스택에 타입 정의 적용
 const Drawer = createDrawerNavigator()
-
-/* function DrawerNavigator() {
+const BottomTabs = createBottomTabNavigator()
+function WeGoTooOverview() {
+  //const navigation = useNavigation()
   return (
-    <Drawer.Navigator
-      initialRouteName="Home"
+    <BottomTabs.Navigator
       screenOptions={({ navigation }) => ({
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-            <Icon
-              name="menu"
-              size={30}
-              color="#000"
-              style={{ marginLeft: 10 }}
-            />
-          </TouchableOpacity>
-        ),
-        drawerType: 'back', // Drawer가 화면 위로 덮이게 설정
-        overlayColor: 'rgba(0, 0, 0, 0.5)', // 반투명한 검은색 오버레이 추가
+        //headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+        //headerTintColor: 'white',
+        //tabBarStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+        tabBarActiveTintColor: GlobalStyles.colors.signature,
       })}
     >
-      <Drawer.Screen name="Notifications" component={RecentGatherings} />
-    </Drawer.Navigator>
+      <BottomTabs.Screen
+        name="MainDummyHome"
+        component={MainDummyHome}
+        options={{
+          title: '메인 홈화면',
+          tabBarLabel: '메인 홈화면',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home" size={size} color={color} />
+          ),
+
+          headerTitleAlign: 'center',
+
+          //headerStyle: { backgroundColor: 'white' },
+          //contentStyle: { backgroundColor: 'white' },
+        }}
+      />
+      <BottomTabs.Screen
+        name="BtScheduleHome"
+        component={ScheduleHome}
+        options={{
+          headerShown: false,
+          title: '일정관리 홈화면',
+          tabBarLabel: '일정관리 홈화면',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="map" size={size} color={color} />
+          ),
+        }}
+      />
+      <BottomTabs.Screen
+        name="BtRecentGathering"
+        component={RecentGatherings}
+        options={{
+          title: '모집글  홈화면',
+          tabBarLabel: '모집글  홈화면',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="document-text" size={size} color={color} />
+          ),
+          /* header: ({ navigation }) => (
+            <GatheringHomeHeader navigation={navigation} />
+          ), */
+          headerShown: false,
+        }}
+      />
+      <BottomTabs.Screen
+        name="ChatHomeDummy"
+        component={ChatHomeDummy}
+        options={{
+          title: '채팅  홈화면',
+          tabBarLabel: '채팅  홈화면',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="chatbubbles" size={size} color={color} />
+          ),
+        }}
+      />
+      <BottomTabs.Screen
+        name="MypageHomeDummy"
+        component={MypageHomeDummy}
+        options={{
+          title: '마이페이지',
+          tabBarLabel: '마이페이지',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" size={size} color={color} />
+          ),
+        }}
+      />
+    </BottomTabs.Navigator>
   )
-} */
+}
 
 // 네비게이션 스택의 타입을 정의합니다.
 type RootStackParamList = {
   RecentGathering: undefined
   GatheringLocationSearch: undefined
   GatheringRegister: undefined
-  GatheringDetail: { gatheringId: string } // GatheringDetail에 전달되는 파라미터 정의
+  GatheringDetail: { gatheringId: number } // GatheringDetail에 전달되는 파라미터 정의
   ScheduleHome: undefined
   SceduleSpot: undefined
   SceduleDetail: undefined
   SceduleCalendar: undefined
   Google: undefined
+  WeGoTooOverview: undefined
+  KakaoLoginView: undefined
+  LoginHomeScreen: undefined
 }
 
 interface GatheringHomeHeaderProps {
@@ -155,12 +221,33 @@ export default function App() {
                 }}
               /> */}
               <Stack.Screen
+                name="LoginHomeScreen"
+                component={LoginHomeScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="KakaoLoginView"
+                component={KakaoLoginView} // 타입이 정의된 컴포넌트 전달
+                options={{
+                  headerBackTitleVisible: false,
+                  headerTitleAlign: 'center',
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="WeGoTooOverview"
+                component={WeGoTooOverview}
+                options={{ headerShown: false }}
+              />
+              {/* <Stack.Screen
                 name="ScheduleHome"
                 component={ScheduleHome}
                 options={{
                   headerShown: false,
                 }}
-              />
+              /> */}
               <Stack.Screen
                 name="SceduleCalendar"
                 component={ScheduleCalendar}
@@ -182,7 +269,7 @@ export default function App() {
                   headerShown: false,
                 }}
               />
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="RecentGathering"
                 component={RecentGatherings}
                 options={{
@@ -191,7 +278,7 @@ export default function App() {
                   ),
                   contentStyle: { backgroundColor: 'white' },
                 }}
-              />
+              /> */}
               <Stack.Screen
                 name="GatheringLocationSearch"
                 component={GatheringLocationSearch}
@@ -206,16 +293,24 @@ export default function App() {
                 name="GatheringRegister"
                 component={GatheringRegister}
                 options={{
-                  headerBackTitleVisible: false,
+                  headerBackTitleVisible: false, // 뒤로가기 텍스트 숨기기
                   headerTitleAlign: 'center',
+                  headerTintColor: 'black', // 뒤로가기 버튼 아이콘 색상을 검정색으로 설정
+                  headerStyle: {
+                    backgroundColor: 'white', // 헤더 배경색 설정
+                  },
                 }}
               />
               <Stack.Screen
                 name="GatheringDetail"
                 component={GatheringDetailScreen} // 타입이 정의된 컴포넌트 전달
                 options={{
-                  headerBackTitleVisible: false,
+                  headerBackTitleVisible: false, // 뒤로가기 텍스트 숨기기
                   headerTitleAlign: 'center',
+                  headerTintColor: 'black', // 뒤로가기 버튼 아이콘 색상을 검정색으로 설정
+                  headerStyle: {
+                    backgroundColor: 'white', // 헤더 배경색 설정
+                  },
                 }}
               />
             </Stack.Navigator>

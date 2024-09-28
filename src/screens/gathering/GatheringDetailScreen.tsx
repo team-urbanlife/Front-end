@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react'
+import React, { useLayoutEffect, useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -9,17 +9,19 @@ import {
 } from 'react-native'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { Gatherings } from '../../components/GatheringHome/dummy-gathering'
 import { getFormattedDate2 } from '../../util/date'
-import Icon from 'react-native-vector-icons/MaterialIcons' // MaterialIcons 아이콘 사용
+import Icon from 'react-native-vector-icons/MaterialIcons'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RouteProp } from '@react-navigation/native'
-
+import { fetchGatheringDetail } from './gatheringHttp'
+import Gathering from './type/GatheringType'
+import { styles as scheduleStyles } from '../schedule/Styles/ScheduleHomeStyles'
+import { GlobalStyles } from '@/constants/colors'
 type RootStackParamList = {
   RecentGathering: undefined
   GatheringLocationSearch: undefined
   GatheringRegister: undefined
-  GatheringDetail: { gatheringId: string }
+  GatheringDetail: { gatheringId: number }
 }
 
 interface GatheringDetailScreenProps {
@@ -27,43 +29,59 @@ interface GatheringDetailScreenProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'GatheringDetail'>
 }
 
-interface CommentData {
-  id: string
-  user: string
-  comment: string
-  likes: number
-}
-
 const GatheringDetailScreen: React.FC<GatheringDetailScreenProps> = ({
   route,
   navigation,
 }) => {
+  const [selectedGathering, setSelectedGathering] = useState<Gathering | null>(
+    null,
+  )
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: '', // 가운데 타이틀
       headerRight: () => (
-        <View style={{ flexDirection: 'row', paddingRight: 10 }}>
+        <View style={scheduleStyles.searchNotiContainer}>
           <TouchableOpacity
-            style={{ marginRight: 10 }}
-            onPress={() => console.log('Search pressed')}
+            onPress={() => {
+              //navigation.navigate('' as never)
+            }}
           >
-            <Icon name="search" size={24} />
+            <Image
+              source={require('@/assets/schedule/search.png')}
+              style={scheduleStyles.searchNotiIcon}
+            />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => console.log('Notifications pressed')}
+            onPress={() => {
+              //navigation.navigate('' as never)
+            }}
           >
-            <Icon name="notifications-none" size={24} />
+            <Image
+              source={require('@/assets/notification.png')}
+              style={scheduleStyles.searchNotiIcon}
+            />
           </TouchableOpacity>
         </View>
       ),
     })
   }, [navigation])
 
-  const gatheringId = route.params.gatheringId
+  // 비동기 데이터 가져오기
+  useLayoutEffect(() => {
+    const gatheringId = route.params.gatheringId
 
-  const selectedGathering = Gatherings.find(
-    (gathering) => gathering.id === gatheringId,
-  )
+    const loadGathering = async () => {
+      try {
+        const foundGathering = await fetchGatheringDetail(gatheringId)
+        setSelectedGathering(foundGathering || null)
+      } catch (error) {
+        console.error('Error fetching gatherings:', error)
+      }
+    }
+
+    loadGathering()
+  }, [route.params.gatheringId])
 
   if (!selectedGathering) {
     return (
@@ -74,32 +92,29 @@ const GatheringDetailScreen: React.FC<GatheringDetailScreenProps> = ({
   }
 
   const dummyDetailInfo = [
-    { icon: 'place', text: '일본 : 오사카, 유니버셜스튜디오', color: 'orange' },
-    { icon: 'people', text: '총 3명', color: 'black' },
-    { icon: 'man', text: '남자 희망, 20대 중반', color: 'black' },
+    { icon: 'place', text: selectedGathering.location, color: 'orange' },
+    {
+      icon: 'people',
+      text: selectedGathering.personnel + '명',
+      color: 'black',
+    },
+    {
+      icon: 'man',
+      text:
+        selectedGathering.gender === 'MAN'
+          ? '남자만'
+          : selectedGathering.gender === 'WOMAN'
+            ? '여자만'
+            : '상관없음',
+      color: 'black',
+    },
     {
       icon: 'money',
-      text: '예상금액: 60만원(유니버설, 항공권 예매 미포함)',
+      text: selectedGathering.cost + '만원',
       color: 'black',
     },
   ]
-
-  const commentsData: CommentData[] = [
-    { id: '1', user: '해덕해덕', comment: '저요저요죠요', likes: 25 },
-    { id: '2', user: '윙레비요우사', comment: '저요죠나요요요', likes: 25 },
-  ]
-
-  const renderComment = ({ item }: { item: CommentData }) => (
-    <View style={styles.comment}>
-      <Text style={styles.commentUser}>{item.user}</Text>
-      <Text>{item.comment}</Text>
-      <View style={styles.commentStats}>
-        <FontAwesome name="heart" size={14} color="red" />
-        <Text style={styles.likeText}>{item.likes}</Text>
-      </View>
-    </View>
-  )
-
+  const userProfile = selectedGathering.userProfileImage
   const renderHeader = () => (
     <View style={styles.container}>
       {/* 상단 게시물 정보 */}
@@ -107,14 +122,17 @@ const GatheringDetailScreen: React.FC<GatheringDetailScreenProps> = ({
         <View style={styles.leftHeader}>
           <Image
             source={{
-              uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARMAAAC3CAMAAAAGjUrGAAAAeFBMVEX////+AAD/ubn/9fX/5OT/srL/xcX/vLz/2tr/qKj/4eH+lJT/6Oj/+Pj+b2/+Li7/rKz+ODj+YWH/8PD+HBz/1NT+UVH/zMz+f3/+VVX+S0v+Wlr+ExP+i4v+Rkb+JCT+o6P+QED/hIT+PT3+dXX+lpb+Kyv+aGgfaNvJAAADdUlEQVR4nO3dgVLiMBDGcQNIEUFAqEUBFe/U93/Duw7jCZNyNG2yO1v/vyfofkObNFnSqysAAAAAAAAAAAAAAAAAAFCajvNimGXZsMjHU+2LUdfP5+vHlTu2elzP8772hWkpdr/cOfvbXPvy5GWfZ/P4ctf7STfSaH0xkIPfI+1LFZI91Uyk9DTUvlwB2SwgkdIs077kxIqPwERKH4X2ZSc02TRIpLSZaF96Ku8NEym9a198EoPQB8mp2UC7gPjmrRIpzbVLiO2udSR/ZyvaRUTVX0SIxLlFh96DxlESKY21S4llFC0S5zoy2Y8ZSUdCiXfjHHTg9hlEjsQ58xOV/jZ6Jlvro0+cQfjUQruodmJM1Xx32mW1cZMkEudutAtrLvaQ883u4NNkAameD+3Smtoli8S5nXZxzaS7c0o2757npJk8a5fXRJY0EucsLufHn8Ce2moXGC7V1OSbvUlK8kic0y4xVPsl6cusLVq/CGTyol1kmKFAJM7Z2l+/F8nkXrvMEEuRSJxbahca4FUoE0vDcdpp/bcn7ULr6wtF4pydjreeWCZ2XnrSrMJWsbMyKxaJnfl9/G2u86xsgMk9TpzraRdb061gJrfaxdYkM7E/sDK9b9fMF2amXWw9U8FIrMzaJqKZ2OgmjtuXdImNvqVCNBMbvfipN3ZO2XjjuRbN5Fq73FrS7+wcs7F4L5uJjaU2MvHxPPEx7vhk9ru+2Nj3ykUzsfF/dd53fLwXV2D9xMc6m4/1WJ/kur2N6YnswGNj2LliH7AK+8U+uQeKlW1AudYt5wz9NfBBKJIH7UIDSHQMl2wsPB7Q91iB/lgffdQV6Lf38b+MCgKZaJcYLH17+at2ieGSZ6JdYAOpX3rsvOoc2SeNZK9dXiNp+5Vs9Cd5OK+gAuda+Dj/pALn5FTgPKUKnLvlS/DXQPPns3GOe6zAuaAVYv5SOvErKU1inSO0MrNlftl0HyWSvZFGrZrqfknlf9baRcTWvrvaRsd0kEnL7yB06FFypE2fm5W+tWCDpv0GDx2Yu541bDIqb43tgQa7Xl0O4cSqg89WT28fkMizyS2LBmp/923dkbebeoaXV+A+f8pP5EixO78It1h3/bl61rKYv21O53KzzdsP/t7oP9PlOC+yLCvy8bJbb3kAAAAAAAAAAAAAAAAAADT3BzugNrnOETdrAAAAAElFTkSuQmCC',
+              //uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARMAAAC3CAMAAAAGjUrGAAAAeFBMVEX////+AAD/ubn/9fX/5OT/srL/xcX/vLz/2tr/qKj/4eH+lJT/6Oj/+Pj+b2/+Li7/rKz+ODj+YWH/8PD+HBz/1NT+UVH/zMz+f3/+VVX+S0v+Wlr+ExP+i4v+Rkb+JCT+o6P+QED/hIT+PT3+dXX+lpb+Kyv+aGgfaNvJAAADdUlEQVR4nO3dgVLiMBDGcQNIEUFAqEUBFe/U93/Duw7jCZNyNG2yO1v/vyfofkObNFnSqysAAAAAAAAAAAAAAAAAAFCajvNimGXZsMjHU+2LUdfP5+vHlTu2elzP8772hWkpdr/cOfvbXPvy5GWfZ/P4ctf7STfSaH0xkIPfI+1LFZI91Uyk9DTUvlwB2SwgkdIs077kxIqPwERKH4X2ZSc02TRIpLSZaF96Ku8NEym9a198EoPQB8mp2UC7gPjmrRIpzbVLiO2udSR/ZyvaRUTVX0SIxLlFh96DxlESKY21S4llFC0S5zoy2Y8ZSUdCiXfjHHTg9hlEjsQ58xOV/jZ6Jlvro0+cQfjUQruodmJM1Xx32mW1cZMkEudutAtrLvaQ883u4NNkAameD+3Smtoli8S5nXZxzaS7c0o2757npJk8a5fXRJY0EucsLufHn8Ce2moXGC7V1OSbvUlK8kic0y4xVPsl6cusLVq/CGTyol1kmKFAJM7Z2l+/F8nkXrvMEEuRSJxbahca4FUoE0vDcdpp/bcn7ULr6wtF4pydjreeWCZ2XnrSrMJWsbMyKxaJnfl9/G2u86xsgMk9TpzraRdb061gJrfaxdYkM7E/sDK9b9fMF2amXWw9U8FIrMzaJqKZ2OgmjtuXdImNvqVCNBMbvfipN3ZO2XjjuRbN5Fq73FrS7+wcs7F4L5uJjaU2MvHxPPEx7vhk9ru+2Nj3ykUzsfF/dd53fLwXV2D9xMc6m4/1WJ/kur2N6YnswGNj2LliH7AK+8U+uQeKlW1AudYt5wz9NfBBKJIH7UIDSHQMl2wsPB7Q91iB/lgffdQV6Lf38b+MCgKZaJcYLH17+at2ieGSZ6JdYAOpX3rsvOoc2SeNZK9dXiNp+5Vs9Cd5OK+gAuda+Dj/pALn5FTgPKUKnLvlS/DXQPPns3GOe6zAuaAVYv5SOvErKU1inSO0MrNlftl0HyWSvZFGrZrqfknlf9baRcTWvrvaRsd0kEnL7yB06FFypE2fm5W+tWCDpv0GDx2Yu541bDIqb43tgQa7Xl0O4cSqg89WT28fkMizyS2LBmp/923dkbebeoaXV+A+f8pP5EixO78It1h3/bl61rKYv21O53KzzdsP/t7oP9PlOC+yLCvy8bJbb3kAAAAAAAAAAAAAAAAAADT3BzugNrnOETdrAAAAAElFTkSuQmCC',
+              uri: userProfile,
             }}
             style={styles.profileImage}
           />
           <View style={styles.postInfo}>
-            <Text style={styles.userName}>{selectedGathering.author}</Text>
+            <Text style={styles.userName}>{selectedGathering.userName}</Text>
             <Text style={styles.postTime}>
-              {getFormattedDate2(selectedGathering.registerDate)}
+              {getFormattedDate2(
+                new Date(selectedGathering.registeredDateTime),
+              )}
             </Text>
           </View>
         </View>
@@ -130,11 +148,13 @@ const GatheringDetailScreen: React.FC<GatheringDetailScreenProps> = ({
         <View style={styles.dateContainer}>
           <MaterialIcons
             name="calendar-today"
-            size={20}
-            color="orange"
+            size={24} // 아이콘 크기 확대
+            color={GlobalStyles.colors.signature}
             style={styles.dateIcon}
           />
-          <Text style={styles.dateRange}>{selectedGathering.period}</Text>
+          <Text style={styles.dateRange}>
+            {selectedGathering.startDate} ~ {selectedGathering.endDate}
+          </Text>
         </View>
         <Text style={styles.title}>{selectedGathering.title}</Text>
       </View>
@@ -146,7 +166,7 @@ const GatheringDetailScreen: React.FC<GatheringDetailScreenProps> = ({
           <View key={index} style={styles.detailItem}>
             <MaterialIcons
               name={item.icon}
-              size={20}
+              size={24} // 아이콘 크기 확대
               color={item.color}
               style={styles.detailIcon}
             />
@@ -162,11 +182,9 @@ const GatheringDetailScreen: React.FC<GatheringDetailScreenProps> = ({
       <View style={styles.statsAndButtonsContainer}>
         {/* 조회수, 좋아요, 댓글 */}
         <View style={styles.statsContainer}>
-          <Text style={styles.statsText}>조회수 56</Text>
-          <FontAwesome name="heart" size={16} color="red" />
-          <Text style={styles.statsText}>25</Text>
-          <FontAwesome name="comment" size={16} color="gray" />
-          <Text style={styles.statsText}>4</Text>
+          <Text style={styles.statsText}>조회수 {selectedGathering.views}</Text>
+          <FontAwesome name="heart" size={18} color="red" />
+          <Text style={styles.statsText}>{selectedGathering.likeCount}</Text>
         </View>
 
         {/* 공감, 저장하기 버튼 */}
@@ -179,110 +197,114 @@ const GatheringDetailScreen: React.FC<GatheringDetailScreenProps> = ({
           </TouchableOpacity>
         </View>
       </View>
-
-      {/* 구분선 */}
-      <View style={styles.separator} />
     </View>
   )
 
   return (
-    <>
+    <View style={styles.wrapper}>
       <FlatList
-        style={styles.commentContainer}
-        data={commentsData}
-        renderItem={renderComment}
-        keyExtractor={(item) => item.id}
-        ListHeaderComponent={renderHeader}
+        data={[]} // 데이터는 없지만 헤더만 표시
+        renderItem={null} // 데이터 항목을 렌더링하지 않음
+        ListHeaderComponent={renderHeader} // 헤더 렌더링
         contentContainerStyle={{ paddingBottom: 16 }} // 여유 공간 추가
       />
       <TouchableOpacity style={styles.completeButton}>
         <Text style={styles.completeButtonText}>동행 요청</Text>
       </TouchableOpacity>
-    </>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: 'white', // 전체 배경을 흰색으로 설정
+  },
   container: {
-    padding: 10,
-    backgroundColor: '#fff', // 전체 배경색 흰색 유지
+    padding: 15, // 패딩을 늘려서 전체적으로 더 여유롭게
+    backgroundColor: 'white', // 전체 배경 흰색 유지
   },
   postHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // 양 끝으로 배치 (왼쪽에 프로필, 오른쪽에 드롭다운)
+    justifyContent: 'space-between',
   },
   leftHeader: {
-    flexDirection: 'row', // 프로필, 이름, 작성일자를 한 줄에 배치
+    flexDirection: 'row',
     alignItems: 'center',
   },
   profileImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 60, // 프로필 이미지 크기 확대
+    height: 60,
+    borderRadius: 30,
   },
   postInfo: {
-    marginLeft: 10,
+    marginLeft: 15,
   },
   userName: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 18, // 텍스트 크기 확대
   },
   postTime: {
-    fontSize: 12,
+    fontSize: 14,
     color: 'gray',
     marginTop: 4,
   },
   dateTitleContainer: {
-    marginVertical: 12,
+    marginVertical: 14,
   },
   dateContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   dateIcon: {
-    marginRight: 8,
+    marginRight: 10,
   },
   dateRange: {
-    color: 'orange',
+    color: GlobalStyles.colors.signature,
     fontWeight: 'bold',
   },
   title: {
-    fontSize: 16,
+    fontSize: 18, // 제목 크기 확대
     fontWeight: 'bold',
     marginTop: 4,
   },
   postDetails: {
-    padding: 12,
-    backgroundColor: '#f7f7f7', // 회색 음영 처리
+    padding: 16,
+    backgroundColor: 'white', // 세부 정보 배경 흰색으로 설정
     borderRadius: 10,
     marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
   },
   sectionHeader: {
-    fontSize: 14,
+    fontSize: 16,
     color: 'gray',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   detailItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 6,
+    marginBottom: 10,
   },
   detailIcon: {
-    marginRight: 8,
+    marginRight: 10,
   },
   detailText: {
-    fontSize: 14,
+    fontSize: 16,
   },
   content: {
-    marginVertical: 16,
-    lineHeight: 22,
+    marginVertical: 18,
+    lineHeight: 24, // 텍스트 라인 높이 조정
   },
   statsAndButtonsContainer: {
-    flexDirection: 'row', // 조회수와 버튼을 한 줄에 배치
-    justifyContent: 'space-between', // 양 끝에 배치
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   statsContainer: {
     flexDirection: 'row',
@@ -291,7 +313,7 @@ const styles = StyleSheet.create({
   statsText: {
     marginLeft: 5,
     marginRight: 10,
-    fontSize: 14,
+    fontSize: 16, // 텍스트 크기 확대
     color: 'gray',
   },
   buttonContainer: {
@@ -299,52 +321,29 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#fde7e7',
-    paddingVertical: 5,
-    paddingHorizontal: 15,
+    paddingVertical: 10, // 버튼 패딩을 조금 더 넉넉하게
+    paddingHorizontal: 20,
     borderRadius: 20,
     marginLeft: 10,
   },
   buttonText: {
     color: '#f56c6c',
-  },
-  separator: {
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
-    marginBottom: 10,
-  },
-  commentContainer: {
-    backgroundColor: '#fff',
-  },
-  comment: {
-    padding: 10,
-    paddingLeft: 16,
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
-  },
-  commentUser: {
-    fontWeight: 'bold',
-  },
-  commentStats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  likeText: {
-    marginLeft: 4,
+    fontSize: 16, // 버튼 텍스트 크기 확대
   },
   completeButton: {
     position: 'absolute',
-    bottom: 30, // 화면 아래에서 30px 위로 위치
-    width: '90%', // 버튼 너비를 화면의 90%로 설정
-    height: 50, // 버튼 높이 설정
-    backgroundColor: '#ff6347', // 배경 색상
-    borderRadius: 25, // 타원형으로 만들기 위한 borderRadius
+    bottom: 30,
+    width: '90%',
+    height: 50,
+    backgroundColor: '#ff6347',
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    alignSelf: 'center', // 가로 중앙에 배치
+    alignSelf: 'center',
   },
   completeButtonText: {
-    color: '#FFFFFF', // 흰색 텍스트
-    fontSize: 18, // 텍스트 크기
+    color: '#FFFFFF',
+    fontSize: 18,
     fontWeight: 'bold',
   },
 })

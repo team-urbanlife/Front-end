@@ -6,7 +6,7 @@ import { storeGathering } from '../gathering/gatheringHttp'
 import ErrorOverlay from '../../components/GatheringHome/ErrorOverlay'
 import LoadingOverlay from '../../components/GatheringHome/LoadingOverlay'
 import GatheringRegisterForm from '../../components/GatheringRegister/GatheringRegisterForm'
-import Gathering from '../../components/GatheringHome/gatheringclass'
+import Gathering from './type/GatheringType'
 //import GatheringData from '../../components/GatheringRegister/GatheringRegisterForm'
 import { GatheringData } from '../../components/GatheringRegister/GatheringRegisterForm'
 
@@ -28,16 +28,24 @@ const GatheringRegister: React.FC<GatheringRegisterProps> = ({
     })
   }, [navigation])
 
-  async function confirmHandler(gatheringData: Gathering) {
+  async function confirmHandler(gatheringData: GatheringData) {
+    console.log('작성 완료 후 서버로 보낼 데이터 확인', gatheringData)
     setIsSubmitting(true)
     try {
-      const id: string = await storeGathering(gatheringData)
-      gatheringsCtx.addGathering({ ...gatheringData })
+      const [id, registeredDateTime, userName] =
+        await storeGathering(gatheringData)
+      gatheringsCtx.addGathering({
+        accompanyId: id,
+        registeredDateTime: registeredDateTime,
+        userName: userName,
+        ...gatheringData,
+      })
 
+      //navigation.navigate('BtRecentGathering')
       navigation.goBack()
+      setIsSubmitting(false)
     } catch (error) {
       setError('Could not save data - please try again later!')
-      setIsSubmitting(false)
     }
   }
 
