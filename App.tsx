@@ -30,6 +30,7 @@ import ScheduleHome from '@/screens/schedule/ScheduleHomeScreen'
 import ScheduleSpot from '@/screens/schedule/ScheduleSpotScreen'
 import ScheduleDetail from '@/screens/schedule/ScheduleDetailScreen'
 import ScheduleCalendar from '@/screens/schedule/ScheduleCalendarScreen'
+import PlaceSearchComponent from '@/screens/schedule/googlePlace'
 
 const Stack = createNativeStackNavigator<RootStackParamList>() // 네비게이션 스택에 타입 정의 적용
 const Drawer = createDrawerNavigator()
@@ -68,6 +69,7 @@ type RootStackParamList = {
   SceduleSpot: undefined
   SceduleDetail: undefined
   SceduleCalendar: undefined
+  Google: undefined
 }
 
 interface GatheringHomeHeaderProps {
@@ -145,6 +147,13 @@ export default function App() {
         <GatheringsContextProvider>
           <NavigationContainer>
             <Stack.Navigator>
+              <Stack.Screen
+                name="Google"
+                component={PlaceSearchComponent}
+                options={{
+                  headerShown: false,
+                }}
+              />
               <Stack.Screen
                 name="ScheduleHome"
                 component={ScheduleHome}
