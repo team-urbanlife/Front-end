@@ -92,12 +92,14 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   schedulesContainer: {
-    position: 'absolute',
-    top: 111,
+    marginTop: 10,
+    flex: 1,
+    height: 'auto',
   },
   nextSchedulesContainer: {
-    position: 'absolute',
-    top: 171,
+    marginTop: 50,
+    flex: 1,
+    height: 'auto',
   },
 })
 

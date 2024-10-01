@@ -10,29 +10,22 @@ interface LocationCoords {
 const planList = [{ latitude: 5, longitude: 5 }]
 
 export default function AppleMap() {
-  //현재 위치 위도, 경도 생각해보니까 이건 현재 위도 경도를 받아올 필요가 없음
   const [location, setLocation] = useState<LocationCoords | null>(null)
-  //에러 메세지
+
   const [errorMsg, setErrorMsg] = useState<string>('')
+
+  //지도 호출
+  const [isMapReady, setIsMapReady] = useState(false)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsMapReady(true)
+    }, 1000)
+  }, [])
 
   // 마커 좌표를 저장하는 state (Coordinate 타입)
   const [markerCoordinate, setMarkerCoordinate] =
     useState<LocationCoords | null>(null)
-  useEffect(() => {
-    ;(async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync()
-      if (status !== 'granted') {
-        setErrorMsg('위치 정보 허용이 거절당했습니다.')
-        return
-      }
-
-      let currentLocation = await Location.getCurrentPositionAsync({}) //혀내 사용자 위치 받아오기
-      setLocation({
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
-      })
-    })()
-  }, [])
 
   let txt = 'Waiting..'
   if (errorMsg) {
@@ -48,16 +41,17 @@ export default function AppleMap() {
 
   return (
     <View style={styles.screen}>
-      {location && (
+      {isMapReady && (
         <MapView
           style={styles.map}
           initialRegion={{
-            latitude: location.latitude,
-            longitude: location.longitude,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
+            latitude: 37.78825,
+            longitude: -122.4324,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
           }}
           onPress={handleMapPress}
+          cacheEnabled={true}
         >
           {markerCoordinate && (
             <Marker

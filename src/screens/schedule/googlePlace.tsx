@@ -5,7 +5,8 @@ import {
   GooglePlaceData,
 } from 'react-native-google-places-autocomplete'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-const GOOGLE_PLACES_API_KEY = 'AIzaSyAIzs9FFNmjYXOCT75CRvnB2MIMLY53VPw'
+import { GlobalStyles } from '@/constants/colors'
+
 interface GooglePlaceDetail {
   geometry: {
     location: {
@@ -20,6 +21,7 @@ interface GooglePlaceDetail {
 }
 
 const PlaceSearchComponent: React.FC = () => {
+  const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY
   return (
     <View style={{ paddingTop: 100 }}>
       <GooglePlacesAutocomplete
@@ -79,16 +81,23 @@ const PlaceSearchComponent: React.FC = () => {
             {/* 장소 추가 버튼 */}
             <TouchableOpacity
               style={{
-                backgroundColor: '#1faadb',
+                backgroundColor: GlobalStyles.colors.moreFaintGray,
                 padding: 10,
                 borderRadius: 5,
+                flexDirection: 'row',
               }}
               onPress={() => {
                 console.log('Add place button clicked')
                 // 여기서 장소를 추가하는 로직을 넣을 수 있습니다.
               }}
             >
-              <Text style={{ color: '#fff' }}>장소 추가</Text>
+              <Image
+                source={require('@/assets/schedule/bookmark.png')}
+                style={{ width: 20, height: 20, objectFit: 'contain' }}
+              />
+              <Text style={{ color: GlobalStyles.colors.signature }}>
+                장소 추가
+              </Text>
             </TouchableOpacity>
           </View>
         )}

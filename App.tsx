@@ -220,7 +220,7 @@ export default function App() {
                   headerShown: false,
                 }}
               /> */}
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="LoginHomeScreen"
                 component={LoginHomeScreen}
                 options={{
@@ -235,19 +235,19 @@ export default function App() {
                   headerTitleAlign: 'center',
                   headerShown: false,
                 }}
-              />
+              /> */}
               <Stack.Screen
                 name="WeGoTooOverview"
                 component={WeGoTooOverview}
                 options={{ headerShown: false }}
               />
-              {/* <Stack.Screen
+              <Stack.Screen
                 name="ScheduleHome"
                 component={ScheduleHome}
                 options={{
                   headerShown: false,
                 }}
-              /> */}
+              />
               <Stack.Screen
                 name="SceduleCalendar"
                 component={ScheduleCalendar}

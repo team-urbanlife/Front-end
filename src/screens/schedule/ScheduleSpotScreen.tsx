@@ -5,17 +5,20 @@ import {
   Text,
   ScrollView,
   TextInput,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from 'react-native'
 import { styles, text } from './Styles/ScheduleSpotStyles'
 import ScheduleSpotComponent from '@/components/ScheduleSpot/scheduleSpotComponent'
 import { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { GlobalStyles } from '@/constants/colors'
+import { useRef } from 'react'
 // 더미 데이터
 const regions = [
   {
-    name: '서울',
-    hashtags: ['#서울', '#한국문화', '#도시생활'],
+    name: '오사카',
+    hashtags: ['#오사카'],
     imageUrl: '',
   },
   {
@@ -34,8 +37,13 @@ const regions = [
     imageUrl: '',
   },
   {
-    name: '런던',
-    hashtags: ['#런던', '#역사', '#왕궁'],
+    name: '오사카',
+    hashtags: ['#오사카'],
+    imageUrl: '',
+  },
+  {
+    name: '뉴욕',
+    hashtags: ['#뉴욕', '#빅애플', '#잠들지않는도시'],
     imageUrl: '',
   },
   {
@@ -46,11 +54,6 @@ const regions = [
   {
     name: '도쿄',
     hashtags: ['#도쿄', '#기술', '#스시라이프'],
-    imageUrl: '',
-  },
-  {
-    name: '런던',
-    hashtags: ['#런던', '#역사', '#왕궁'],
     imageUrl: '',
   },
 ]
@@ -91,26 +94,6 @@ const touristSpots = [
     hashtags: ['#버킹엄궁전', '#런던', '#왕실가족'],
     imageUrl: '',
   },
-  {
-    name: '남산타워',
-    hashtags: ['#남산타워', '#서울', '#한국'],
-    imageUrl: '',
-  },
-  {
-    name: '후지산',
-    hashtags: ['#후지산', '#일본', '#후지산'],
-    imageUrl: '',
-  },
-  {
-    name: '버킹엄 궁전',
-    hashtags: ['#버킹엄궁전', '#런던', '#왕실가족'],
-    imageUrl: '',
-  },
-  {
-    name: '남산타워',
-    hashtags: ['#남산타워', '#서울', '#한국'],
-    imageUrl: '',
-  },
 ]
 
 export default function ScheduleSpot() {
@@ -120,9 +103,24 @@ export default function ScheduleSpot() {
   //submit 상태에 따라 화면에 조건부 렌더링
   const [submit, setSubmit] = useState<boolean>(false)
 
+  const [mapReady, setMapReady] = useState<boolean>(false)
+
   const handleSearch = () => {
     setSubmit(true)
     console.log('Searching for:', searchInputValue)
+  }
+  const scrollViewRef = useRef<ScrollView>(null)
+  const [scrollPosition, setScrollPosition] = useState<number>(0)
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const currentOffset = event.nativeEvent.contentOffset.y
+    setScrollPosition(currentOffset)
+  }
+
+  const scrollToPosition = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ y: scrollPosition, animated: false })
+    }
   }
   return (
     <View style={styles.container}>
@@ -177,7 +175,6 @@ export default function ScheduleSpot() {
         style={
           submit ? styles.nextSchedulesContainer : styles.schedulesContainer
         }
-        bounces={false}
       >
         {!submit
           ? regions.map((region, index) => (
