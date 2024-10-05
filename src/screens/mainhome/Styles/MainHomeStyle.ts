@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
   textContainer: {
     flexDirection: 'column',
     width: 'auto',
-    height: 200,
+    height: 100,
     paddingHorizontal: 20,
   },
   hospitalContainer: {
@@ -174,7 +174,7 @@ export const text = {
     fontSize: 24,
     fontWeight: 'bold',
     letterSpacing: 0,
-    marginBottom: 7,
+    marginBottom: 15,
   },
   subtitleText: {
     color: GlobalStyles.colors.faintGray,

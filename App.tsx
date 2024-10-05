@@ -38,6 +38,9 @@ import { ChatHomeDummy } from '@/screens/dummyHome/ChatHomeDummy'
 import { MypageHomeDummy } from '@/screens/dummyHome/MyPageHomeDummy'
 import LoginHomeScreen from '@/screens/login/LoginHomeScreen'
 import KakaoLoginView from '@/screens/login/KakaoLoginView'
+import MainHomeScreen from '@/screens/mainhome/MainHomeScreen'
+import HomePostScreen from '@/screens/mainhome/HomePostScreen'
+import HomePostWriteScreen from '@/screens/mainhome/HomePostWriteScreen'
 const Stack = createNativeStackNavigator<RootStackParamList>() // 네비게이션 스택에 타입 정의 적용
 const Drawer = createDrawerNavigator()
 const BottomTabs = createBottomTabNavigator()
@@ -122,7 +125,7 @@ function WeGoTooOverview() {
 }
 
 // 네비게이션 스택의 타입을 정의합니다.
-type RootStackParamList = {
+export type RootStackParamList = {
   RecentGathering: undefined
   GatheringLocationSearch: undefined
   GatheringRegister: undefined
@@ -134,6 +137,9 @@ type RootStackParamList = {
   WeGoTooOverview: undefined
   KakaoLoginView: undefined
   LoginHomeScreen: undefined
+  MainHomeScreen: undefined
+  HomePostWriteScreen: undefined
+  HomePostScreen: { postId: number }
 }
 
 export default function App() {
@@ -144,7 +150,7 @@ export default function App() {
         <GatheringsContextProvider>
           <NavigationContainer>
             <Stack.Navigator>
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="LoginHomeScreen"
                 component={LoginHomeScreen}
                 options={{
@@ -164,7 +170,30 @@ export default function App() {
                 name="WeGoTooOverview"
                 component={WeGoTooOverview}
                 options={{ headerShown: false }}
+              /> */}
+              <Stack.Screen
+                name="MainHomeScreen"
+                component={MainHomeScreen}
+                options={{ headerShown: false }}
               />
+              <Stack.Screen
+                name="HomePostWriteScreen"
+                component={HomePostWriteScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="HomePostScreen"
+                options={{
+                  headerShown: false,
+                }}
+              >
+                {(props) => (
+                  <HomePostScreen
+                    {...props}
+                    postId={props.route.params.postId}
+                  />
+                )}
+              </Stack.Screen>
               {/* <Stack.Screen
                 name="ScheduleHome"
                 component={ScheduleHome}

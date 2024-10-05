@@ -1,5 +1,5 @@
 import { StyleProp, StyleSheet, TextStyle } from 'react-native'
-import { GlobalStyles } from '../../../constants/colors'
+import { GlobalStyles } from '@/constants/colors'
 
 export const styles = StyleSheet.create({
   container: {
@@ -7,35 +7,36 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'column',
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginTop: 46,
-    width: '100%',
-    height: 48,
-    marginBottom: 15,
-  },
-  Logo: {
-    width: 122,
-    height: 26,
-  },
-  searchNotiContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: 61,
-    height: 'auto',
-  },
-  searchNotiIcon: {
-    width: 23,
-    height: 23,
+  picture: {
+    width: 388,
+    height: 175,
+    borderTopRightRadius: 10,
+    borderTopLeftRadius: 10,
+    objectFit: 'cover',
   },
   textContainer: {
     flexDirection: 'column',
-    width: 'auto',
-    height: 200,
-    paddingHorizontal: 20,
+    justifyContent: 'space-between',
+    height: 'auto',
+    paddingLeft: 25,
+    paddingTop: 19,
+  },
+  profileImage: {
+    width: 46,
+    height: 46,
+    borderRadius: 100,
+    objectFit: 'cover',
+  },
+  profileImageContainer: {
+    width: 52,
+    height: 52,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 140,
+    left: 317,
+    borderRadius: 100,
+    backgroundColor: GlobalStyles.colors.white,
   },
   hospitalContainer: {
     paddingTop: 33,
@@ -171,22 +172,21 @@ export const text = {
     color: GlobalStyles.colors.normalDark,
     textAlign: 'left',
     textAlignVertical: 'top',
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
-    letterSpacing: 0,
+    lineHeight: 23,
     marginBottom: 7,
   },
-  subtitleText: {
-    color: GlobalStyles.colors.faintGray,
+  nameText: {
+    color: GlobalStyles.colors.signature,
     textAlign: 'left',
-    fontSize: 15,
-    fontWeight: '400',
+    fontSize: 13,
+    marginBottom: 10,
   },
-  photoPreviewText: {
-    color: '#555',
-    fontSize: 14,
-    fontWeight: '400',
-    lineHeight: 19.6,
+  createdAtText: {
+    color: GlobalStyles.colors.gray,
+    fontSize: 13,
+    lineHeight: 11,
     letterSpacing: -0.7,
   },
   categoryButtonText: {

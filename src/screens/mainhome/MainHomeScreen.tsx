@@ -1,8 +1,10 @@
 import LogoHeader from '@/components/Common/logoHeader'
-import { View, Text } from 'react-native-reanimated/lib/typescript/Animated'
+import { View, Text } from 'react-native'
 import { styles, text } from './Styles/MainHomeStyle'
+import HomePostComponent from '@/components/MainHome/HomePostComponent'
+import { ScrollView } from 'react-native-gesture-handler'
 
-export default function HomeScreen() {
+export default function MainHomeScreen() {
   return (
     <View>
       {/* 헤더  */}
@@ -10,39 +12,44 @@ export default function HomeScreen() {
       <View style={styles.textContainer}>
         <Text style={text.titleText}>나와 맞는 여행지를 찾아보세요!</Text>
         <Text style={text.subtitleText}>
-          가장 높은 평가를 받은 맛집들을 알려드립니다.
+          다른 트래블러의 후기를 보고 나도 한번 떠나보자!
         </Text>
       </View>
+      <ScrollView style={{ paddingHorizontal: 10 }}>
+        {homePosts.map((post, index) => (
+          <HomePostComponent post={post} key={index} />
+        ))}
+      </ScrollView>
     </View>
   )
 }
 
 const homePosts: HomePostType[] = [
   {
-    title: 'My First Post',
+    title: '재미있었던 오사카 여행 후기(어쩌구저쩌구이러쿵저러쿵)',
     id: 1,
-    name: 'Alice',
+    name: '지원',
     profileImage: 'https://example.com/profiles/alice.jpg',
     picture: 'https://example.com/posts/post1.jpg',
   },
   {
-    title: 'Nature Walk',
+    title: '재미있었던 오사카 여행 후기',
     id: 2,
-    name: 'Bob',
+    name: '예나',
     profileImage: 'https://example.com/profiles/bob.jpg',
     picture: 'https://example.com/posts/post2.jpg',
   },
   {
-    title: 'City Lights',
+    title: '재미있었던 오사카 여행 후기',
     id: 3,
-    name: 'Charlie',
+    name: '수정',
     profileImage: 'https://example.com/profiles/charlie.jpg',
     picture: 'https://example.com/posts/post3.jpg',
   },
   {
     title: 'Sunset Views',
     id: 4,
-    name: 'David',
+    name: '채은',
     profileImage: 'https://example.com/profiles/david.jpg',
     picture: 'https://example.com/posts/post4.jpg',
   },

@@ -1,74 +1,24 @@
 import { StyleProp, StyleSheet, TextStyle } from 'react-native'
-import { GlobalStyles } from '@/constants/colors'
 
 export const styles = StyleSheet.create({
   container: {
-    width: 388,
-    height: 296,
+    flex: 1,
     backgroundColor: '#fff',
-    flexDirection: 'column',
-    borderRadius: 10,
-    flexGrow: 1,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 4.65,
-  },
-  picture: {
-    width: 388,
-    height: 175,
-    borderTopRightRadius: 10,
-    borderTopLeftRadius: 10,
-    objectFit: 'cover',
-  },
-  textContainer: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    height: 'auto',
-    paddingLeft: 25,
-    paddingTop: 19,
-  },
-  profileImage: {
-    width: 46,
-    height: 46,
-    borderRadius: 100,
-    objectFit: 'cover',
-  },
-  profileImageContainer: {
-    width: 52,
-    height: 52,
     justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    top: 140,
-    left: 317,
-    borderRadius: 100,
-    backgroundColor: GlobalStyles.colors.white,
+    flexDirection: 'column',
   },
-  hospitalContainer: {
-    paddingTop: 33,
-    display: 'flex',
-    justifyContent: 'center',
-    width: '100%',
-  },
-  flexRow: {
-    display: 'flex',
+  header: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 40,
+    // backgroundColor: 'yellow',
   },
-  foraRibbonIcon: {
-    width: 14,
-    height: 11,
-    marginRight: 4,
-  },
-  schedulesContainer: {
-    position: 'absolute',
-    top: 211,
+  leftArrow: {
+    width: 35,
+    height: 35,
+    marginLeft: -8,
   },
   uploadButton: {
     width: 100,
@@ -101,8 +51,6 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    position: 'absolute',
-    top: 543,
   },
   photoPreview: {
     width: 70,
@@ -132,6 +80,19 @@ export const styles = StyleSheet.create({
   categoryContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
+  },
+  categoryButton: {
+    display: 'flex',
+    width: 70,
+    height: 33,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 500,
+    backgroundColor: '#EEE',
+    marginRight: 8,
+  },
+  selectedCategoryButton: {
+    backgroundColor: '#52A55D',
   },
   titleContainer: {
     width: '99%',
@@ -180,19 +141,30 @@ export const text = {
   fontFamily: 'Pretendard',
   fontStyle: 'normal',
   titleText: {
-    color: GlobalStyles.colors.normalDark,
-    textAlign: 'left',
-    textAlignVertical: 'top',
+    color: '#000',
+    textAlign: 'center',
     fontSize: 18,
-    fontWeight: 'bold',
-    lineHeight: 23,
-    marginBottom: 7,
+    fontWeight: '600',
+    lineHeight: 22.4,
+    letterSpacing: 0,
+    flex: 1,
+    marginLeft: 45,
   },
-  nameText: {
-    color: GlobalStyles.colors.signature,
-    textAlign: 'left',
-    fontSize: 13,
-    marginBottom: 10,
+  uploadButtonText: {
+    color: '#232323',
+    textAlign: 'right',
+    fontSize: 18,
+    fontWeight: '400',
+    lineHeight: 22.4,
+    letterSpacing: -0.9,
+  },
+  disabledButtonText: {
+    color: '#949494',
+    textAlign: 'right',
+    fontSize: 18,
+    fontWeight: '400',
+    lineHeight: 22.4,
+    letterSpacing: -0.9,
   },
   photoPreviewText: {
     color: '#555',
@@ -219,13 +191,13 @@ export const text = {
   },
   contentTitleText: {
     marginTop: 13,
-    color: '#949494',
+    color: '#232323',
     fontSize: 18,
     fontWeight: '600',
     lineHeight: 24,
   },
   contentText: {
-    color: '#949494',
+    color: '#232323',
     fontSize: 18,
     fontWeight: '400',
     lineHeight: 26,
