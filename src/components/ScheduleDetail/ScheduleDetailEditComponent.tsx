@@ -5,63 +5,38 @@ import DraggableFlatList, {
   RenderItemParams,
 } from 'react-native-draggable-flatlist'
 import { DetailedPlan } from '@/types/SchedulePlanType'
-
-const DATA = [
-  {
-    region: '서울 타워',
-    sequence: 1,
-    latitude: 37.5512,
-    longitude: 126.9882,
-    scheduleDetailsId: 101,
-    memo: '서울의 유명 관광지',
-    memoId: 1001,
-  },
-  {
-    region: '경복궁',
-    sequence: 2,
-    latitude: 37.5796,
-    longitude: 126.977,
-    scheduleDetailsId: 102,
-    memo: '역사적 궁궐 방문',
-    memoId: 1002,
-  },
-  {
-    region: '서울 타워',
-    sequence: 1,
-    latitude: 37.5512,
-    longitude: 126.9882,
-    scheduleDetailsId: 101,
-    memo: '서울의 유명 관광지',
-    memoId: 1001,
-  },
-]
+import { useState } from 'react'
+import { GlobalStyles } from '@/constants/colors'
+interface Props {
+  schedules: DetailedPlan[]
+}
 
 function renderItem({ item, drag, isActive }: RenderItemParams<DetailedPlan>) {
   return (
     <TouchableOpacity
       onLongPress={drag}
       style={{
-        backgroundColor: isActive ? 'lightblue' : 'white',
-        padding: 20,
-        marginBottom: 10,
-        borderRadius: 10,
+        paddingBottom: 10,
         flex: 1,
       }}
     >
-      <ScheduleDetailComponent data={item} />
+      <ScheduleDetailComponent data={item} isActive={isActive} />
     </TouchableOpacity>
   )
 }
 
-export default function ScheduleDetailEditComponent() {
+export default function ScheduleDetailEditComponent({ schedules }: Props) {
+  const [data, setData] = useState<DetailedPlan[]>(schedules)
   return (
-    <View style={{ flex: 1, padding: 10 }}>
+    <View style={{ paddingHorizontal: 10 }}>
+      {/*부모 요소에서 렌더링 안되서 보니 flex:1을 줘서 없애줌 */}
       <DraggableFlatList
-        data={DATA}
+        data={data}
         onDragEnd={({ data }) => {
-          console.log(data) // 드래그 후 데이터 확인
+          setData(data) // 드래그 후 데이터 업데이트
+          console.log(data) // 서버로 보내는 대신 콘솔로 출력하여 확인
         }}
-        keyExtractor={(item) => String(item.sequence)}
+        keyExtractor={(item) => String(item.scheduleDetailsId)}
         renderItem={renderItem}
       />
     </View>

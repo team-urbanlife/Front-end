@@ -61,18 +61,20 @@ export default function AppleMap() {
             />
           )}
           {planList &&
-            planList.map((plan, index) => (
-              <Marker
-                coordinate={{
-                  latitude: plan.latitude,
-                  longitude: plan.longitude,
-                }}
-                image={require('../../assets/maps/currentLocation.png')}
-                onPress={() => {}}
-                style={{ width: 20, height: 20 }}
-                key={index}
-              />
-            ))}
+            planList.map((plan, index) => {
+              return (
+                <Marker
+                  coordinate={{
+                    latitude: plan.latitude,
+                    longitude: plan.longitude,
+                  }}
+                  image={require('../../assets/maps/currentLocation.png')}
+                  onPress={() => {}}
+                  style={{ width: 20, height: 20 }}
+                  key={index}
+                />
+              )
+            })}
         </MapView>
       )}
     </View>

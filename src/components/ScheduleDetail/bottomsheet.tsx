@@ -8,7 +8,7 @@ import {
   Dimensions,
 } from 'react-native'
 import { styles, text } from './styles/bottomSheetStyle'
-import { PlanData } from '@/types/SchedulePlanType'
+import { DetailedPlan, PlanData } from '@/types/SchedulePlanType'
 import ScheduleDetailComponent from './ScheduleDetailComponent'
 import { useNavigation } from '@react-navigation/native'
 import {
@@ -24,6 +24,36 @@ interface BottomSheetProps {
   setBottomSheet: Dispatch<SetStateAction<boolean>>
   plans: PlanData[]
 }
+
+const DATA: DetailedPlan[] = [
+  {
+    region: '서울 타워',
+    sequence: 1,
+    latitude: 37.5512,
+    longitude: 126.9882,
+    scheduleDetailsId: 101,
+    memo: '서울의 유명 관광지',
+    memoId: 1001,
+  },
+  {
+    region: '경복궁',
+    sequence: 2,
+    latitude: 37.5796,
+    longitude: 126.977,
+    scheduleDetailsId: 102,
+    memo: '역사적 궁궐 방문',
+    memoId: 1002,
+  },
+  {
+    region: '서울 타워',
+    sequence: 1,
+    latitude: 37.5512,
+    longitude: 126.9882,
+    scheduleDetailsId: 103,
+    memo: '서울의 유명 관광지',
+    memoId: 1001,
+  },
+]
 
 export default function BottomSheet({
   setBottomSheet,
@@ -122,10 +152,10 @@ export default function BottomSheet({
           borderRadius: 20,
           justifyContent: 'center',
         }}
-        {...panResponder.panHandlers}
+        {...(edit ? {} : panResponder.panHandlers)}
       >
         {!edit ? (
-          <ScrollView>
+          <ScrollView style={{ flex: 1 }}>
             <View style={styles.setCenter}>
               <View style={styles.topLine} />
             </View>
@@ -214,8 +244,83 @@ export default function BottomSheet({
               })}
           </ScrollView>
         ) : (
-          <View>
-            <ScheduleDetailEditComponent />
+          <View style={{ flex: 1, height: 'auto' }}>
+            <View style={styles.setCenter}>
+              <View style={styles.topLine} />
+            </View>
+            {plans &&
+              plans.map((plan, index) => {
+                const date = plan.travelDate.split('-').slice(1) // 날짜 배열의 월과 일만을 추출
+                return (
+                  <View key={index} style={styles.container}>
+                    <View
+                      style={[
+                        styles.flexRow,
+                        {
+                          justifyContent: 'space-between',
+                        },
+                      ]}
+                    >
+                      {/* 날짜 및 클릭 여부 표시 */}
+                      <TouchableOpacity
+                        onPress={() => {
+                          const temp = [...isClicked]
+                          temp[index] = !isClicked[index]
+                          setIsClicked(temp)
+                          console.log(temp)
+                        }}
+                      >
+                        <View style={styles.flexRow}>
+                          <Text
+                            style={text.dayText}
+                          >{`Day. ${index + 1}`}</Text>
+                          <View style={styles.flexRow}>
+                            <Text
+                              style={
+                                isClicked[index]
+                                  ? text.clickText
+                                  : text.unclickText
+                              }
+                            >
+                              {date[0] + '/' + date[1]} {/* 월/일 형식으로 */}
+                            </Text>
+                            <Image
+                              source={
+                                isClicked[index]
+                                  ? require('@/assets/schedule/clickUnderArrow.png')
+                                  : require('@/assets/schedule/underArrow.png')
+                              }
+                              style={styles.arrowIcon}
+                            />
+                          </View>
+                        </View>
+                      </TouchableOpacity>
+
+                      {/* 특정 plan의 id가 0일 때(최상단인 경우에) 편집 완료 표시 */}
+                      {plan.id === 0 && (
+                        <TouchableOpacity
+                          onPress={() => {
+                            setEdit(!edit)
+                          }}
+                          style={{ width: '75%', alignItems: 'flex-end' }}
+                        >
+                          <Text
+                            style={[text.clickText, { marginHorizontal: 15 }]}
+                          >
+                            편집 완료 하기
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                      {/* 선택된 plan에 대한 ScheduleDetailEditComponent 표시 */}
+                    </View>
+                    {isClicked[index] && (
+                      <View style={{ flexGrow: 1 }}>
+                        <ScheduleDetailEditComponent schedules={DATA} />
+                      </View>
+                    )}
+                  </View>
+                )
+              })}
           </View>
         )}
       </Animated.View>

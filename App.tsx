@@ -30,7 +30,7 @@ import ScheduleHome from '@/screens/schedule/ScheduleHomeScreen'
 import ScheduleSpot from '@/screens/schedule/ScheduleSpotScreen'
 import ScheduleDetail from '@/screens/schedule/ScheduleDetailScreen'
 import ScheduleCalendar from '@/screens/schedule/ScheduleCalendarScreen'
-import PlaceSearchComponent from '@/screens/schedule/googlePlace'
+import PlaceSearchComponent from '@/screens/schedule/SchedulePlaceSearch'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -132,7 +132,7 @@ type RootStackParamList = {
   SceduleSpot: undefined
   SceduleDetail: undefined
   SceduleCalendar: undefined
-  Google: undefined
+  SchedulePlaceSearch: undefined
   WeGoTooOverview: undefined
   KakaoLoginView: undefined
   LoginHomeScreen: undefined
@@ -214,13 +214,6 @@ export default function App() {
           <NavigationContainer>
             <Stack.Navigator>
               {/* <Stack.Screen
-                name="Google"
-                component={PlaceSearchComponent}
-                options={{
-                  headerShown: false,
-                }}
-              /> */}
-              {/* <Stack.Screen
                 name="LoginHomeScreen"
                 component={LoginHomeScreen}
                 options={{
@@ -258,6 +251,13 @@ export default function App() {
               <Stack.Screen
                 name="SceduleSpot"
                 component={ScheduleSpot}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="SchedulePlaceSearch"
+                component={PlaceSearchComponent}
                 options={{
                   headerShown: false,
                 }}

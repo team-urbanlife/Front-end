@@ -7,8 +7,6 @@ import {
   Pressable,
 } from 'react-native'
 import { styles, text } from './Styles/ScheduleDetailStyles'
-import ScheduleHomeComponent from '@/components/ScheduleHome/scheduleHomeComponent'
-import ScheduleDetailType from '@/types/ScheduleDetailType'
 import AppleMap from './map'
 import BottomSheet from '@/components/ScheduleDetail/bottomsheet'
 import { useState } from 'react'

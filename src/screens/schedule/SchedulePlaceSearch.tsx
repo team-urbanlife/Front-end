@@ -1,11 +1,14 @@
 import React from 'react'
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, TouchableOpacity } from 'react-native'
 import {
   GooglePlacesAutocomplete,
   GooglePlaceData,
 } from 'react-native-google-places-autocomplete'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { GlobalStyles } from '@/constants/colors'
+import { styles, text } from './Styles/SchedulePlaceSearchStyles'
+import { useNavigation } from '@react-navigation/native'
+
+import { GOOGLE_PLACES_API_KEY } from '@env'
 
 interface GooglePlaceDetail {
   geometry: {
@@ -20,10 +23,11 @@ interface GooglePlaceDetail {
   }>
 }
 
-const PlaceSearchComponent: React.FC = () => {
-  const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY
+export default function PlaceSearchComponent() {
+  const navigation = useNavigation()
+
   return (
-    <View style={{ paddingTop: 100 }}>
+    <View style={styles.container}>
       <GooglePlacesAutocomplete
         placeholder="장소를 검색해보세요"
         onPress={(data: GooglePlaceData, details: GooglePlaceDetail | null) => {
@@ -39,10 +43,6 @@ const PlaceSearchComponent: React.FC = () => {
           const latitude = geometry?.location?.lat
           const longitude = geometry?.location?.lng
 
-          console.log('Place name:', name)
-          console.log('Latitude:', latitude)
-          console.log('Longitude:', longitude)
-
           if (photos && photos.length > 0) {
             const photoRef = photos[0].photo_reference
             const photoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoRef}&key=${GOOGLE_PLACES_API_KEY}`
@@ -57,43 +57,47 @@ const PlaceSearchComponent: React.FC = () => {
           components: 'country:kr',
         }}
         fetchDetails={true}
-        renderRow={(data: GooglePlaceData) => (
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              padding: 10,
-              alignItems: 'center',
-              justifyContent: 'space-between',
+        renderLeftButton={() => (
+          <TouchableOpacity
+            style={styles.backButtonContainier}
+            onPress={() => {
+              navigation.goBack()
             }}
           >
-            {/* <Image
-              source={{
-                uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photoreference=${photos[0].photo_reference}&key=${GOOGLE_PLACES_API_KEY}`,
-              }}
-              style={{ width: 50, height: 50, marginRight: 10 }}
-            /> */}
+            <Image
+              source={require('@/assets/back.png')}
+              style={styles.backIcon}
+            />
+          </TouchableOpacity>
+        )}
+        renderRightButton={() => (
+          <View style={styles.searchIconContainer}>
+            <Image
+              source={require('@/assets/schedule/searchButton.png')}
+              style={styles.searchIcon}
+            />
+          </View>
+        )}
+        renderRow={(data: GooglePlaceData) => (
+          <View style={styles.searchResultContainer}>
+            <Image
+              source={require('@/assets/maps/currentLocation.png')}
+              style={styles.currentLocationIcon}
+            />
             {/* 장소 이름 */}
             <Text style={{ flex: 1, fontSize: 16 }}>
               {data.structured_formatting.main_text}
             </Text>
-
             {/* 장소 추가 버튼 */}
             <TouchableOpacity
-              style={{
-                backgroundColor: GlobalStyles.colors.moreFaintGray,
-                padding: 10,
-                borderRadius: 5,
-                flexDirection: 'row',
-              }}
+              style={styles.buttonContainer}
               onPress={() => {
-                console.log('Add place button clicked')
-                // 여기서 장소를 추가하는 로직을 넣을 수 있습니다.
+                navigation.navigate('SceduleDetail' as never)
               }}
             >
               <Image
                 source={require('@/assets/schedule/bookmark.png')}
-                style={{ width: 20, height: 20, objectFit: 'contain' }}
+                style={styles.bookmarkIcon}
               />
               <Text style={{ color: GlobalStyles.colors.signature }}>
                 장소 추가
@@ -106,12 +110,17 @@ const PlaceSearchComponent: React.FC = () => {
             width: '100%',
           },
           textInput: {
-            height: 44,
+            height: 50,
+            width: 368,
             fontSize: 16,
+            backgroundColor: GlobalStyles.colors.gray,
+            borderRadius: 30,
+            marginRight: 20,
+            flex: 1,
           },
           listView: {
             position: 'absolute',
-            top: 45,
+            top: 55,
             width: '100%',
           },
         }}
@@ -119,5 +128,3 @@ const PlaceSearchComponent: React.FC = () => {
     </View>
   )
 }
-
-export default PlaceSearchComponent

@@ -7,11 +7,12 @@ import { useState, forwardRef } from 'react'
 
 interface ScheduleDetailProps {
   data: DetailedPlan
+  isActive?: boolean
 }
 const ScheduleDetailComponent = forwardRef<
   TouchableOpacity,
   ScheduleDetailProps
->(({ data }, innerGestureHandlerRef) => {
+>(({ data, isActive }, innerGestureHandlerRef) => {
   const navigation = useNavigation()
 
   //텍스트 인풋에서 받을 검색어
@@ -44,7 +45,15 @@ const ScheduleDetailComponent = forwardRef<
       }}
       ref={innerGestureHandlerRef}
     >
-      <View style={isClicked ? styles.clickContainer : styles.unclickContainer}>
+      <View
+        style={
+          isClicked
+            ? styles.clickContainer
+            : isActive
+              ? styles.clickContainer
+              : styles.unclickContainer
+        }
+      >
         {/* 마커 */}
         <View style={styles.pictureContainer}>
           <Image
