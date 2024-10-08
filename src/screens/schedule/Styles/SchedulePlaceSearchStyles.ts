@@ -12,19 +12,16 @@ const color = {
 
 export const styles = StyleSheet.create({
   container: {
+    paddingTop: 70,
     flex: 1,
     backgroundColor: '#fff',
-    flexDirection: 'column',
-    zIndex: 0,
   },
-  header: {
-    flexDirection: 'row',
+  backButtonContainier: {
     alignItems: 'center',
-    paddingHorizontal: 8,
-    marginTop: 56,
-    width: '90%',
-    height: 48,
-    marginBottom: 15,
+    marginRight: 7,
+    zIndex: 3,
+    width: 20,
+    height: 20,
   },
   IconContainer: {
     width: 22,
@@ -35,14 +32,24 @@ export const styles = StyleSheet.create({
   backIcon: {
     width: 22,
     height: 22,
-    marginRight: 20,
-    zIndex: 1,
+    marginTop: 10,
   },
-  searchNotiContainer: {
+  searchIconContainer: {
+    alignItems: 'center',
+    marginLeft: -50,
+    marginTop: 5,
+  },
+  searchIcon: {
+    width: 32,
+    height: 36,
+    objectFit: 'contain',
+  },
+  searchResultContainer: {
+    flex: 1,
     flexDirection: 'row',
+    padding: 10,
+    alignItems: 'center',
     justifyContent: 'space-between',
-    width: 61,
-    height: 'auto',
   },
   nextContainer: {
     flexDirection: 'row',
@@ -77,24 +84,25 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 3,
   },
-  searchIcon: {
-    width: 23,
-    height: 23,
-    position: 'absolute',
-    right: -160,
-    bottom: 25,
-    zIndex: 5,
+  currentLocationIcon: {
+    width: 17.07,
+    height: 23.61,
+    marginRight: 10,
   },
-  textContainer: {
-    flexDirection: 'column',
-    width: 'auto',
-    height: 200,
-    paddingHorizontal: 20,
+  buttonContainer: {
+    backgroundColor: GlobalStyles.colors.gray,
+    paddingHorizontal: 10,
+    borderRadius: 100,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 32,
   },
-  schedulesContainer: {
-    marginTop: 10,
-    flex: 1,
-    height: 'auto',
+  bookmarkIcon: {
+    width: 7,
+    height: 12,
+    objectFit: 'contain',
+    marginHorizontal: 3,
   },
   nextSchedulesContainer: {
     marginTop: 50,

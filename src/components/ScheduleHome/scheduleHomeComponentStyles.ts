@@ -24,6 +24,7 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     marginHorizontal: 10,
     justifyContent: 'space-between',
+    flex: 1,
   },
   picture: {
     width: 108,

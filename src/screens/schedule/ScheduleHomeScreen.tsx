@@ -87,7 +87,7 @@ export default function ScheduleHome() {
         </Text>
       </View>
       {/*여행 일정 컴포넌트 */}
-      <ScrollView style={styles.schedulesContainer}>
+      <ScrollView style={styles.schedulesContainer} bounces={false}>
         {schedules &&
           schedules.map((schedule, index) => (
             <View key={index}>

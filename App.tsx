@@ -30,9 +30,10 @@ import ScheduleHome from '@/screens/schedule/ScheduleHomeScreen'
 import ScheduleSpot from '@/screens/schedule/ScheduleSpotScreen'
 import ScheduleDetail from '@/screens/schedule/ScheduleDetailScreen'
 import ScheduleCalendar from '@/screens/schedule/ScheduleCalendarScreen'
+import PlaceSearchComponent from '@/screens/schedule/SchedulePlaceSearch'
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import GatheringHomeHeader from '@/screens/gathering/GatheringHomeHeader'
 import { MainDummyHome } from '@/screens/dummyHome/mainHomeDummy'
 import { ChatHomeDummy } from '@/screens/dummyHome/ChatHomeDummy'
 import { MypageHomeDummy } from '@/screens/dummyHome/MyPageHomeDummy'
@@ -131,9 +132,77 @@ type RootStackParamList = {
   SceduleSpot: undefined
   SceduleDetail: undefined
   SceduleCalendar: undefined
+  SchedulePlaceSearch: undefined
   WeGoTooOverview: undefined
   KakaoLoginView: undefined
   LoginHomeScreen: undefined
+}
+
+interface GatheringHomeHeaderProps {
+  navigation: NavigationProp<any>
+}
+
+const GatheringHomeHeader: React.FC<GatheringHomeHeaderProps> = ({
+  navigation,
+}) => {
+  return (
+    <View style={{ marginTop: 30 }}>
+      {/* 첫 번째 줄 (WEGOTOO, 돋보기 아이콘, 종 아이콘) */}
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingHorizontal: 15,
+          paddingVertical: 10,
+        }}
+      >
+        {/* WEGOTOO 텍스트 로고 */}
+        <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#FF6B6B' }}>
+          WEGOTOO
+        </Text>
+
+        {/* 검색 아이콘과 알림 아이콘 */}
+        <View style={{ flexDirection: 'row' }}>
+          <TouchableOpacity
+            style={{ marginRight: 20 }}
+            onPress={() => console.log('Search pressed')}
+          >
+            <Icon name="search" size={24} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => console.log('Notifications pressed')}
+          >
+            <Icon name="notifications-none" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* 두 번째 줄 (필터 아이콘, 오사카 버튼) */}
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingHorizontal: 15,
+          paddingVertical: 5,
+        }}
+      >
+        {/* 필터 아이콘 */}
+        <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginRight: 10,
+          }}
+          onPress={() =>
+            navigation.navigate('GatheringLocationSearch', { inputText: '' })
+          }
+        >
+          <Icon name="list" size={30} color="#FF6B6B" />
+        </TouchableOpacity>
+      </View>
+    </View>
+  )
 }
 
 export default function App() {
@@ -144,7 +213,7 @@ export default function App() {
         <GatheringsContextProvider>
           <NavigationContainer>
             <Stack.Navigator>
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="LoginHomeScreen"
                 component={LoginHomeScreen}
                 options={{
@@ -159,19 +228,19 @@ export default function App() {
                   headerTitleAlign: 'center',
                   headerShown: false,
                 }}
-              />
+              /> */}
               <Stack.Screen
                 name="WeGoTooOverview"
                 component={WeGoTooOverview}
                 options={{ headerShown: false }}
               />
-              {/* <Stack.Screen
+              <Stack.Screen
                 name="ScheduleHome"
                 component={ScheduleHome}
                 options={{
                   headerShown: false,
                 }}
-              /> */}
+              />
               <Stack.Screen
                 name="SceduleCalendar"
                 component={ScheduleCalendar}
@@ -182,6 +251,13 @@ export default function App() {
               <Stack.Screen
                 name="SceduleSpot"
                 component={ScheduleSpot}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="SchedulePlaceSearch"
+                component={PlaceSearchComponent}
                 options={{
                   headerShown: false,
                 }}
