@@ -8,8 +8,6 @@ export default function ScheduleSpotComponent({
   title,
   hashtag,
   buttonName,
-  setSubmit,
-  submit,
 }: ScheduleSpotType) {
   const navigation = useNavigation()
   return (
@@ -36,12 +34,7 @@ export default function ScheduleSpotComponent({
         <TouchableOpacity
           style={styles.buttonContainer}
           onPress={() => {
-            if (!submit) {
-              setSubmit(true)
-            } else {
-              navigation.navigate('SceduleDetail' as never)
-              setSubmit(false)
-            }
+            navigation.navigate('SchedulePlaceSearch' as never)
           }}
         >
           <Image

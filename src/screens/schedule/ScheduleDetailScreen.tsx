@@ -1,7 +1,12 @@
-import { TouchableOpacity, View, Image, Text, ScrollView } from 'react-native'
+import {
+  TouchableOpacity,
+  View,
+  Image,
+  Text,
+  ScrollView,
+  Pressable,
+} from 'react-native'
 import { styles, text } from './Styles/ScheduleDetailStyles'
-import ScheduleHomeComponent from '@/components/ScheduleHome/scheduleHomeComponent'
-import ScheduleDetailType from '@/types/ScheduleDetailType'
 import AppleMap from './map'
 import BottomSheet from '@/components/ScheduleDetail/bottomsheet'
 import { useState } from 'react'
@@ -83,11 +88,17 @@ const dummy = [
   },
 ]
 
-export default function ScheduleDatail() {
+export default function ScheduleDetail() {
   //const navigation = useNavigation()
 
   const [plans, setPlans] = useState<PlanData[]>(dummy)
-  const [bottomsheet, setBottomsheet] = useState<boolean>(false)
+  const [bottomsheet, setBottomsheet] = useState<boolean>(true)
+
+  const handleOutsideClick = () => {
+    if (!bottomsheet) {
+      setBottomsheet(true)
+    }
+  }
   return (
     <View style={styles.container}>
       {/* 헤더 */}
@@ -99,8 +110,12 @@ export default function ScheduleDatail() {
           세부 계획을 짜면서 설레는 여행을 준비해봐요!
         </Text>
       </View>
-      <AppleMap />
-      <BottomSheet setBottomSheet={setBottomsheet} plans={plans} />
+      <Pressable style={{ flex: 1 }} onPress={handleOutsideClick}>
+        <AppleMap />
+      </Pressable>
+      {bottomsheet && (
+        <BottomSheet setBottomSheet={setBottomsheet} plans={plans} />
+      )}
     </View>
   )
 }
