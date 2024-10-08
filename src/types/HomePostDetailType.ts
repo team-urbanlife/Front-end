@@ -10,4 +10,5 @@ export type HomePostDetailType = {
   profileImage: string
   picture: string
   contents: ContentType[]
+  createdAt: string
 }

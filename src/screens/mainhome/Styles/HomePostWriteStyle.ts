@@ -12,12 +12,17 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingTop: 40,
+    paddingTop: 60,
     // backgroundColor: 'yellow',
   },
   leftArrow: {
     width: 35,
     height: 35,
+    marginLeft: -8,
+  },
+  backIcon: {
+    width: 22,
+    height: 22,
     marginLeft: -8,
   },
   uploadButton: {

@@ -3,6 +3,7 @@ import { View, Text } from 'react-native'
 import { styles, text } from './Styles/MainHomeStyle'
 import HomePostComponent from '@/components/MainHome/HomePostComponent'
 import { ScrollView } from 'react-native-gesture-handler'
+import FloatingButton from '@/components/Common/floatingButton'
 
 export default function MainHomeScreen() {
   return (
@@ -15,10 +16,12 @@ export default function MainHomeScreen() {
           다른 트래블러의 후기를 보고 나도 한번 떠나보자!
         </Text>
       </View>
-      <ScrollView style={{ paddingHorizontal: 10 }}>
+
+      <ScrollView style={{ paddingHorizontal: 10, marginBottom: 250 }}>
         {homePosts.map((post, index) => (
           <HomePostComponent post={post} key={index} />
         ))}
+        <FloatingButton route="HomePostWriteScreen" />
       </ScrollView>
     </View>
   )

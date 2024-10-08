@@ -30,7 +30,8 @@ export default function HomePostWriteScreen() {
   useEffect(() => {}, [])
 
   const handleLeftArrowPress = () => {
-    setShowAlert(true)
+    navigation.goBack()
+    // setShowAlert(true)
   }
 
   const handleCancel = () => {
@@ -107,33 +108,19 @@ export default function HomePostWriteScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.leftArrow}
-          onPress={handleLeftArrowPress}
-        >
-          <Text
-            style={[
-              text.uploadButtonText,
-              isUploadButtonDisabled() ? text.disabledButtonText : null,
-            ]}
-          >
-            게시물
-          </Text>
+        <TouchableOpacity onPress={handleLeftArrowPress}>
+          <Image
+            source={require('@/assets/back.png')}
+            style={styles.backIcon}
+          />
         </TouchableOpacity>
-        <Text style={text.titleText}>임의로</Text>
+        <Text style={text.titleText}>여행 후기 작성</Text>
         <TouchableOpacity
           style={[styles.uploadButton]}
           disabled={isUploadButtonDisabled()} // 버튼 비활성 상태 설정
           onPress={handleUploadButton}
         >
-          <Text
-            style={[
-              text.uploadButtonText,
-              isUploadButtonDisabled() ? text.disabledButtonText : null,
-            ]}
-          >
-            임의로
-          </Text>
+          <View style={styles.leftArrow} />
         </TouchableOpacity>
       </View>
 
@@ -182,6 +169,7 @@ export default function HomePostWriteScreen() {
             maxLength={50}
             value={title}
             onChangeText={setTitle}
+            placeholder={'제목을 입력해주세요'}
           />
           <View style={styles.titleBar} />
         </View>
