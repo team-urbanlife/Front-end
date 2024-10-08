@@ -1,5 +1,5 @@
 import { TouchableOpacity, View, Image, Text } from 'react-native'
-import ScheduleDetailType from '../../types/ScheduleDetailType'
+import ScheduleDetailType from '@/types/ScheduleDetailType'
 import { styles, text } from './scheduleHomeComponentStyles'
 
 export default function ScheduleHomeComponent({

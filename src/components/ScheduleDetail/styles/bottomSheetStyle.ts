@@ -25,9 +25,10 @@ export const styles = StyleSheet.create({
     marginHorizontal: 3,
   },
   arrowIcon: {
-    width: 5,
-    height: 10,
-    marginLeft: 5,
+    width: 10,
+    height: 20,
+    marginLeft: 2,
+    objectFit: 'contain',
   },
   buttonContainer: {
     justifyContent: 'center',
