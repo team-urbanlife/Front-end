@@ -57,16 +57,16 @@ function WeGoTooOverview() {
       })}
     >
       <BottomTabs.Screen
-        name="MainDummyHome"
-        component={MainDummyHome}
+        name="MainHome"
+        component={MainHomeScreen}
         options={{
           title: '메인 홈화면',
           tabBarLabel: '메인 홈화면',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
           ),
-
-          headerTitleAlign: 'center',
+          headerShown: false,
+          // headerTitleAlign: 'center',
 
           //headerStyle: { backgroundColor: 'white' },
           //contentStyle: { backgroundColor: 'white' },
@@ -263,7 +263,7 @@ export default function App() {
                   />
                 )}
               </Stack.Screen>
-              {/* <Stack.Screen
+              <Stack.Screen
                 name="ScheduleHome"
                 component={ScheduleHome}
                 options={{
@@ -298,7 +298,7 @@ export default function App() {
                   headerShown: false,
                 }}
               />
-              {/* <Stack.Screen
+              <Stack.Screen
                 name="RecentGathering"
                 component={RecentGatherings}
                 options={{
@@ -307,7 +307,7 @@ export default function App() {
                   ),
                   contentStyle: { backgroundColor: 'white' },
                 }}
-              /> */}
+              />
               <Stack.Screen
                 name="GatheringLocationSearch"
                 component={GatheringLocationSearch}

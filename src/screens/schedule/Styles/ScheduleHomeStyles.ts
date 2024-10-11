@@ -87,10 +87,7 @@ export const styles = StyleSheet.create({
     height: 11,
     marginRight: 4,
   },
-  schedulesContainer: {
-    position: 'absolute',
-    top: 211,
-  },
+  schedulesContainer: { marginTop: -100 },
   InputStyles: {
     width: '100%',
     color: color.normal,

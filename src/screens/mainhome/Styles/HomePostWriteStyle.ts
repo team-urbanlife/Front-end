@@ -4,8 +4,9 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    justifyContent: 'center',
     flexDirection: 'column',
+    justifyContent: 'flex-start',
+    height: 'auto',
   },
   header: {
     flexDirection: 'row',
@@ -24,6 +25,13 @@ export const styles = StyleSheet.create({
     width: 22,
     height: 22,
     marginLeft: -8,
+  },
+  pictureIcon: {
+    width: 22,
+    height: 22,
+    marginBottom: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   uploadButton: {
     width: 100,
@@ -48,14 +56,24 @@ export const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // 흐림 효과를 위한 반투명 배경
   },
   contents: {
-    flex: 1,
     paddingHorizontal: 16,
-    paddingTop: 20,
+    marginBottom: 300,
   },
   photoUploadContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
+  },
+  pictureContainer: {
+    width: '100%',
+    height: 'auto',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  picture: {
+    width: 391,
+    height: 240,
+    objectFit: 'cover',
   },
   photoPreview: {
     width: 70,
@@ -73,14 +91,13 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 3,
     elevation: 2,
+    marginBottom: 20,
   },
   deleteIcon: {
     position: 'absolute',
     top: 0,
     right: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    borderRadius: 10,
-    padding: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   categoryContainer: {
     flexDirection: 'row',
@@ -115,8 +132,7 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     width: '99%',
-    height: 459,
-    marginBottom: 20,
+    paddingHorizontal: 16,
   },
   contentInput: {
     width: '100%',

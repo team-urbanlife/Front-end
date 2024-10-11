@@ -20,10 +20,7 @@ export default function BackButtonHeader() {
             //navigation.navigate('' as never)
           }}
         >
-          <Image
-            source={require('@/assets/schedule/search.png')}
-            style={styles.searchNotiIcon}
-          />
+          <Image style={styles.searchNotiIcon} />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {

@@ -31,7 +31,8 @@ export default function PlaceSearchComponent() {
       <GooglePlacesAutocomplete
         placeholder="장소를 검색해보세요"
         onPress={(data: GooglePlaceData, details: GooglePlaceDetail | null) => {
-          console.log('Data:', data)
+          console.log('Details:', details) //디테일에 있는 위도 경도 값을 업데이트 하기 전역으로 관리 일정으로 넘어갈 때 그 값을 받아가기
+          //일정 리스트는
           if (!details) {
             console.error('Failed to retrieve place details')
             return
@@ -92,7 +93,7 @@ export default function PlaceSearchComponent() {
             <TouchableOpacity
               style={styles.buttonContainer}
               onPress={() => {
-                navigation.navigate('SceduleDetail' as never)
+                navigation.navigate('SceduleDetail' as never) //여기서 받아갈 때 위도 경도 값을 받아가기
               }}
             >
               <Image

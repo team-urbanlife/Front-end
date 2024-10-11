@@ -1,5 +1,5 @@
-export type ContentType = {
-  type: 'T' | 'IMAGE'
+export type Block = {
+  type: 'T' | 'IMAGE' | 'WRITE'
   text: string
 }
 
@@ -9,6 +9,6 @@ export type HomePostDetailType = {
   name: string
   profileImage: string
   picture: string
-  contents: ContentType[]
+  contents: Block[]
   createdAt: string
 }

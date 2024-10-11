@@ -16,7 +16,6 @@ export default function MainHomeScreen() {
           다른 트래블러의 후기를 보고 나도 한번 떠나보자!
         </Text>
       </View>
-
       <ScrollView style={{ paddingHorizontal: 10, marginBottom: 250 }}>
         {homePosts.map((post, index) => (
           <HomePostComponent post={post} key={index} />
