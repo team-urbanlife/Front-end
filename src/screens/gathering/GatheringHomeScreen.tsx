@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react'
+import { useState, useContext, useEffect, useLayoutEffect } from 'react'
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import {
   GatheringsContext,
@@ -47,7 +47,7 @@ const RecentGatherings: React.FC = React.memo(() => {
 
   const gatheringsCtx = useContext(GatheringsContext) as GatheringsContextType
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     async function getGatherings() {
       setIsFetching(true)
       try {
@@ -84,6 +84,7 @@ const RecentGatherings: React.FC = React.memo(() => {
         selectedLocations={
           routeParamObject && routeParamObject.selectedLocations
         }
+        identifier={'GatheringHome'}
       />
       <View style={styles.contentContainer}>
         <GatheringsOutput

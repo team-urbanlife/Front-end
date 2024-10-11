@@ -17,11 +17,13 @@ import { fetchGatheringDetail } from './gatheringHttp'
 import Gathering from './type/GatheringType'
 import { styles as scheduleStyles } from '../schedule/Styles/ScheduleHomeStyles'
 import { GlobalStyles } from '@/constants/colors'
+import { createChatRoom } from '../chat/chatHttp'
 type RootStackParamList = {
   RecentGathering: undefined
   GatheringLocationSearch: undefined
   GatheringRegister: undefined
   GatheringDetail: { gatheringId: number }
+  ChatRoomDetail: { roomId: number; title: string }
 }
 
 interface GatheringDetailScreenProps {
@@ -37,6 +39,19 @@ const GatheringDetailScreen: React.FC<GatheringDetailScreenProps> = ({
     null,
   )
 
+  async function reqDongHang() {
+    const roomId = await createChatRoom(route.params.gatheringId)
+    console.log('reqDongHang요청이전에 데이터 확인', roomId)
+    if (selectedGathering?.title) {
+      navigation.navigate('ChatRoomDetail', {
+        roomId: +roomId,
+        title: selectedGathering.title,
+      })
+    } else {
+      console.error('Gathering title is undefined')
+    }
+  }
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: '', // 가운데 타이틀
@@ -47,10 +62,10 @@ const GatheringDetailScreen: React.FC<GatheringDetailScreenProps> = ({
               //navigation.navigate('' as never)
             }}
           >
-            <Image
+            {/* <Image
               source={require('@/assets/schedule/search.png')}
               style={scheduleStyles.searchNotiIcon}
-            />
+            /> */}
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -208,7 +223,7 @@ const GatheringDetailScreen: React.FC<GatheringDetailScreenProps> = ({
         ListHeaderComponent={renderHeader} // 헤더 렌더링
         contentContainerStyle={{ paddingBottom: 16 }} // 여유 공간 추가
       />
-      <TouchableOpacity style={styles.completeButton}>
+      <TouchableOpacity style={styles.completeButton} onPress={reqDongHang}>
         <Text style={styles.completeButtonText}>동행 요청</Text>
       </TouchableOpacity>
     </View>
