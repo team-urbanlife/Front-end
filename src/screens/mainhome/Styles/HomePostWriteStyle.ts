@@ -1,3 +1,4 @@
+import { GlobalStyles } from '@/constants/colors'
 import { StyleProp, StyleSheet, TextStyle } from 'react-native'
 
 export const styles = StyleSheet.create({
@@ -15,6 +16,13 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 60,
     // backgroundColor: 'yellow',
+  },
+  setCenter: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 100,
+    zIndex: 3,
   },
   leftArrow: {
     width: 35,
@@ -58,6 +66,7 @@ export const styles = StyleSheet.create({
   contents: {
     paddingHorizontal: 16,
     marginBottom: 300,
+    // overflow: 'visible',
   },
   photoUploadContainer: {
     flexDirection: 'row',
@@ -140,16 +149,16 @@ export const styles = StyleSheet.create({
     textAlignVertical: 'top',
     padding: 10,
   },
-  anonymousContainer: {
+  submitContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 27,
-    justifyContent: 'flex-end',
-  },
-  anonymousCheckbox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 20,
+    justifyContent: 'center',
+    borderRadius: 13,
+    width: 340,
+    height: 40,
+    backgroundColor: GlobalStyles.colors.signature,
+    marginBottom: 30,
+    zIndex: 10,
   },
   checkboxIcon: {
     width: 20,
@@ -210,12 +219,12 @@ export const text = {
     lineHeight: 22.4,
     letterSpacing: -0.8,
   },
-  contentTitleText: {
-    marginTop: 13,
-    color: '#232323',
+  submitText: {
+    color: GlobalStyles.colors.white,
     fontSize: 18,
     fontWeight: '600',
-    lineHeight: 24,
+    alignItems: 'center',
+    textAlign: 'center',
   },
   contentText: {
     color: '#232323',

@@ -17,6 +17,7 @@ export const styles = StyleSheet.create({
     },
     shadowOpacity: 0.15,
     shadowRadius: 4.65,
+    zIndex: 2,
   },
   picture: {
     width: 388,

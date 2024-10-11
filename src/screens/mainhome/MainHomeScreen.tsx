@@ -7,7 +7,7 @@ import FloatingButton from '@/components/Common/floatingButton'
 
 export default function MainHomeScreen() {
   return (
-    <View>
+    <View style={styles.container}>
       {/* 헤더  */}
       <LogoHeader />
       <View style={styles.textContainer}>
@@ -16,12 +16,15 @@ export default function MainHomeScreen() {
           다른 트래블러의 후기를 보고 나도 한번 떠나보자!
         </Text>
       </View>
-      <ScrollView style={{ paddingHorizontal: 10, marginBottom: 250 }}>
+      {/*게시글 리스트 */}
+      <ScrollView
+        style={{ paddingHorizontal: 10, marginBottom: 10, overflow: 'visible' }} //floating Buttton이 안보여서
+      >
         {homePosts.map((post, index) => (
           <HomePostComponent post={post} key={index} />
         ))}
-        <FloatingButton route="HomePostWriteScreen" />
       </ScrollView>
+      <FloatingButton route="HomePostWriteScreen" />
     </View>
   )
 }

@@ -287,11 +287,6 @@ export default function App() {
                   }}
                 /> */}
                 <Stack.Screen
-                  name="WeGoTooOverview"
-                  component={WeGoTooOverview}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
                   name="ScheduleHome"
                   component={ScheduleHome}
                   options={{

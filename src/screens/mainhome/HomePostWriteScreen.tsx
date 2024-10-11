@@ -96,7 +96,6 @@ export default function HomePostWriteScreen() {
     const newBlocks = [...blocks] // 기존 블록 배열 복사
     newBlocks[index].text = textValue // 해당 인덱스의 블록 텍스트만 업데이트
     setBlocks(newBlocks) // 업데이트된 배열로 상태를 설정
-    console.log('블럭 업데이트', newBlocks)
   }
   const handleDeletePhoto = (index: number) => {
     const updatedPhotos = [...attachedPhotos]
@@ -113,15 +112,7 @@ export default function HomePostWriteScreen() {
 
   //   const handlePostInfo = async () => {
   //     try {
-  //       const postInfo = {
-  //         postId: postId,
-  //         category_name: selectedCategory,
-  //         title: title,
-  //         nickname: userStore.nickname,
-  //         content: content,
-  //         images: attachedPhotos.join(','),
-  //         anonymous: isAnonymous,
-  //       }
+  //
   //       await updatePostApi(postInfo, postId)
   //       console.log('PostInfo sent successfully:', postInfo)
   //     } catch (error) {
@@ -131,7 +122,7 @@ export default function HomePostWriteScreen() {
 
   const handleUploadButton = () => {
     //handlePostInfo()
-    navigation.navigate('Home' as never)
+    navigation.navigate('WeGoTooOverview' as never)
   }
   const renderBlocks = () => {
     return blocks.map((block, index) => {
@@ -225,6 +216,16 @@ export default function HomePostWriteScreen() {
           keyboardShouldPersistTaps="handled" //스크롤시 키보드와의 상호작용 제한
         >
           {renderBlocks()}
+          {content && (
+            <View style={styles.setCenter}>
+              <TouchableOpacity
+                style={styles.submitContainer}
+                onPress={handleUploadButton}
+              >
+                <Text style={text.submitText}>게시하기</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </ScrollView>
       </View>
     </View>
