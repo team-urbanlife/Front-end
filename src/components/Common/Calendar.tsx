@@ -12,10 +12,19 @@ type DayType = {
   dateString: string
 }
 
-export default function CustomCalendar() {
-  const [startDate, setStartDate] = useState<string>('')
-  const [endDate, setEndDate] = useState<string>('')
+interface CalendarProps {
+  startDate: string
+  endDate: string
+  setStartDate: React.Dispatch<React.SetStateAction<string>>
+  setEndDate: React.Dispatch<React.SetStateAction<string>>
+}
 
+export default function CustomCalendar({
+  startDate,
+  endDate,
+  setEndDate,
+  setStartDate,
+}: CalendarProps) {
   // 오늘 날짜
   const currentDate = new Date().toISOString().split('T')[0]
   const month = currentDate.split('-')[1]
