@@ -69,13 +69,13 @@ export default function HomePostScreen({ postId }: Postprop) {
             <Text style={text.titleText}>{post.title}</Text>
           </View>
           {post.contents.map((content, index) => (
-            <View>
+            <View key={index}>
               {content.type === 'T' ? (
-                <View style={styles.contentContainer} key={index}>
+                <View style={styles.contentContainer}>
                   <Text style={text.contentText}>{content.text}</Text>
                 </View>
               ) : (
-                <View style={styles.pictureContainer}>
+                <View style={styles.pictureContainer} key={index}>
                   <Image
                     source={require('@/assets/food.png')}
                     style={styles.picture}
