@@ -1,19 +1,13 @@
 import { View, Image, TouchableOpacity } from 'react-native'
-import { styles } from './styles/backbuttonHeaderStyles'
+import { styles } from './styles/logoHeaderStyle'
 import { useNavigation } from '@react-navigation/native'
 
-export default function BackButtonHeader() {
+export default function LogoHeader() {
   const navigation = useNavigation()
 
   return (
     <View style={styles.header}>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.goBack()
-        }}
-      >
-        <Image style={styles.backIcon} source={require('@/assets/back.png')} />
-      </TouchableOpacity>
+      <Image style={styles.Logo} source={require('@/assets/logo.png')} />
       <View style={styles.searchNotiContainer}>
         <TouchableOpacity
           onPress={() => {

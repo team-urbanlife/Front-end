@@ -47,6 +47,47 @@ const schedules: ScheduleDetailType[] = [
     createdAt: new Date('2024-09-12T13:00:00'),
     updatedAt: new Date('2024-09-14T09:00:00'),
   },
+  {
+    id: '1',
+    title: '파리 투어',
+    imageUrl: '../../assets/travel.png',
+    startTime: '9.12',
+    endTime: '9.14',
+    location: 'Paris, France',
+    totalPeople: 2,
+    createdAt: new Date('2024-09-01T09:00:00'),
+    updatedAt: new Date('2024-09-15T09:00:00'),
+  },
+  {
+    id: '2',
+    title: '도쿄 미식 여행',
+    imageUrl: '../../assets/travel.png',
+    startTime: '9.12',
+    endTime: '9.14',
+    location: 'Tokyo, Japan',
+    totalPeople: 3,
+    createdAt: new Date('2024-09-10T11:00:00'),
+  },
+  {
+    id: '3',
+    title: '뉴욕 시티 투어',
+    imageUrl: '../../assets/travel.png',
+    startTime: '9.12',
+    endTime: '9.14',
+    location: 'New York, USA',
+    createdAt: new Date('2024-09-12T13:00:00'),
+    updatedAt: new Date('2024-09-14T09:00:00'),
+  },
+  {
+    id: '4',
+    title: '뉴욕 시티 투어',
+    imageUrl: '../../assets/travel.png',
+    startTime: '9.12',
+    endTime: '9.14',
+    location: 'New York, USA',
+    createdAt: new Date('2024-09-12T13:00:00'),
+    updatedAt: new Date('2024-09-14T09:00:00'),
+  },
 ]
 
 export default function ScheduleHome() {
@@ -87,7 +128,7 @@ export default function ScheduleHome() {
         </Text>
       </View>
       {/*여행 일정 컴포넌트 */}
-      <ScrollView style={styles.schedulesContainer} bounces={false}>
+      <ScrollView style={styles.schedulesContainer}>
         {schedules &&
           schedules.map((schedule, index) => (
             <View key={index}>

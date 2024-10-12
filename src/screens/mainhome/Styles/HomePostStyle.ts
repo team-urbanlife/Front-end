@@ -1,14 +1,5 @@
 import { StyleProp, StyleSheet, TextStyle } from 'react-native'
-import { GlobalStyles } from '../../../constants/colors'
-const color = {
-  primary: '#52A35D',
-  normal: '#232323',
-  inactiveBottom: '#EFEFF0',
-  ribbon: '#FF5D5D',
-  faintBlack: '#555555',
-  backgroundGray: '#EDEDEA',
-  faintGray: '#EEEEEE',
-}
+import { GlobalStyles } from '@/constants/colors'
 
 export const styles = StyleSheet.create({
   container: {
@@ -16,51 +7,57 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'column',
   },
-  header: {
+  picture: {
+    width: 391,
+    height: 240,
+    objectFit: 'cover',
+  },
+  WritterContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: 20,
-    marginTop: 46,
-    width: '100%',
-    height: 48,
-    marginBottom: 15,
-  },
-  Logo: {
-    width: 122,
-    height: 26,
-  },
-  searchNotiContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: 61,
-    height: 'auto',
-  },
-  searchNotiIcon: {
-    width: 23,
-    height: 23,
   },
   textContainer: {
     flexDirection: 'column',
-    width: 'auto',
-    height: 200,
+    justifyContent: 'space-around',
+    height: 'auto',
+    paddingLeft: 25,
+  },
+  contentContainer: {
+    flexDirection: 'column',
+    height: 'auto',
     paddingHorizontal: 20,
+    marginTop: 26,
   },
-  greenLine: {
-    width: '50%',
-    height: 2,
-    backgroundColor: color.primary,
-  },
-  grayLine: {
-    width: '50%',
-    height: 1,
-    backgroundColor: color.faintGray,
-  },
-  hospitalContainer: {
-    paddingTop: 33,
-    display: 'flex',
-    justifyContent: 'center',
+  pictureContainer: {
     width: '100%',
+    height: 'auto',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 26,
+  },
+  profileImage: {
+    width: 46,
+    height: 46,
+    borderRadius: 100,
+    objectFit: 'cover',
+  },
+  profileImageContainer: {
+    width: 52,
+    height: 52,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 140,
+    left: 317,
+    borderRadius: 100,
+    backgroundColor: GlobalStyles.colors.white,
+  },
+  titleContainer: {
+    paddingTop: 23,
+    paddingHorizontal: 20,
+    justifyContent: 'flex-start',
+    width: '100%',
+    flexDirection: 'row',
   },
   flexRow: {
     display: 'flex',
@@ -68,33 +65,14 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  middleContainer: {
-    width: '100%',
-    justifyContent: 'center',
-    paddingTop: 30,
-    borderTopColor: color.faintGray,
-    borderTopWidth: 1,
-  },
-  grayButton: {
-    width: 48,
-    height: 24,
-    borderRadius: 500,
-    backgroundColor: color.faintGray,
-    marginLeft: 6,
-  },
   foraRibbonIcon: {
     width: 14,
     height: 11,
     marginRight: 4,
   },
-  schedulesContainer: { marginTop: -100 },
-  InputStyles: {
-    width: '100%',
-    color: color.normal,
-    fontSize: 15,
-    lineHeight: 24,
-    letterSpacing: -0.5,
-    fontFamily: 'Pretendard',
+  schedulesContainer: {
+    position: 'absolute',
+    top: 211,
   },
   uploadButton: {
     width: 100,
@@ -159,24 +137,12 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
   },
-  titleContainer: {
-    width: '99%',
-    height: 48,
-    flexDirection: 'column',
-    marginBottom: 20,
-    marginTop: 12,
-  },
   titleBar: {
     width: '100%',
     height: 0,
     marginTop: 11,
     borderBottomWidth: 1,
     borderBottomColor: '#232323',
-  },
-  contentContainer: {
-    width: '99%',
-    height: 459,
-    marginBottom: 20,
   },
   contentInput: {
     width: '100%',
@@ -209,53 +175,22 @@ export const text = {
     color: GlobalStyles.colors.normalDark,
     textAlign: 'left',
     textAlignVertical: 'top',
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
-    letterSpacing: 0,
-    marginBottom: 7,
   },
-  subtitleText: {
-    color: GlobalStyles.colors.faintGray,
+  nameText: {
+    color: GlobalStyles.colors.normalDark,
     textAlign: 'left',
-    fontSize: 15,
-    fontWeight: '400',
-    textAlignVertical: 'top',
+    fontWeight: 'bold',
+    fontSize: 17,
   },
-  borderText: {
-    color: color.normal,
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: '700',
-    lineHeight: 28,
+  createdAtText: {
+    color: GlobalStyles.colors.faintGray,
+    fontSize: 13,
   },
-  bordernormalText: {
-    color: color.normal,
-    textAlign: 'center',
-    fontSize: 18,
-    fontWeight: '700',
-    lineHeight: 28,
-  },
-  normalText: {
-    color: color.normal,
-    textAlign: 'center',
+  contentText: {
+    color: GlobalStyles.colors.darkGray,
     fontSize: 14,
-    lineHeight: 22.4,
-    letterSpacing: -0.5,
-  },
-  photoPreviewText: {
-    color: '#555',
-    fontSize: 14,
-    fontWeight: '400',
-    lineHeight: 19.6,
-    letterSpacing: -0.7,
-  },
-  categoryButtonText: {
-    color: '#232323',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: '400',
-    lineHeight: 22.4,
-    letterSpacing: -0.8,
   },
   selectedCategoryButtonText: {
     color: '#FFF',
@@ -271,13 +206,6 @@ export const text = {
     fontSize: 18,
     fontWeight: '600',
     lineHeight: 24,
-  },
-  contentText: {
-    color: '#949494',
-    fontSize: 18,
-    fontWeight: '400',
-    lineHeight: 26,
-    letterSpacing: -0.9,
   },
   anonymousText: {
     color: '#949494',
