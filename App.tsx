@@ -226,22 +226,22 @@ export default function App() {
           <ChatProvider>
             <NavigationContainer>
               <Stack.Navigator>
-                {/* <Stack.Screen
-                name="LoginHomeScreen"
-                component={LoginHomeScreen}
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="KakaoLoginView"
-                component={KakaoLoginView} // 타입이 정의된 컴포넌트 전달
-                options={{
-                  headerBackTitleVisible: false,
-                  headerTitleAlign: 'center',
-                  headerShown: false,
-                }}
-              /> */}
+                <Stack.Screen
+                  name="LoginHomeScreen"
+                  component={LoginHomeScreen}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="KakaoLoginView"
+                  component={KakaoLoginView} // 타입이 정의된 컴포넌트 전달
+                  options={{
+                    headerBackTitleVisible: false,
+                    headerTitleAlign: 'center',
+                    headerShown: false,
+                  }}
+                />
                 <Stack.Screen
                   name="WeGoTooOverview"
                   component={WeGoTooOverview}

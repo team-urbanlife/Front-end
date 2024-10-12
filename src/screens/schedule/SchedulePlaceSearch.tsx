@@ -9,6 +9,9 @@ import { styles, text } from './Styles/SchedulePlaceSearchStyles'
 import { useNavigation } from '@react-navigation/native'
 
 import { GOOGLE_PLACES_API_KEY } from '@env'
+import { PostDetailedScheduleType } from '@/types/postDetailedScheduleType'
+import { postDetailedSchedule } from '@/api/Schedule/postDetailedScheduleApi'
+import { useState } from 'react'
 
 interface GooglePlaceDetail {
   geometry: {
@@ -26,6 +29,23 @@ interface GooglePlaceDetail {
 export default function PlaceSearchComponent() {
   const navigation = useNavigation()
 
+  // State 설정
+  const [date, setDate] = useState<string>('2024-09-01')
+  const [name, setName] = useState<string>('장소 이름')
+  const [latitude, setLatitude] = useState<number>(37.5665)
+  const [longitude, setLongitude] = useState<number>(126.978)
+
+  const handlePostDetailedSchedule = async () => {
+    const newSchedule: PostDetailedScheduleType = {
+      date: '2024-09-01',
+      name: name,
+      latitude: latitude,
+      longitude: longitude,
+    }
+    console.log('보낼 상세 계획데이터:', newSchedule)
+    // 버튼이 눌렸을 때 post 요청
+    await postDetailedSchedule(newSchedule, 1)
+  }
   return (
     <View style={styles.container}>
       <GooglePlacesAutocomplete
@@ -37,7 +57,11 @@ export default function PlaceSearchComponent() {
             console.error('Failed to retrieve place details')
             return
           }
-
+          if (details) {
+            setLatitude(details.geometry.location.lat)
+            setLongitude(details.geometry.location.lng)
+            setName(details.name)
+          }
           console.log(data)
           const { name, geometry, photos } = details
 
@@ -93,6 +117,7 @@ export default function PlaceSearchComponent() {
             <TouchableOpacity
               style={styles.buttonContainer}
               onPress={() => {
+                handlePostDetailedSchedule()
                 navigation.navigate('SceduleDetail' as never) //여기서 받아갈 때 위도 경도 값을 받아가기
               }}
             >

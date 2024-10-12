@@ -144,7 +144,7 @@ export default function ScheduleHome() {
             </View>
           ))}
       </ScrollView>
-      <FloatingButton route="SceduleSpot" />
+      <FloatingButton route="SceduleCalendar" />
     </View>
   )
 }

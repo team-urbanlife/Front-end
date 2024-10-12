@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
   textContainer: {
     flexDirection: 'column',
     width: 'auto',
-    height: 200,
+    height: 120,
     paddingHorizontal: 20,
   },
   greenLine: {
@@ -127,29 +127,16 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 20,
   },
-  photoUploadContainer: {
+  submitContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
-    position: 'absolute',
-    top: 543,
-  },
-  photoPreview: {
-    width: 70,
-    height: 70,
-    borderRadius: 12,
-    backgroundColor: '#FFF',
-    marginRight: 10,
     justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: 'rgba(0, 0, 0, 0.15)',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 3,
-    elevation: 2,
+    borderRadius: 100,
+    width: 340,
+    height: 60,
+    backgroundColor: GlobalStyles.colors.signature,
+    marginBottom: 30,
+    zIndex: 10,
   },
   deleteIcon: {
     position: 'absolute',
@@ -177,10 +164,10 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#232323',
   },
-  contentContainer: {
-    width: '99%',
-    height: 459,
-    marginBottom: 20,
+  setCenter: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   contentInput: {
     width: '100%',
@@ -209,14 +196,12 @@ export const styles = StyleSheet.create({
 export const text = {
   fontFamily: 'Pretendard',
   fontStyle: 'normal',
-  titleText: {
-    color: GlobalStyles.colors.normalDark,
+  buttonText: {
+    color: GlobalStyles.colors.white,
     textAlign: 'left',
     textAlignVertical: 'top',
-    fontSize: 24,
-    fontWeight: 'bold',
-    letterSpacing: 0,
-    marginBottom: 7,
+    fontSize: 18,
+    fontWeight: '600',
   },
   subtitleText: {
     color: GlobalStyles.colors.faintGray,
@@ -226,12 +211,14 @@ export const text = {
     textAlignVertical: 'top',
     marginTop: 10,
   },
-  borderText: {
-    color: color.normal,
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: '700',
-    lineHeight: 28,
+  titleText: {
+    color: GlobalStyles.colors.normalDark,
+    textAlign: 'left',
+    textAlignVertical: 'top',
+    fontSize: 24,
+    fontWeight: 'bold',
+    letterSpacing: 0,
+    marginBottom: 7,
   },
   bordernormalText: {
     color: color.normal,
