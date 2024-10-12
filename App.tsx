@@ -34,15 +34,17 @@ import PlaceSearchComponent from '@/screens/schedule/SchedulePlaceSearch'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { MainDummyHome } from '@/screens/dummyHome/mainHomeDummy'
+//import { MainDummyHome } from '@/screens/dummyHome/mainHomeDummy'
+import MainDummyHome from '@/screens/dummyHome/mainHomeDummy'
 import { ChatHomeDummy } from '@/screens/dummyHome/ChatHomeDummy'
-import { MypageHomeDummy } from '@/screens/dummyHome/MyPageHomeDummy'
+import MyPageScreen from '@/screens/mypage/MypageHomeScreen'
 import LoginHomeScreen from '@/screens/login/LoginHomeScreen'
 import KakaoLoginView from '@/screens/login/KakaoLoginView'
-import ChatHomeScreen from '@/screens/chat/ChatHomeScreen'
 import ChatRoomDetail from '@/screens/chat/ChatRoomDetailScreen'
 import LoginScreen from '@/screens/login/LoginHomeScreen2'
 import { ChatProvider } from '@/context/chat-context'
+import ChatHomeScreen from '@/screens/chat/ChatHomeScreen'
+import GatheringRegisterLocationSearchScreen from '@/screens/gathering/GatheringRegisterLocationSearch'
 const Stack = createNativeStackNavigator<RootStackParamList>() // 네비게이션 스택에 타입 정의 적용
 const Drawer = createDrawerNavigator()
 const BottomTabs = createBottomTabNavigator()
@@ -114,13 +116,14 @@ function WeGoTooOverview() {
       />
       <BottomTabs.Screen
         name="MypageHomeDummy"
-        component={MypageHomeDummy}
+        component={MyPageScreen}
         options={{
           title: '마이페이지',
           tabBarLabel: '마이페이지',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" size={size} color={color} />
           ),
+          headerShown: false,
         }}
       />
     </BottomTabs.Navigator>
@@ -142,6 +145,7 @@ type RootStackParamList = {
   KakaoLoginView: undefined
   LoginHomeScreen: undefined
   ChatRoomDetail: { roomId: number; title: string }
+  GatheringRegisterLocationSearch: undefined
 }
 
 interface GatheringHomeHeaderProps {
@@ -222,7 +226,7 @@ export default function App() {
               <Stack.Navigator>
                 <Stack.Screen
                   name="LoginHomeScreen"
-                  component={LoginHomeScreen}
+                  component={LoginScreen}
                   options={{
                     headerShown: false,
                   }}
@@ -318,6 +322,17 @@ export default function App() {
                     headerStyle: {
                       backgroundColor: 'white', // 헤더 배경색 설정
                     },
+                  }}
+                />
+                <Stack.Screen
+                  name="GatheringRegisterLocationSearch"
+                  component={GatheringRegisterLocationSearchScreen}
+                  options={{
+                    //animation: 'slide_from_left',
+                    title: '위치 정보',
+                    headerBackTitleVisible: false,
+                    headerTitleAlign: 'center',
+                    headerShown: false,
                   }}
                 />
                 <Stack.Screen

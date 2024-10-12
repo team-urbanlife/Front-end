@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import EventSource from 'react-native-event-source'
 import { useChat } from '@/context/chat-context'
+import { fetchUserInfo } from '../mypage/mypageHttp'
 
 // 네비게이션 스택 타입 정의
 type RootStackParamList = {
@@ -38,6 +39,9 @@ const KakaoLoginView: React.FC = () => {
       const subId = JSON.parse(secondItem).sub
       console.log('subId값 확인', subId)
       await AsyncStorage.setItem('subId', subId)
+      // 유저정보 저장
+      /* const userInfo = await fetchUserInfo()
+      await AsyncStorage.setItem('userInfo', userInfo) */
 
       console.log('액세스 토큰 저장 성공:', accessToken)
       console.log('리프레쉬 토큰 저장 성공:', refreshToken)
