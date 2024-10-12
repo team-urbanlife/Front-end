@@ -1,10 +1,16 @@
 import { useState, useContext, useEffect, useLayoutEffect } from 'react'
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native'
 import {
   GatheringsContext,
   GatheringsContextType,
 } from '../../context/gathering-context'
-import { fetchGatherings } from './gatheringHttp'
+import { doTest, fetchGatherings } from './gatheringHttp'
 import { getDateMinusDays } from '../../util/date'
 import React from 'react'
 import Icon from 'react-native-vector-icons/Entypo'
@@ -48,6 +54,11 @@ const RecentGatherings: React.FC = React.memo(() => {
   const gatheringsCtx = useContext(GatheringsContext) as GatheringsContextType
 
   useLayoutEffect(() => {
+    async function doTest2() {
+      doTest()
+    }
+    //doTest2()
+
     async function getGatherings() {
       setIsFetching(true)
       try {
@@ -61,7 +72,7 @@ const RecentGatherings: React.FC = React.memo(() => {
     getGatherings()
   }, [])
 
-  var recentGatherings = gatheringsCtx.gatherings.filter(
+  /* var recentGatherings = gatheringsCtx.gatherings.filter(
     (gathering: Gathering) => {
       const today = new Date()
       const date7DaysAgo = getDateMinusDays(today, 7)
@@ -70,6 +81,11 @@ const RecentGatherings: React.FC = React.memo(() => {
         new Date(gathering.registeredDateTime) <= today
       )
     },
+  ) */
+  var recentGatherings = gatheringsCtx.gatherings.sort(
+    (a, b) =>
+      +new Date(b.registeredDateTime).getTime() -
+      +new Date(a.registeredDateTime).getTime(),
   )
   if (routeParamObject && routeParamObject.selectedLocations.length) {
     recentGatherings = recentGatherings.filter((item) => {
@@ -87,11 +103,16 @@ const RecentGatherings: React.FC = React.memo(() => {
         identifier={'GatheringHome'}
       />
       <View style={styles.contentContainer}>
-        <GatheringsOutput
-          gatherings={recentGatherings}
-          gatheringsPeriod="Last 7 Days"
-          fallbackText="No gatherings registered for the last 7 days."
-        />
+        {/* 데이터 로딩 중에는 로딩 스피너 표시 */}
+        {isFetching ? (
+          <ActivityIndicator size="large" color="#ff6347" />
+        ) : (
+          <GatheringsOutput
+            gatherings={recentGatherings}
+            gatheringsPeriod="Last 7 Days"
+            fallbackText="No gatherings registered for the last 7 days."
+          />
+        )}
       </View>
       <TouchableOpacity style={styles.addButton} onPress={handleAddPost}>
         <Icon name="plus" size={30} color="white" />

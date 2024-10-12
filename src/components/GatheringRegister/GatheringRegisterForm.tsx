@@ -5,10 +5,20 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  ScrollView, // Add ScrollView
+  ScrollView,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import DateSelectionModal from './DateSelectionModal'
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native' // Import useRoute
+
+// Define the types for the route params
+type RouteParams = {
+  params?: {
+    locationName?: string
+    latitude?: number
+    longitude?: number
+  }
+}
 
 interface GatheringRegisterFormProps {
   onSubmit: (gatheringData: GatheringData) => void
@@ -72,9 +82,24 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
     end: '',
   })
 
+  const navigation = useNavigation()
+  const route = useRoute<RouteProp<RouteParams, 'params'>>() // Initialize route to get params from navigation
+
+  // Destructure location data passed through navigation
+  const {
+    locationName = '',
+    latitude = 0.0,
+    longitude = 0.0,
+  } = route.params || {}
+
   useEffect(() => {
     const gatheringData = {
+      startDate: selectedDates.start,
+      endDate: selectedDates.end,
       title: inputs.title.value,
+      location: locationName,
+      latitude: latitude,
+      longitude: longitude,
       personnel: inputs.personnel.value,
       gender: selectedGender,
       startAge: inputs.startAge.value,
@@ -82,11 +107,12 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
       cost: inputs.cost.value,
       content: inputs.content.value,
     }
-    const shouldDisable =
-      !gatheringData.title.trim() || !gatheringData.content.trim()
+
+    // gatheringData의 어느 값이라도 falsy하면 shouldDisable은 true
+    const shouldDisable = Object.values(gatheringData).some((value) => !value)
 
     setIsDisabled(shouldDisable)
-  }, [inputs, selectedGender])
+  }, [inputs, selectedGender, locationName, latitude, longitude, selectedDates])
 
   function handleDateSelection(start: string, end: string) {
     setSelectedDates({ start, end })
@@ -117,24 +143,28 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
           ? 'MAN'
           : selectedGender === '여자만'
             ? 'WOMAN'
-            : 'null', // Set default value
+            : 'null',
       startAge: +inputs.startAge.value,
       endAge: +inputs.endAge.value,
       cost: +inputs.cost.value,
       content: inputs.content.value,
       startDate: selectedDates.start,
       endDate: selectedDates.end,
-      location: '오사카',
-      latitude: 0.0,
-      longitude: 0.0,
+      location: locationName || '오사카', // Fallback to default if not selected
+      latitude: latitude || 0.0,
+      longitude: longitude || 0.0,
     }
 
     onSubmit(gatheringData)
   }
 
+  function navigateToLocationScreen() {
+    // Navigate to the location selection screen
+    navigation.navigate('GatheringRegisterLocationSearch') // Replace with your screen name
+  }
+
   return (
     <View style={styles.container}>
-      {/* Scrollable form content */}
       <ScrollView contentContainerStyle={styles.formContent}>
         <View style={styles.datePickerContainer}>
           <TouchableOpacity
@@ -178,10 +208,15 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
           </View>
 
           {/* Location Info */}
-          <View style={styles.infoItem}>
+          <TouchableOpacity
+            style={styles.infoItem}
+            onPress={navigateToLocationScreen}
+          >
             <Icon name="location-outline" size={20} color="#FF6B6B" />
-            <Text style={styles.infoText}>위치 정보</Text>
-          </View>
+            <Text style={styles.locationInfoText}>
+              {locationName ? locationName : '위치 정보'}
+            </Text>
+          </TouchableOpacity>
 
           {/* Personnel Info */}
           <View style={styles.infoItem}>
@@ -323,7 +358,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   formContent: {
-    paddingBottom: 100, // Ensures space for the button
+    paddingBottom: 100,
   },
   datePickerContainer: {
     marginBottom: 10,
@@ -389,6 +424,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
+  locationInfoText: {
+    marginLeft: 8,
+    color: '#FF6B6B',
+    fontSize: 16,
+    flex: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: '#C0C0C0',
+    paddingBottom: 4,
+  },
   infoText: {
     marginLeft: 8,
     color: '#333',
@@ -415,8 +459,8 @@ const styles = StyleSheet.create({
   submitButton: {
     position: 'absolute',
     bottom: 30,
-    width: '100%', // Increased width
-    height: 50, // Fixed height
+    width: '100%',
+    height: 50,
     backgroundColor: '#ff6347',
     borderRadius: 25,
     justifyContent: 'center',
