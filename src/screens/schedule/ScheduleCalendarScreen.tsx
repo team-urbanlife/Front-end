@@ -11,12 +11,15 @@ export default function ScheduleCalendar() {
   const navigation = useNavigation()
 
   const [bottomsheet, setBottomsheet] = useState<boolean>(false)
+  //서버에 여행 일자를 보내기 위한 state
+  const [startDate, setStartDate] = useState<string>('')
+  const [endDate, setEndDate] = useState<string>('')
 
   const handlePostTravelSchedule = async () => {
     const travelSchedule: PostTravelScheduleType = {
       city: '여행 도시',
-      startDate: '2024-09-01',
-      endDate: '2024-09-02',
+      startDate: startDate,
+      endDate: endDate,
     }
     console.log('여행 계획 데이터:', travelSchedule)
     // 버튼이 눌렸을 때 post 요청
@@ -33,7 +36,12 @@ export default function ScheduleCalendar() {
           어떤 여행이 나를 기다리고 있을까요?
         </Text>
       </View>
-      <CustomCalendar />
+      <CustomCalendar
+        setEndDate={setEndDate}
+        setStartDate={setStartDate}
+        startDate={startDate}
+        endDate={endDate}
+      />
       <View style={[styles.setCenter, { marginTop: 30 }]}>
         <TouchableOpacity
           onPress={() => {
