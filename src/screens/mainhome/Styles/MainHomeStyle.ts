@@ -1,20 +1,12 @@
 import { StyleProp, StyleSheet, TextStyle } from 'react-native'
-import { GlobalStyles } from '../../../constants/colors'
-const color = {
-  primary: '#52A35D',
-  normal: '#232323',
-  inactiveBottom: '#EFEFF0',
-  ribbon: '#FF5D5D',
-  faintBlack: '#555555',
-  backgroundGray: '#EDEDEA',
-  faintGray: '#EEEEEE',
-}
+import { GlobalStyles } from '@/constants/colors'
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
     flexDirection: 'column',
+    overflow: 'visible',
   },
   header: {
     flexDirection: 'row',
@@ -43,18 +35,8 @@ export const styles = StyleSheet.create({
   textContainer: {
     flexDirection: 'column',
     width: 'auto',
-    height: 200,
+    height: 100,
     paddingHorizontal: 20,
-  },
-  greenLine: {
-    width: '50%',
-    height: 2,
-    backgroundColor: color.primary,
-  },
-  grayLine: {
-    width: '50%',
-    height: 1,
-    backgroundColor: color.faintGray,
   },
   hospitalContainer: {
     paddingTop: 33,
@@ -68,33 +50,14 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  middleContainer: {
-    width: '100%',
-    justifyContent: 'center',
-    paddingTop: 30,
-    borderTopColor: color.faintGray,
-    borderTopWidth: 1,
-  },
-  grayButton: {
-    width: 48,
-    height: 24,
-    borderRadius: 500,
-    backgroundColor: color.faintGray,
-    marginLeft: 6,
-  },
   foraRibbonIcon: {
     width: 14,
     height: 11,
     marginRight: 4,
   },
-  schedulesContainer: { marginTop: -100 },
-  InputStyles: {
-    width: '100%',
-    color: color.normal,
-    fontSize: 15,
-    lineHeight: 24,
-    letterSpacing: -0.5,
-    fontFamily: 'Pretendard',
+  schedulesContainer: {
+    position: 'absolute',
+    top: 211,
   },
   uploadButton: {
     width: 100,
@@ -212,35 +175,13 @@ export const text = {
     fontSize: 24,
     fontWeight: 'bold',
     letterSpacing: 0,
-    marginBottom: 7,
+    marginBottom: 15,
   },
   subtitleText: {
     color: GlobalStyles.colors.faintGray,
     textAlign: 'left',
     fontSize: 15,
     fontWeight: '400',
-    textAlignVertical: 'top',
-  },
-  borderText: {
-    color: color.normal,
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: '700',
-    lineHeight: 28,
-  },
-  bordernormalText: {
-    color: color.normal,
-    textAlign: 'center',
-    fontSize: 18,
-    fontWeight: '700',
-    lineHeight: 28,
-  },
-  normalText: {
-    color: color.normal,
-    textAlign: 'center',
-    fontSize: 14,
-    lineHeight: 22.4,
-    letterSpacing: -0.5,
   },
   photoPreviewText: {
     color: '#555',

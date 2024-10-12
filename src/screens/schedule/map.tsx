@@ -2,14 +2,28 @@ import { Text, View, StyleSheet } from 'react-native'
 import { useState, useEffect } from 'react'
 import MapView, { Marker, MapPressEvent } from 'react-native-maps'
 import * as Location from 'expo-location'
+import { DetailedPlan } from '@/types/SchedulePlanType'
 
 interface LocationCoords {
   latitude: number
   longitude: number
 }
-const planList = [{ latitude: 5, longitude: 5 }]
 
 export default function AppleMap() {
+  //require함수가 동적으로 이미지 경로를 받지 못해서 일정의 순서에 따라 배열 인덱싱을 통해 image source를 전달할 예정
+  const markerImages = [
+    require('@/assets/maps/1.png'),
+    require('@/assets/maps/2.png'),
+    require('@/assets/maps/3.png'),
+    require('@/assets/maps/4.png'),
+    require('@/assets/maps/5.png'),
+    require('@/assets/maps/6.png'),
+    require('@/assets/maps/7.png'),
+    require('@/assets/maps/8.png'),
+    require('@/assets/maps/9.png'),
+    require('@/assets/maps/10.png'),
+  ]
+
   const [location, setLocation] = useState<LocationCoords | null>(null)
 
   const [errorMsg, setErrorMsg] = useState<string>('')
@@ -27,6 +41,7 @@ export default function AppleMap() {
   const [markerCoordinate, setMarkerCoordinate] =
     useState<LocationCoords | null>(null)
 
+  const [planList, setPlanList] = useState<DetailedPlan[]>()
   let txt = 'Waiting..'
   if (errorMsg) {
     txt = errorMsg
@@ -56,7 +71,7 @@ export default function AppleMap() {
           {markerCoordinate && (
             <Marker
               coordinate={markerCoordinate}
-              image={require('../../assets/maps/currentLocation.png')}
+              image={require('@/assets/maps/currentLocation.png')}
               style={{ width: 10, height: 10 }}
             />
           )}
@@ -68,7 +83,7 @@ export default function AppleMap() {
                     latitude: plan.latitude,
                     longitude: plan.longitude,
                   }}
-                  image={require('../../assets/maps/currentLocation.png')}
+                  image={markerImages[index]}
                   onPress={() => {}}
                   style={{ width: 20, height: 20 }}
                   key={index}

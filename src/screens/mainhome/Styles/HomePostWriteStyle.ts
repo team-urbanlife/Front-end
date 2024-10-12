@@ -1,100 +1,45 @@
+import { GlobalStyles } from '@/constants/colors'
 import { StyleProp, StyleSheet, TextStyle } from 'react-native'
-import { GlobalStyles } from '../../../constants/colors'
-const color = {
-  primary: '#52A35D',
-  normal: '#232323',
-  inactiveBottom: '#EFEFF0',
-  ribbon: '#FF5D5D',
-  faintBlack: '#555555',
-  backgroundGray: '#EDEDEA',
-  faintGray: '#EEEEEE',
-}
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
     flexDirection: 'column',
+    justifyContent: 'flex-start',
+    height: 'auto',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginTop: 46,
+    paddingHorizontal: 16,
+    paddingTop: 60,
+    // backgroundColor: 'yellow',
+  },
+  setCenter: {
     width: '100%',
-    height: 48,
-    marginBottom: 15,
-  },
-  Logo: {
-    width: 122,
-    height: 26,
-  },
-  searchNotiContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: 61,
-    height: 'auto',
-  },
-  searchNotiIcon: {
-    width: 23,
-    height: 23,
-  },
-  textContainer: {
-    flexDirection: 'column',
-    width: 'auto',
-    height: 200,
-    paddingHorizontal: 20,
-  },
-  greenLine: {
-    width: '50%',
-    height: 2,
-    backgroundColor: color.primary,
-  },
-  grayLine: {
-    width: '50%',
-    height: 1,
-    backgroundColor: color.faintGray,
-  },
-  hospitalContainer: {
-    paddingTop: 33,
-    display: 'flex',
-    justifyContent: 'center',
-    width: '100%',
-  },
-  flexRow: {
-    display: 'flex',
-    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 100,
+    zIndex: 3,
   },
-  middleContainer: {
-    width: '100%',
+  leftArrow: {
+    width: 35,
+    height: 35,
+    marginLeft: -8,
+  },
+  backIcon: {
+    width: 22,
+    height: 22,
+    marginLeft: -8,
+  },
+  pictureIcon: {
+    width: 22,
+    height: 22,
+    marginBottom: 5,
     justifyContent: 'center',
-    paddingTop: 30,
-    borderTopColor: color.faintGray,
-    borderTopWidth: 1,
-  },
-  grayButton: {
-    width: 48,
-    height: 24,
-    borderRadius: 500,
-    backgroundColor: color.faintGray,
-    marginLeft: 6,
-  },
-  foraRibbonIcon: {
-    width: 14,
-    height: 11,
-    marginRight: 4,
-  },
-  schedulesContainer: { marginTop: -100 },
-  InputStyles: {
-    width: '100%',
-    color: color.normal,
-    fontSize: 15,
-    lineHeight: 24,
-    letterSpacing: -0.5,
-    fontFamily: 'Pretendard',
+    alignItems: 'center',
   },
   uploadButton: {
     width: 100,
@@ -119,16 +64,25 @@ export const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // 흐림 효과를 위한 반투명 배경
   },
   contents: {
-    flex: 1,
     paddingHorizontal: 16,
-    paddingTop: 20,
+    marginBottom: 300,
+    // overflow: 'visible',
   },
   photoUploadContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    position: 'absolute',
-    top: 543,
+  },
+  pictureContainer: {
+    width: '100%',
+    height: 'auto',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  picture: {
+    width: 391,
+    height: 240,
+    objectFit: 'cover',
   },
   photoPreview: {
     width: 70,
@@ -146,18 +100,30 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 3,
     elevation: 2,
+    marginBottom: 20,
   },
   deleteIcon: {
     position: 'absolute',
     top: 0,
     right: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    borderRadius: 10,
-    padding: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   categoryContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
+  },
+  categoryButton: {
+    display: 'flex',
+    width: 70,
+    height: 33,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 500,
+    backgroundColor: '#EEE',
+    marginRight: 8,
+  },
+  selectedCategoryButton: {
+    backgroundColor: '#52A55D',
   },
   titleContainer: {
     width: '99%',
@@ -175,8 +141,7 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     width: '99%',
-    height: 459,
-    marginBottom: 20,
+    paddingHorizontal: 16,
   },
   contentInput: {
     width: '100%',
@@ -184,16 +149,16 @@ export const styles = StyleSheet.create({
     textAlignVertical: 'top',
     padding: 10,
   },
-  anonymousContainer: {
+  submitContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 27,
-    justifyContent: 'flex-end',
-  },
-  anonymousCheckbox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 20,
+    justifyContent: 'center',
+    borderRadius: 13,
+    width: 340,
+    height: 40,
+    backgroundColor: GlobalStyles.colors.signature,
+    marginBottom: 30,
+    zIndex: 10,
   },
   checkboxIcon: {
     width: 20,
@@ -206,41 +171,30 @@ export const text = {
   fontFamily: 'Pretendard',
   fontStyle: 'normal',
   titleText: {
-    color: GlobalStyles.colors.normalDark,
-    textAlign: 'left',
-    textAlignVertical: 'top',
-    fontSize: 24,
-    fontWeight: 'bold',
-    letterSpacing: 0,
-    marginBottom: 7,
-  },
-  subtitleText: {
-    color: GlobalStyles.colors.faintGray,
-    textAlign: 'left',
-    fontSize: 15,
-    fontWeight: '400',
-    textAlignVertical: 'top',
-  },
-  borderText: {
-    color: color.normal,
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: '700',
-    lineHeight: 28,
-  },
-  bordernormalText: {
-    color: color.normal,
+    color: '#000',
     textAlign: 'center',
     fontSize: 18,
-    fontWeight: '700',
-    lineHeight: 28,
-  },
-  normalText: {
-    color: color.normal,
-    textAlign: 'center',
-    fontSize: 14,
+    fontWeight: '600',
     lineHeight: 22.4,
-    letterSpacing: -0.5,
+    letterSpacing: 0,
+    flex: 1,
+    marginLeft: 45,
+  },
+  uploadButtonText: {
+    color: '#232323',
+    textAlign: 'right',
+    fontSize: 18,
+    fontWeight: '400',
+    lineHeight: 22.4,
+    letterSpacing: -0.9,
+  },
+  disabledButtonText: {
+    color: '#949494',
+    textAlign: 'right',
+    fontSize: 18,
+    fontWeight: '400',
+    lineHeight: 22.4,
+    letterSpacing: -0.9,
   },
   photoPreviewText: {
     color: '#555',
@@ -265,15 +219,15 @@ export const text = {
     lineHeight: 22.4,
     letterSpacing: -0.8,
   },
-  contentTitleText: {
-    marginTop: 13,
-    color: '#949494',
+  submitText: {
+    color: GlobalStyles.colors.white,
     fontSize: 18,
     fontWeight: '600',
-    lineHeight: 24,
+    alignItems: 'center',
+    textAlign: 'center',
   },
   contentText: {
-    color: '#949494',
+    color: '#232323',
     fontSize: 18,
     fontWeight: '400',
     lineHeight: 26,
