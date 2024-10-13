@@ -1,6 +1,6 @@
 interface HomePostType {
+  postId: number
   title: string
-  id: number
   name: string
   profileImage: string
   picture: string

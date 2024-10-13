@@ -42,7 +42,10 @@ const GatheringRegister: React.FC<GatheringRegisterProps> = ({
       })
 
       //navigation.navigate('BtRecentGathering')
-      navigation.goBack()
+      //navigation.goBack()
+      navigation.replace('GatheringDetail', {
+        gatheringId: id,
+      })
       setIsSubmitting(false)
     } catch (error) {
       setError('Could not save data - please try again later!')

@@ -34,19 +34,21 @@ import PlaceSearchComponent from '@/screens/schedule/SchedulePlaceSearch'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { MainDummyHome } from '@/screens/dummyHome/mainHomeDummy'
+//import { MainDummyHome } from '@/screens/dummyHome/mainHomeDummy'
+import MainDummyHome from '@/screens/dummyHome/mainHomeDummy'
 import { ChatHomeDummy } from '@/screens/dummyHome/ChatHomeDummy'
-import { MypageHomeDummy } from '@/screens/dummyHome/MyPageHomeDummy'
 import LoginHomeScreen from '@/screens/login/LoginHomeScreen2'
+import MyPageScreen from '@/screens/mypage/MypageHomeScreen'
 import KakaoLoginView from '@/screens/login/KakaoLoginView'
+import ChatHomeScreen from '@/screens/chat/ChatHomeScreen'
 import MainHomeScreen from '@/screens/mainhome/MainHomeScreen'
 import HomePostScreen from '@/screens/mainhome/HomePostScreen'
 import HomePostWriteScreen from '@/screens/mainhome/HomePostWriteScreen'
-import ChatHomeScreen from '@/screens/chat/ChatHomeScreen'
 import ChatRoomDetail from '@/screens/chat/ChatRoomDetailScreen'
 import LoginScreen from '@/screens/login/LoginHomeScreen2'
 import { ChatProvider } from '@/context/chat-context'
 import { ScheduleProvider } from '@/context/ScheduleProvide'
+import GatheringRegisterLocationSearchScreen from '@/screens/gathering/GatheringRegisterLocationSearch'
 const Stack = createNativeStackNavigator<RootStackParamList>() // 네비게이션 스택에 타입 정의 적용
 const Drawer = createDrawerNavigator()
 const BottomTabs = createBottomTabNavigator()
@@ -118,13 +120,14 @@ function WeGoTooOverview() {
       />
       <BottomTabs.Screen
         name="MypageHomeDummy"
-        component={MypageHomeDummy}
+        component={MyPageScreen}
         options={{
           title: '마이페이지',
           tabBarLabel: '마이페이지',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" size={size} color={color} />
           ),
+          headerShown: false,
         }}
       />
     </BottomTabs.Navigator>
@@ -149,6 +152,7 @@ export type RootStackParamList = {
   HomePostWriteScreen: undefined
   HomePostScreen: { postId: number }
   ChatRoomDetail: { roomId: number; title: string }
+  GatheringRegisterLocationSearch: undefined
 }
 
 interface GatheringHomeHeaderProps {

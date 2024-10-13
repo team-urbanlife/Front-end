@@ -3,8 +3,9 @@ import { styles, text } from './Styles/HomePostStyle'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native'
 import BackButtonHeader from '@/components/Common/backbuttonHeader'
-import { useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { HomePostDetailType } from '@/types/HomePostDetailType'
+import { fetchPostDetail } from './HomePostHttp'
 
 interface Postprop {
   postId: number
@@ -13,25 +14,18 @@ interface Postprop {
 export default function HomePostScreen({ postId }: Postprop) {
   const navigation = useNavigation()
 
-  const [post, setPost] = useState<HomePostDetailType>({
-    id: 1,
-    title: '재미있었던 오사카 여행 후기(어쩌구저쩌구이러쿵저러쿵)',
-    name: '지원',
-    profileImage: 'https://example.com/profiles/alice.jpg',
-    picture: 'https://example.com/posts/post1.jpg',
-    contents: [
-      {
-        type: 'T',
-        text: '이번에 오사카 여행에서 정말 재미있는 경험을 했어요. 첫째 날에는 도톤보리에서 맛있는 음식을 먹었어요.',
-      },
-      { type: 'IMAGE', text: '@/assets/travel.png' },
-      {
-        type: 'T',
-        text: '둘째 날에는 유니버설 스튜디오 재팬에 갔어요. 사진도 많이 찍었답니다!',
-      },
-    ],
-    createdAt: '2024-10-05T12:00:00Z',
-  })
+  const [post, setPost] = useState<HomePostDetailType | null>(null)
+  useLayoutEffect(() => {
+    async function getPostDetail() {
+      try {
+        const fetchedPost: HomePostDetailType = await fetchPostDetail(postId)
+        setPost(fetchedPost)
+      } catch (error) {
+        console.log('Error fetching posts:', error)
+      }
+    }
+    getPostDetail()
+  }, [])
   //날짜를 변환하는 함수
   const formatDate = (isoString: string): string => {
     const date = new Date(isoString)
@@ -44,7 +38,7 @@ export default function HomePostScreen({ postId }: Postprop) {
   }
 
   // 변환 일자
-  const formattedDate = formatDate(post.createdAt)
+  //const formattedDate = formatDate(post.createdAt)
 
   return (
     <View style={styles.container}>
@@ -60,8 +54,10 @@ export default function HomePostScreen({ postId }: Postprop) {
               />
               {/*작성자와 작성시간 */}
               <View style={styles.textContainer}>
-                <Text style={text.nameText}>{post.name}</Text>
-                <Text style={text.createdAtText}>{formattedDate}</Text>
+                <Text style={text.nameText}>{post.userName}</Text>
+                <Text style={text.createdAtText}>
+                  {formatDate(post.registeredDateTime)}
+                </Text>
               </View>
             </View>
           </View>
@@ -86,6 +82,11 @@ export default function HomePostScreen({ postId }: Postprop) {
           ))}
         </ScrollView>
       )}
+      <View>
+        <View>
+          <Text>{'조회수'}</Text>
+        </View>
+      </View>
     </View>
   )
 }

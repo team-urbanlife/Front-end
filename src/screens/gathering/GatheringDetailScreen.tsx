@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
   },
   completeButton: {
     position: 'absolute',
-    bottom: 30,
+    bottom: 250,
     width: '90%',
     height: 50,
     backgroundColor: '#ff6347',
