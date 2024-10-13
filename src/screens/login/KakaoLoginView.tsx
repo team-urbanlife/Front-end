@@ -165,6 +165,7 @@ const KakaoLoginView: React.FC = () => {
 
               // SSE 구독 시작
               if (!isSubscribed) {
+                console.log('sse계속 실행??')
                 await fetchTokenAndConnectSSE()
                 setIsSubscribed(true) // 구독 상태 설정
               }

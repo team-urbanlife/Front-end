@@ -8,6 +8,7 @@ import MypageGatherings from './MypagePostedScreen'
 import MySchedules from './MypageScheduledScree'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { fetchUserInfo } from './mypageHttp'
+import MyPageFavoriteScreen from './MypageFavoriteScreen'
 
 const Tab = createMaterialTopTabNavigator()
 
@@ -79,7 +80,7 @@ const MyPageScreen = () => {
                 },
               }}
             >
-              <Tab.Screen name="찜목록" component={ScheduleHome} />
+              <Tab.Screen name="찜목록" component={MyPageFavoriteScreen} />
               <Tab.Screen name="작성한 글" component={MypageGatherings} />
               <Tab.Screen name="일정 리스트" component={MySchedules} />
             </Tab.Navigator>

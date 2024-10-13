@@ -47,7 +47,7 @@ import HomePostWriteScreen from '@/screens/mainhome/HomePostWriteScreen'
 import ChatRoomDetail from '@/screens/chat/ChatRoomDetailScreen'
 import LoginScreen from '@/screens/login/LoginHomeScreen2'
 import { ChatProvider } from '@/context/chat-context'
-import ChatHomeScreen from '@/screens/chat/ChatHomeScreen'
+
 import GatheringRegisterLocationSearchScreen from '@/screens/gathering/GatheringRegisterLocationSearch'
 const Stack = createNativeStackNavigator<RootStackParamList>() // 네비게이션 스택에 타입 정의 적용
 const Drawer = createDrawerNavigator()

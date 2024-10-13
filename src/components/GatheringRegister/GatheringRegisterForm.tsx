@@ -6,11 +6,16 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Modal,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import DateSelectionModal from './DateSelectionModal'
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native' // Import useRoute
-
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native'
+import CustomCalendar from '../Common/Calendar' // Import CustomCalendar component
+//import { styles, text } from './Styles/schduleCalendarStyles'
+import {
+  styles as calStyles,
+  text,
+} from '@/screens/schedule/Styles/schduleCalendarStyles'
 // Define the types for the route params
 type RouteParams = {
   params?: {
@@ -37,11 +42,6 @@ export interface GatheringData {
   endAge: number
   cost: number
   content: string
-}
-
-interface SelectedDates {
-  start: string
-  end: string
 }
 
 const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
@@ -77,13 +77,12 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
   const [selectedGender, setSelectedGender] = useState<string | null>(null)
   const [isDisabled, setIsDisabled] = useState(true)
   const [isModalVisible, setModalVisible] = useState(false)
-  const [selectedDates, setSelectedDates] = useState<SelectedDates>({
-    start: '',
-    end: '',
-  })
+
+  const [startDate, setStartDate] = useState<string>('')
+  const [endDate, setEndDate] = useState<string>('')
 
   const navigation = useNavigation()
-  const route = useRoute<RouteProp<RouteParams, 'params'>>() // Initialize route to get params from navigation
+  const route = useRoute<RouteProp<RouteParams, 'params'>>()
 
   // Destructure location data passed through navigation
   const {
@@ -94,8 +93,8 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
 
   useEffect(() => {
     const gatheringData = {
-      startDate: selectedDates.start,
-      endDate: selectedDates.end,
+      startDate: startDate,
+      endDate: endDate,
       title: inputs.title.value,
       location: locationName,
       latitude: latitude,
@@ -108,15 +107,18 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
       content: inputs.content.value,
     }
 
-    // gatheringData의 어느 값이라도 falsy하면 shouldDisable은 true
     const shouldDisable = Object.values(gatheringData).some((value) => !value)
 
     setIsDisabled(shouldDisable)
-  }, [inputs, selectedGender, locationName, latitude, longitude, selectedDates])
-
-  function handleDateSelection(start: string, end: string) {
-    setSelectedDates({ start, end })
-  }
+  }, [
+    inputs,
+    selectedGender,
+    locationName,
+    latitude,
+    longitude,
+    startDate,
+    endDate,
+  ])
 
   function inputChangedHandler(
     inputIdentifier:
@@ -148,8 +150,8 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
       endAge: +inputs.endAge.value,
       cost: +inputs.cost.value,
       content: inputs.content.value,
-      startDate: selectedDates.start,
-      endDate: selectedDates.end,
+      startDate: startDate,
+      endDate: endDate,
       location: locationName || '오사카', // Fallback to default if not selected
       latitude: latitude || 0.0,
       longitude: longitude || 0.0,
@@ -159,8 +161,7 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
   }
 
   function navigateToLocationScreen() {
-    // Navigate to the location selection screen
-    navigation.navigate('GatheringRegisterLocationSearch') // Replace with your screen name
+    navigation.navigate('GatheringRegisterLocationSearch')
   }
 
   return (
@@ -173,18 +174,52 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
           >
             <Icon name="calendar-outline" size={16} color="#FF6B6B" />
             <Text style={styles.dateText}>
-              {selectedDates.start && selectedDates.end
-                ? `${selectedDates.start} ~ ${selectedDates.end}`
-                : '날짜 선택'}
+              {startDate && endDate ? `${startDate} ~ ${endDate}` : '날짜 선택'}
             </Text>
             <Icon name="chevron-down" size={16} color="#FF6B6B" />
           </TouchableOpacity>
 
-          <DateSelectionModal
-            isVisible={isModalVisible}
-            onClose={() => setModalVisible(false)}
-            onConfirm={handleDateSelection}
-          />
+          {/* Modal for Calendar */}
+          <Modal
+            visible={isModalVisible}
+            transparent={true}
+            animationType="slide"
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.calendarWrapper}>
+                {/* 달력 컴포넌트 */}
+                <CustomCalendar
+                  startDate={startDate}
+                  endDate={endDate}
+                  setStartDate={setStartDate}
+                  setEndDate={setEndDate}
+                />
+                {/* <TouchableOpacity
+          onPress={() => {
+            handlePostTravelSchedule()
+            navigation.navigate('SceduleSpot' as never)
+          }}
+          style={styles.submitContainer}
+        >
+          <Text style={text.buttonText}>날짜 선택하기</Text>
+        </TouchableOpacity> */}
+                {/* 날짜 선택 완료 버튼 */}
+                <TouchableOpacity
+                  onPress={() => setModalVisible(false)}
+                  style={[calStyles.submitContainer, { marginTop: 30 }]}
+                >
+                  <Text
+                    style={[
+                      text.confirmButtonText,
+                      { color: 'white', fontWeight: 'bold' },
+                    ]}
+                  >
+                    날짜 선택하기
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
 
         {/* Title Input */}
@@ -378,6 +413,33 @@ const styles = StyleSheet.create({
     color: '#FF6B6B',
     fontSize: 16,
   },
+
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)', // 배경을 어둡게 하고 흰 여백 제거
+  },
+  calendarWrapper: {
+    backgroundColor: '#fff', // 달력과 버튼 배경 흰색
+    borderRadius: 10,
+    padding: 20,
+    width: '90%', // 화면의 90% 너비로 설정
+    alignItems: 'center', // 버튼과 달력을 중앙 정렬
+  },
+  confirmButton: {
+    marginTop: 20, // 버튼과 달력 사이 간격
+    backgroundColor: '#FF6B6B',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  confirmButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+
   inputContainer: {
     marginBottom: 20,
   },

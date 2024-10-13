@@ -24,6 +24,7 @@ import {
 import Gathering from './type/GatheringType'
 import GatheringHomeHeader from './GatheringHomeHeader'
 import { useFocusEffect } from '@react-navigation/native'
+import FloatingButton from '@/components/Common/floatingButton'
 type RootStackParamList = {
   RecentGatherings: { selectedLocations: string[] } // 전달할 파라미터의 타입 정의
   GatheringRegister: undefined
@@ -114,9 +115,10 @@ const RecentGatherings: React.FC = React.memo(() => {
           />
         )}
       </View>
-      <TouchableOpacity style={styles.addButton} onPress={handleAddPost}>
+      {/* <TouchableOpacity style={styles.addButton} onPress={handleAddPost}>
         <Icon name="plus" size={30} color="white" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <FloatingButton route="GatheringRegister" />
     </View>
   )
 })

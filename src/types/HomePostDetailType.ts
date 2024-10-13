@@ -6,9 +6,9 @@ export type Block = {
 export type HomePostDetailType = {
   id: number
   title: string
-  name: string
+  userName: string
   profileImage: string
   picture: string
   contents: Block[]
-  createdAt: string
+  registeredDateTime: string
 }

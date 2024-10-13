@@ -17,7 +17,7 @@ export default function HomePostComponent({ post }: prop) {
     <TouchableOpacity
       style={styles.container}
       onPress={() => {
-        navigation.navigate('HomePostScreen', { postId: post.id })
+        navigation.navigate('HomePostScreen', { postId: post.postId })
       }}
     >
       <Image source={require('@/assets/food.png')} style={styles.picture} />
