@@ -15,7 +15,7 @@ import ScheduleHomeComponent from '@/components/ScheduleHome/scheduleHomeCompone
 import { Schedule } from '@/types/ScheduleHomeType'
 import FloatingButton from '@/components/Common/floatingButton'
 import { getScheduleHome } from '@/api/Schedule/getScheduleHome'
-
+import { GlobalStyles } from '@/constants/colors'
 export default function ScheduleHome() {
   const [plans, setPlans] = useState<Schedule[]>([]) // 여행 일정 데이터
   const [page, setPage] = useState(1) // 현재 페이지
@@ -107,7 +107,12 @@ export default function ScheduleHome() {
             </View>
           ))}
         {/* 로딩 중일 때 표시되는 로딩 인디케이터 */}
-        {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
+        {isLoading && (
+          <ActivityIndicator
+            size="large"
+            color={GlobalStyles.colors.signature}
+          />
+        )}
       </ScrollView>
       <FloatingButton route="SceduleCalendar" />
     </View>

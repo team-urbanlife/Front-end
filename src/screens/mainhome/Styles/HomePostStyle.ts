@@ -62,8 +62,14 @@ export const styles = StyleSheet.create({
   flexRow: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
+  },
+  Viewcontainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 8,
   },
   foraRibbonIcon: {
     width: 14,
@@ -133,9 +139,17 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 5,
   },
-  categoryContainer: {
+  likeIcon: {
+    width: 15,
+    height: 15,
+    objectFit: 'contain',
+    marginHorizontal: 4,
+  },
+  bottomContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    marginBottom: 50,
   },
   titleBar: {
     width: '100%',
@@ -150,11 +164,14 @@ export const styles = StyleSheet.create({
     textAlignVertical: 'top',
     padding: 10,
   },
-  anonymousContainer: {
+  likeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 27,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(240, 127, 89, 0.2)',
+    borderRadius: 100,
+    width: 77,
+    height: 28,
   },
   anonymousCheckbox: {
     flexDirection: 'row',
@@ -207,12 +224,10 @@ export const text = {
     fontWeight: '600',
     lineHeight: 24,
   },
-  anonymousText: {
-    color: '#949494',
-    fontSize: 14,
+  likeText: {
+    color: GlobalStyles.colors.signature,
+    fontSize: 13,
     fontWeight: '400',
-    lineHeight: 19.6,
-    letterSpacing: -0.7,
   },
 } as {
   [key: string]: StyleProp<TextStyle>
