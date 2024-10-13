@@ -3,12 +3,13 @@ import { styles, text } from './Styles/schduleCalendarStyles'
 import { useState } from 'react'
 import BackButtonHeader from '@/components/Common/backbuttonHeader'
 import CustomCalendar from '@/components/Common/Calendar'
-import { useNavigation } from '@react-navigation/native'
 import { PostTravelScheduleType } from '@/types/PostTravelSchedule'
 import { postTravelSchedule } from '@/api/Schedule/postTravelScheduleApi'
+import { useNavigation, NavigationProp } from '@react-navigation/native'
+import { RootStackParamList } from '../../../App'
 
 export default function ScheduleCalendar() {
-  const navigation = useNavigation()
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>()
 
   const [bottomsheet, setBottomsheet] = useState<boolean>(false)
   //서버에 여행 일자를 보내기 위한 state
@@ -45,8 +46,12 @@ export default function ScheduleCalendar() {
       <View style={[styles.setCenter, { marginTop: 30 }]}>
         <TouchableOpacity
           onPress={() => {
-            handlePostTravelSchedule()
-            navigation.navigate('SceduleSpot' as never)
+            if (startDate && endDate) {
+              navigation.navigate('SceduleSpot', {
+                startDate: startDate,
+                endDate: endDate,
+              })
+            }
           }}
           style={styles.submitContainer}
         >

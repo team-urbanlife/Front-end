@@ -10,55 +10,20 @@ import {
 } from 'react-native'
 import { styles, text } from './Styles/ScheduleSpotStyles'
 import ScheduleSpotComponent from '@/components/ScheduleSpot/scheduleSpotComponent'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { GlobalStyles } from '@/constants/colors'
 import { useRef } from 'react'
-// 더미 데이터
-const regions = [
-  {
-    name: '오사카',
-    hashtags: ['#오사카'],
-    imageUrl: '',
-  },
-  {
-    name: '뉴욕',
-    hashtags: ['#뉴욕', '#빅애플', '#잠들지않는도시'],
-    imageUrl: '',
-  },
-  {
-    name: '파리',
-    hashtags: ['#파리', '#사랑의도시', '#에펠탑'],
-    imageUrl: '',
-  },
-  {
-    name: '도쿄',
-    hashtags: ['#도쿄', '#기술', '#스시라이프'],
-    imageUrl: '',
-  },
-  {
-    name: '오사카',
-    hashtags: ['#오사카'],
-    imageUrl: '',
-  },
-  {
-    name: '뉴욕',
-    hashtags: ['#뉴욕', '#빅애플', '#잠들지않는도시'],
-    imageUrl: '',
-  },
-  {
-    name: '파리',
-    hashtags: ['#파리', '#사랑의도시', '#에펠탑'],
-    imageUrl: '',
-  },
-  {
-    name: '도쿄',
-    hashtags: ['#도쿄', '#기술', '#스시라이프'],
-    imageUrl: '',
-  },
-]
+import { CityData } from '@/types/CityDataType'
+import { getCities } from '@/api/Schedule/getCitiesApi'
+import { PostTravelScheduleType } from '@/types/PostTravelSchedule'
 
-export default function ScheduleSpot() {
+interface Spotprop {
+  startDate: string
+  endDate: string
+}
+export default function ScheduleSpot({ startDate, endDate }: Spotprop) {
+  console.log(startDate, endDate, '시작일자 끝일자')
   const navigation = useNavigation()
   //텍스트 인풋에서 받을 검색어
   const [searchInputValue, setSearchInputValue] = useState<string>('')
@@ -67,6 +32,13 @@ export default function ScheduleSpot() {
 
   const [mapReady, setMapReady] = useState<boolean>(false)
 
+  const [regions, setRegions] = useState<CityData[]>([])
+
+  const [data, setData] = useState<PostTravelScheduleType>({
+    city: '',
+    startDate: startDate,
+    endDate: endDate,
+  })
   const handleSearch = () => {
     setSubmit(true)
     console.log('Searching for:', searchInputValue)
@@ -84,6 +56,26 @@ export default function ScheduleSpot() {
       scrollViewRef.current.scrollTo({ y: scrollPosition, animated: false })
     }
   }
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        // 도시 데이터 가져오기
+        const cities = await getCities()
+        setRegions(cities.data || [])
+        console.log('장소데이터', cities)
+      } catch (error) {
+        console.error('Error fetching hospital data:', error)
+      }
+    }
+
+    fetchCities()
+  }, [])
+  //유저의 입력에 따라 받아온 지역 데이터를 필터링하도록
+  const filteredRegions = regions.filter((region) =>
+    region.region.includes(searchInputValue),
+  )
+
   return (
     <View style={styles.container}>
       {/* 검색창 */}
@@ -138,15 +130,13 @@ export default function ScheduleSpot() {
           submit ? styles.nextSchedulesContainer : styles.schedulesContainer
         }
       >
-        {regions &&
-          regions.map((region, index) => (
+        {filteredRegions.length > 0 &&
+          filteredRegions.map((region, index) => (
             <View key={index}>
               <ScheduleSpotComponent
-                title={region.name}
-                hashtag={region.hashtags}
-                buttonName="지역 선택"
-                id={index}
-                imageUrl={region.imageUrl}
+                title={region.region}
+                data={data}
+                setData={setData}
               />
             </View>
           ))}

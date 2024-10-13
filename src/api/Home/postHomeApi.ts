@@ -1,7 +1,6 @@
+// /v1/posts
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { apiClient } from '../apiClient'
-import { PostDetailedScheduleType } from '@/types/postDetailedScheduleType'
-import axios from 'axios'
 import { PostTravelScheduleType } from '@/types/PostTravelSchedule'
 
 export const postTravelSchedule = async (data: PostTravelScheduleType) => {

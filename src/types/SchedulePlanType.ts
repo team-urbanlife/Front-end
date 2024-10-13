@@ -4,12 +4,13 @@ export interface DetailedPlan {
   latitude: number
   longitude: number
   scheduleDetailsId: number
+  detailedPlanId: number
   memo: string | null
   memoId: number | null
 }
 
 export interface PlanData {
-  id: number
+  scheduleDetailsId: number
   travelDate: string
   detailedPlans: DetailedPlan[]
 }

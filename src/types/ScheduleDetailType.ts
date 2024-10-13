@@ -6,6 +6,6 @@ export default interface ScheduleDetailType {
   endTime: string // 종료 시간
   location?: string // 장소 (optional)
   totalPeople?: number // 참석자 리스트 (optional)
-  createdAt: Date // 생성 날짜
+  createdAt?: Date // 생성 날짜
   updatedAt?: Date // 수정된 날짜 (optional)
 }

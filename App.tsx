@@ -37,7 +37,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { MainDummyHome } from '@/screens/dummyHome/mainHomeDummy'
 import { ChatHomeDummy } from '@/screens/dummyHome/ChatHomeDummy'
 import { MypageHomeDummy } from '@/screens/dummyHome/MyPageHomeDummy'
-import LoginHomeScreen from '@/screens/login/LoginHomeScreen'
+import LoginHomeScreen from '@/screens/login/LoginHomeScreen2'
 import KakaoLoginView from '@/screens/login/KakaoLoginView'
 import MainHomeScreen from '@/screens/mainhome/MainHomeScreen'
 import HomePostScreen from '@/screens/mainhome/HomePostScreen'
@@ -46,6 +46,7 @@ import ChatHomeScreen from '@/screens/chat/ChatHomeScreen'
 import ChatRoomDetail from '@/screens/chat/ChatRoomDetailScreen'
 import LoginScreen from '@/screens/login/LoginHomeScreen2'
 import { ChatProvider } from '@/context/chat-context'
+import { ScheduleProvider } from '@/context/ScheduleProvide'
 const Stack = createNativeStackNavigator<RootStackParamList>() // 네비게이션 스택에 타입 정의 적용
 const Drawer = createDrawerNavigator()
 const BottomTabs = createBottomTabNavigator()
@@ -137,10 +138,10 @@ export type RootStackParamList = {
   GatheringRegister: undefined
   GatheringDetail: { gatheringId: number } // GatheringDetail에 전달되는 파라미터 정의
   ScheduleHome: undefined
-  SceduleSpot: undefined
+  SceduleSpot: { startDate: string; endDate: string }
   SceduleDetail: undefined
   SceduleCalendar: undefined
-  SchedulePlaceSearch: undefined
+  SchedulePlaceSearch: { detailedId: number; date: string }
   WeGoTooOverview: undefined
   KakaoLoginView: undefined
   LoginHomeScreen: undefined
@@ -223,105 +224,120 @@ export default function App() {
       <StatusBar style="dark" />
       <GestureHandlerRootView style={{ flex: 1 }}>
         <GatheringsContextProvider>
-          <ChatProvider>
-            <NavigationContainer>
-              <Stack.Navigator>
-                <Stack.Screen
-                  name="LoginHomeScreen"
-                  component={LoginHomeScreen}
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="KakaoLoginView"
-                  component={KakaoLoginView} // 타입이 정의된 컴포넌트 전달
-                  options={{
-                    headerBackTitleVisible: false,
-                    headerTitleAlign: 'center',
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="WeGoTooOverview"
-                  component={WeGoTooOverview}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="MainHomeScreen"
-                  component={MainHomeScreen}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="HomePostWriteScreen"
-                  component={HomePostWriteScreen}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="HomePostScreen"
-                  options={{
-                    headerShown: false,
-                  }}
-                >
-                  {(props) => (
-                    <HomePostScreen
-                      {...props}
-                      postId={props.route.params.postId}
-                    />
-                  )}
-                </Stack.Screen>
-                {/* <Stack.Screen
-                  name="LoginHomeScreen"
-                  component={LoginHomeScreen}
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="KakaoLoginView"
-                  component={KakaoLoginView} // 타입이 정의된 컴포넌트 전달
-                  options={{
-                    headerBackTitleVisible: false,
-                    headerTitleAlign: 'center',
-                    headerShown: false,
-                  }}
-                /> */}
-                <Stack.Screen
-                  name="ScheduleHome"
-                  component={ScheduleHome}
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="SceduleCalendar"
-                  component={ScheduleCalendar}
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="SceduleSpot"
-                  component={ScheduleSpot}
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="SchedulePlaceSearch"
-                  component={PlaceSearchComponent}
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="SceduleDetail"
-                  component={ScheduleDetail}
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-                {/* <Stack.Screen
+          <ScheduleProvider>
+            <ChatProvider>
+              <NavigationContainer>
+                <Stack.Navigator>
+                  <Stack.Screen
+                    name="LoginHomeScreen"
+                    component={LoginHomeScreen}
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="KakaoLoginView"
+                    component={KakaoLoginView} // 타입이 정의된 컴포넌트 전달
+                    options={{
+                      headerBackTitleVisible: false,
+                      headerTitleAlign: 'center',
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="WeGoTooOverview"
+                    component={WeGoTooOverview}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="MainHomeScreen"
+                    component={MainHomeScreen}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="HomePostWriteScreen"
+                    component={HomePostWriteScreen}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="HomePostScreen"
+                    options={{
+                      headerShown: false,
+                    }}
+                  >
+                    {(props) => (
+                      <HomePostScreen
+                        {...props}
+                        postId={props.route.params.postId}
+                      />
+                    )}
+                  </Stack.Screen>
+                  {/* <Stack.Screen
+                    name="LoginHomeScreen"
+                    component={LoginHomeScreen}
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="KakaoLoginView"
+                    component={KakaoLoginView} // 타입이 정의된 컴포넌트 전달
+                    options={{
+                      headerBackTitleVisible: false,
+                      headerTitleAlign: 'center',
+                      headerShown: false,
+                    }}
+                  /> */}
+                  <Stack.Screen
+                    name="ScheduleHome"
+                    component={ScheduleHome}
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="SceduleCalendar"
+                    component={ScheduleCalendar}
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="SceduleSpot"
+                    options={{
+                      headerShown: false,
+                    }}
+                  >
+                    {(props) => (
+                      <ScheduleSpot
+                        {...props}
+                        startDate={props.route.params.startDate}
+                        endDate={props.route.params.endDate}
+                      />
+                    )}
+                  </Stack.Screen>
+                  <Stack.Screen
+                    name="SchedulePlaceSearch"
+                    options={{
+                      headerShown: false,
+                    }}
+                  >
+                    {(props) => (
+                      <PlaceSearchComponent
+                        {...props}
+                        detailedId={props.route.params.detailedId}
+                        date={props.route.params.date}
+                      />
+                    )}
+                  </Stack.Screen>
+                  <Stack.Screen
+                    name="SceduleDetail"
+                    component={ScheduleDetail}
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                  {/* <Stack.Screen
                 name="RecentGathering"
                 component={RecentGatherings}
                 options={{
@@ -368,55 +384,56 @@ export default function App() {
             </Stack.Navigator>
           </NavigationContainer>
               /> */}
-                <Stack.Screen
-                  name="GatheringLocationSearch"
-                  component={GatheringLocationSearch}
-                  options={{
-                    animation: 'slide_from_left',
-                    headerBackTitleVisible: false,
-                    headerTitleAlign: 'center',
-                    headerShown: false,
-                  }}
-                />
-                <Stack.Screen
-                  name="GatheringRegister"
-                  component={GatheringRegister}
-                  options={{
-                    headerBackTitleVisible: false, // 뒤로가기 텍스트 숨기기
-                    headerTitleAlign: 'center',
-                    headerTintColor: 'black', // 뒤로가기 버튼 아이콘 색상을 검정색으로 설정
-                    headerStyle: {
-                      backgroundColor: 'white', // 헤더 배경색 설정
-                    },
-                  }}
-                />
-                <Stack.Screen
-                  name="GatheringDetail"
-                  component={GatheringDetailScreen} // 타입이 정의된 컴포넌트 전달
-                  options={{
-                    headerBackTitleVisible: false, // 뒤로가기 텍스트 숨기기
-                    headerTitleAlign: 'center',
-                    headerTintColor: 'black', // 뒤로가기 버튼 아이콘 색상을 검정색으로 설정
-                    headerStyle: {
-                      backgroundColor: 'white', // 헤더 배경색 설정
-                    },
-                  }}
-                />
-                <Stack.Screen
-                  name="ChatRoomDetail"
-                  component={ChatRoomDetail} // 타입이 정의된 컴포넌트 전달
-                  options={{
-                    headerBackTitleVisible: false, // 뒤로가기 텍스트 숨기기
-                    headerTitleAlign: 'center',
-                    headerTintColor: 'black', // 뒤로가기 버튼 아이콘 색상을 검정색으로 설정
-                    headerStyle: {
-                      backgroundColor: 'white', // 헤더 배경색 설정
-                    },
-                  }}
-                />
-              </Stack.Navigator>
-            </NavigationContainer>
-          </ChatProvider>
+                  <Stack.Screen
+                    name="GatheringLocationSearch"
+                    component={GatheringLocationSearch}
+                    options={{
+                      animation: 'slide_from_left',
+                      headerBackTitleVisible: false,
+                      headerTitleAlign: 'center',
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="GatheringRegister"
+                    component={GatheringRegister}
+                    options={{
+                      headerBackTitleVisible: false, // 뒤로가기 텍스트 숨기기
+                      headerTitleAlign: 'center',
+                      headerTintColor: 'black', // 뒤로가기 버튼 아이콘 색상을 검정색으로 설정
+                      headerStyle: {
+                        backgroundColor: 'white', // 헤더 배경색 설정
+                      },
+                    }}
+                  />
+                  <Stack.Screen
+                    name="GatheringDetail"
+                    component={GatheringDetailScreen} // 타입이 정의된 컴포넌트 전달
+                    options={{
+                      headerBackTitleVisible: false, // 뒤로가기 텍스트 숨기기
+                      headerTitleAlign: 'center',
+                      headerTintColor: 'black', // 뒤로가기 버튼 아이콘 색상을 검정색으로 설정
+                      headerStyle: {
+                        backgroundColor: 'white', // 헤더 배경색 설정
+                      },
+                    }}
+                  />
+                  <Stack.Screen
+                    name="ChatRoomDetail"
+                    component={ChatRoomDetail} // 타입이 정의된 컴포넌트 전달
+                    options={{
+                      headerBackTitleVisible: false, // 뒤로가기 텍스트 숨기기
+                      headerTitleAlign: 'center',
+                      headerTintColor: 'black', // 뒤로가기 버튼 아이콘 색상을 검정색으로 설정
+                      headerStyle: {
+                        backgroundColor: 'white', // 헤더 배경색 설정
+                      },
+                    }}
+                  />
+                </Stack.Navigator>
+              </NavigationContainer>
+            </ChatProvider>
+          </ScheduleProvider>
         </GatheringsContextProvider>
       </GestureHandlerRootView>
     </>
