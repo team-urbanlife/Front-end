@@ -14,6 +14,8 @@ import { Block } from '@/types/HomePostDetailType'
 import { ScrollView } from 'react-native-gesture-handler'
 import axios from 'axios'
 import { storePost } from './HomePostHttp'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { RootStackParamList } from '../../../App'
 //import { aaa } from './someOtherFile' // aaa 함수 import
 
 interface EditPostProps {
@@ -21,7 +23,7 @@ interface EditPostProps {
 }
 
 export default function HomePostWriteScreen() {
-  const navigation = useNavigation()
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState<string>('')

@@ -1,97 +1,58 @@
-import { TouchableOpacity, View, Image, Text, ScrollView } from 'react-native'
+import React, { useState, useCallback } from 'react'
+import {
+  TouchableOpacity,
+  View,
+  Image,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from 'react-native'
+import { useFocusEffect } from '@react-navigation/native'
 import { styles, text } from './Styles/ScheduleHomeStyles'
 import ScheduleHomeComponent from '@/components/ScheduleHome/scheduleHomeComponent'
-import ScheduleDetailType from '@/types/ScheduleDetailType'
+import { Schedule } from '@/types/ScheduleHomeType'
 import FloatingButton from '@/components/Common/floatingButton'
-
-// ScheduleDetail 객체 배열 예시
-const schedules: ScheduleDetailType[] = [
-  {
-    id: '1',
-    title: '파리 투어',
-    imageUrl: '../../assets/travel.png',
-    startTime: '9.12',
-    endTime: '9.14',
-    location: 'Paris, France',
-    totalPeople: 2,
-    createdAt: new Date('2024-09-01T09:00:00'),
-    updatedAt: new Date('2024-09-15T09:00:00'),
-  },
-  {
-    id: '2',
-    title: '도쿄 미식 여행',
-    imageUrl: '../../assets/travel.png',
-    startTime: '9.12',
-    endTime: '9.14',
-    location: 'Tokyo, Japan',
-    totalPeople: 3,
-    createdAt: new Date('2024-09-10T11:00:00'),
-  },
-  {
-    id: '3',
-    title: '뉴욕 시티 투어',
-    imageUrl: '../../assets/travel.png',
-    startTime: '9.12',
-    endTime: '9.14',
-    location: 'New York, USA',
-    createdAt: new Date('2024-09-12T13:00:00'),
-    updatedAt: new Date('2024-09-14T09:00:00'),
-  },
-  {
-    id: '4',
-    title: '뉴욕 시티 투어',
-    imageUrl: '../../assets/travel.png',
-    startTime: '9.12',
-    endTime: '9.14',
-    location: 'New York, USA',
-    createdAt: new Date('2024-09-12T13:00:00'),
-    updatedAt: new Date('2024-09-14T09:00:00'),
-  },
-  {
-    id: '1',
-    title: '파리 투어',
-    imageUrl: '../../assets/travel.png',
-    startTime: '9.12',
-    endTime: '9.14',
-    location: 'Paris, France',
-    totalPeople: 2,
-    createdAt: new Date('2024-09-01T09:00:00'),
-    updatedAt: new Date('2024-09-15T09:00:00'),
-  },
-  {
-    id: '2',
-    title: '도쿄 미식 여행',
-    imageUrl: '../../assets/travel.png',
-    startTime: '9.12',
-    endTime: '9.14',
-    location: 'Tokyo, Japan',
-    totalPeople: 3,
-    createdAt: new Date('2024-09-10T11:00:00'),
-  },
-  {
-    id: '3',
-    title: '뉴욕 시티 투어',
-    imageUrl: '../../assets/travel.png',
-    startTime: '9.12',
-    endTime: '9.14',
-    location: 'New York, USA',
-    createdAt: new Date('2024-09-12T13:00:00'),
-    updatedAt: new Date('2024-09-14T09:00:00'),
-  },
-  {
-    id: '4',
-    title: '뉴욕 시티 투어',
-    imageUrl: '../../assets/travel.png',
-    startTime: '9.12',
-    endTime: '9.14',
-    location: 'New York, USA',
-    createdAt: new Date('2024-09-12T13:00:00'),
-    updatedAt: new Date('2024-09-14T09:00:00'),
-  },
-]
+import { getScheduleHome } from '@/api/Schedule/getScheduleHome'
 
 export default function ScheduleHome() {
-  //const navigation = useNavigation()
+  const [plans, setPlans] = useState<Schedule[]>([]) // 여행 일정 데이터
+  const [page, setPage] = useState(1) // 현재 페이지
+  const [isLoading, setIsLoading] = useState(false) // 로딩 상태
+  const [hasMore, setHasMore] = useState(true) // 더 불러올 데이터가 있는지 여부
+
+  const handleSchedule = async (currentPage: number) => {
+    try {
+      setIsLoading(true) // 로딩 상태 설정
+      const response = await getScheduleHome(currentPage, 4) // API 호출 (페이지당 4개씩)
+
+      if (response.data.content.length > 0) {
+        setPlans((prevPlans) => [...prevPlans, ...response.data.content]) // 이전 데이터와 병합
+      } else {
+        setHasMore(false) // 더 이상 불러올 데이터가 없을 때
+      }
+    } catch (error) {
+      console.error('Error Getting travel schedule:', error)
+    } finally {
+      setIsLoading(false) // 로딩 완료
+    }
+  }
+  // 스크롤이 끝에 도달했는지 확인하는 함수
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent
+    const isCloseToBottom =
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - 20
+    if (isCloseToBottom && !isLoading && hasMore) {
+      setPage((prevPage) => prevPage + 1) // 페이지 번호 증가
+    }
+  }
+  // 페이지가 변경될 때마다 새로운 데이터를 가져오기
+  useFocusEffect(
+    useCallback(() => {
+      handleSchedule(page)
+    }, [page]),
+  )
   return (
     <View style={styles.container}>
       {/* 헤더 */}
@@ -128,21 +89,25 @@ export default function ScheduleHome() {
         </Text>
       </View>
       {/*여행 일정 컴포넌트 */}
-      <ScrollView style={styles.schedulesContainer}>
-        {schedules &&
-          schedules.map((schedule, index) => (
+      <ScrollView
+        style={styles.schedulesContainer}
+        onScroll={handleScroll}
+        scrollEventThrottle={400}
+      >
+        {plans &&
+          plans.map((schedule, index) => (
             <View key={index}>
               <ScheduleHomeComponent
-                startTime={schedule.startTime}
-                endTime={schedule.endTime}
+                startDate={schedule.startDate}
+                endDate={schedule.endDate}
                 title={schedule.title}
-                imageUrl={schedule.imageUrl}
-                totalPeople={schedule.totalPeople}
+                participants={schedule.participants}
                 id={schedule.id}
-                createdAt={schedule.createdAt}
               />
             </View>
           ))}
+        {/* 로딩 중일 때 표시되는 로딩 인디케이터 */}
+        {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
       </ScrollView>
       <FloatingButton route="SceduleCalendar" />
     </View>

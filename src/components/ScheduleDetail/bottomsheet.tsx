@@ -10,7 +10,6 @@ import {
 import { styles, text } from './styles/bottomSheetStyle'
 import { DetailedPlan, PlanData } from '@/types/SchedulePlanType'
 import ScheduleDetailComponent from './ScheduleDetailComponent'
-import { useNavigation } from '@react-navigation/native'
 import {
   PanGestureHandler,
   GestureHandlerStateChangeEvent,
@@ -19,48 +18,27 @@ import {
 } from 'react-native-gesture-handler'
 import { TouchableOpacity } from 'react-native'
 import ScheduleDetailEditComponent from './ScheduleDetailEditComponent'
-
+import { useNavigation, NavigationProp } from '@react-navigation/native'
+import { RootStackParamList } from '../../../App'
+import { useSchedule } from '@/context/ScheduleProvide'
+import { patchChangeSchedule } from '@/api/Schedule/patchChangeScheduleApi'
 interface BottomSheetProps {
   setBottomSheet: Dispatch<SetStateAction<boolean>>
+  setShouldRerender: Dispatch<SetStateAction<boolean>>
   plans: PlanData[]
 }
-
-const DATA: DetailedPlan[] = [
-  {
-    region: '서울 타워',
-    sequence: 1,
-    latitude: 37.5512,
-    longitude: 126.9882,
-    scheduleDetailsId: 101,
-    memo: '서울의 유명 관광지',
-    memoId: 1001,
-  },
-  {
-    region: '경복궁',
-    sequence: 2,
-    latitude: 37.5796,
-    longitude: 126.977,
-    scheduleDetailsId: 102,
-    memo: '역사적 궁궐 방문',
-    memoId: 1002,
-  },
-  {
-    region: '서울 타워',
-    sequence: 1,
-    latitude: 37.5512,
-    longitude: 126.9882,
-    scheduleDetailsId: 103,
-    memo: '서울의 유명 관광지',
-    memoId: 1001,
-  },
-]
 
 export default function BottomSheet({
   setBottomSheet,
   plans,
+  setShouldRerender,
 }: BottomSheetProps) {
-  const navigation = useNavigation()
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>()
+  //터치 이벤트를 두번 줘야해서 전역으로 관리
+  const { scheduleId } = useSchedule()
+
   const innerGestureHandlerRef = useRef<TouchableOpacity | null>(null)
+
   const [edit, setEdit] = useState<boolean>(false)
   //높이를 auto로 설정해도 높이가 동적으로 바뀌지 않아서 자식 컴포넌트에 props로 내려서 해당 자식 컴포넌트 길이 가져오게
   const [termsHeight, setTermsHeight] = useState<number>(500)
@@ -127,6 +105,27 @@ export default function BottomSheet({
   const handleStateChange = (event: GestureHandlerStateChangeEvent) => {
     if (event.nativeEvent.state === State.END) {
       // 제스처가 끝났을 때 실행할 동작
+    }
+  }
+
+  const [data, setData] = useState<DetailedPlan[]>([])
+  const [planId, setPlanId] = useState<number>(0)
+  // 드래그 후 API 요청을 보내는 함수
+  const handleDragEnd = async (newData: DetailedPlan[]) => {
+    // 드래그 후 data 배열에서 detailedPlanId와 sequence 값을 추출하여 API 데이터 구조로 변환
+    const apiData = newData.map((item, index) => ({
+      detailedPlanId: item.detailedPlanId,
+      sequence: index + 1, // 배열의 인덱스를 새로운 sequence로 사용
+    }))
+    console.log('API 요청:', apiData, planId)
+    try {
+      // 실제 API 요청을 보냄
+      if (planId && apiData) {
+        await patchChangeSchedule(planId, apiData)
+        console.log('API 요청 성공:', apiData)
+      }
+    } catch (error) {
+      console.error('API 요청 실패:', error)
     }
   }
 
@@ -205,7 +204,7 @@ export default function BottomSheet({
                         </View>
                       </TouchableOpacity>
                       {/* 특정 plan의 id가 0일 때(최상단인 경우에) 편집 표시 */}
-                      {plan.id === 0 && (
+                      {plan && index === 0 && (
                         <TouchableOpacity
                           onPress={() => {
                             //편집 버튼을 누른 경우에 드래그 앤 드랍이 활성화됨
@@ -223,13 +222,17 @@ export default function BottomSheet({
                           key={scheduleIndex}
                           data={schedule}
                           ref={innerGestureHandlerRef}
+                          setShouldRerender={setShouldRerender}
                         />
                       ))}
                     {isClicked[index] && (
                       <View style={styles.setCenter}>
                         <TouchableOpacity
                           onPress={() => {
-                            navigation.navigate('SceduleSpot' as never)
+                            navigation.navigate('SchedulePlaceSearch', {
+                              detailedId: plan.scheduleDetailsId,
+                              date: plan.travelDate,
+                            })
                           }}
                           style={styles.buttonContainer}
                         >
@@ -268,6 +271,7 @@ export default function BottomSheet({
                           temp[index] = !isClicked[index]
                           setIsClicked(temp)
                           console.log(temp)
+                          setPlanId(plan.scheduleDetailsId)
                         }}
                       >
                         <View style={styles.flexRow}>
@@ -297,15 +301,39 @@ export default function BottomSheet({
                       </TouchableOpacity>
 
                       {/* 특정 plan의 id가 0일 때(최상단인 경우에) 편집 완료 표시 */}
-                      {plan.id === 0 && (
+                      {plan && index === 0 && (
                         <TouchableOpacity
                           onPress={() => {
                             setEdit(!edit)
+                            const handleDragEnd = async (
+                              newData: DetailedPlan[],
+                            ) => {
+                              // 드래그 후 data 배열에서 detailedPlanId와 sequence 값을 추출하여 API 데이터 구조로 변환
+                              const apiData = newData.map((item, index) => ({
+                                detailedPlanId: item.detailedPlanId,
+                                sequence: index + 1, // 배열의 인덱스를 새로운 sequence로 사용
+                              }))
+                              console.log('API 요청:', apiData, planId)
+                              try {
+                                // 실제 API 요청을 보냄
+                                if (apiData) {
+                                  await patchChangeSchedule(
+                                    plan.scheduleDetailsId,
+                                    apiData,
+                                  )
+                                  console.log('API 요청 성공:', apiData)
+                                  setShouldRerender(true)
+                                }
+                              } catch (error) {
+                                console.error('API 요청 실패:', error)
+                              }
+                            }
+                            handleDragEnd(data)
                           }}
                           style={{ width: '75%', alignItems: 'flex-end' }}
                         >
                           <Text
-                            style={[text.clickText, { marginHorizontal: 15 }]}
+                            style={[text.clickText, { marginHorizontal: 5 }]}
                           >
                             편집 완료 하기
                           </Text>
@@ -315,7 +343,10 @@ export default function BottomSheet({
                     </View>
                     {isClicked[index] && (
                       <View style={{ flexGrow: 1 }}>
-                        <ScheduleDetailEditComponent schedules={DATA} />
+                        <ScheduleDetailEditComponent
+                          data={plan.detailedPlans}
+                          setData={setData}
+                        />
                       </View>
                     )}
                   </View>

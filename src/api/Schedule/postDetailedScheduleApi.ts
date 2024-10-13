@@ -72,7 +72,7 @@ export const postDetailedSchedule = async (
     //   console.log('토큰이 유효합니다.')
     // }
 
-    console.log('상세일정 API에 보낼 토큰:', token)
+    console.log('상세일정api 파라미터에 포함시킬:', scheduleId)
 
     // API 요청
     const response = await apiClient.post(
@@ -86,7 +86,7 @@ export const postDetailedSchedule = async (
     )
 
     if (response.status === 200) {
-      console.log('응답 성공한거지?')
+      console.log(data, '이렇게 서버에 잘 감')
     } else {
       console.log(response.status, response.headers, response.data)
     }

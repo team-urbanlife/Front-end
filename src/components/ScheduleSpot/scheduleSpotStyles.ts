@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
   picture: {
     width: 68,
     height: 68,
-    borderRadius: 10,
+    objectFit: 'contain',
   },
   middleContainer: {
     flexDirection: 'column',

@@ -82,6 +82,11 @@ export default function HomePostScreen({ postId }: Postprop) {
           ))}
         </ScrollView>
       )}
+      <View>
+        <View>
+          <Text>{'조회수'}</Text>
+        </View>
+      </View>
     </View>
   )
 }

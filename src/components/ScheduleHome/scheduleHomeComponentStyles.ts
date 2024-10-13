@@ -29,6 +29,9 @@ export const styles = StyleSheet.create({
   picture: {
     width: 108,
     height: '100%',
+    objectFit: 'cover',
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
   },
   rightContainer: {
     flexDirection: 'column',
