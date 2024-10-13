@@ -4,6 +4,8 @@ import React, { createContext, useContext, useState, ReactNode } from 'react'
 export interface ScheduleContextType {
   scheduleId: number | null
   setScheduleId: React.Dispatch<React.SetStateAction<number | null>>
+  writeDone: boolean
+  setWriteDone: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 // ScheduleContext 타입을 명시
@@ -19,9 +21,12 @@ export const useSchedule = () => {
 
 export const ScheduleProvider = ({ children }: { children: ReactNode }) => {
   const [scheduleId, setScheduleId] = useState<number | null>(null)
+  const [writeDone, setWriteDone] = useState<boolean>(false)
 
   return (
-    <ScheduleContext.Provider value={{ scheduleId, setScheduleId }}>
+    <ScheduleContext.Provider
+      value={{ scheduleId, setScheduleId, writeDone, setWriteDone }}
+    >
       {children}
     </ScheduleContext.Provider>
   )

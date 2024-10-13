@@ -14,13 +14,14 @@ import { useFocusEffect } from '@react-navigation/native'
 import { useState, useCallback } from 'react'
 import { getHomePost } from '@/api/Home/getHomePostApi'
 import { GlobalStyles } from '@/constants/colors'
+import { useSchedule } from '@/context/ScheduleProvide'
 
 export default function MainHomeScreen() {
   const [posts, setPosts] = useState<HomePostType[]>([])
   const [page, setPage] = useState(1) // 현재 페이지
   const [isLoading, setIsLoading] = useState(false) // 로딩 상태
   const [hasMore, setHasMore] = useState(true) // 더 불러올 데이터가 있는지 여부
-
+  const { writeDone } = useSchedule()
   // 서버로부터 게시글 목록을 가져오는 함수
   const fetchPosts = async (currentPage: number) => {
     try {
@@ -33,7 +34,7 @@ export default function MainHomeScreen() {
         setHasMore(false)
       } else {
         // 기존 posts에 새로 가져온 게시글을 추가
-        setPosts((prevPosts) => [...prevPosts, ...response.content])
+        setPosts((prevPosts) => [...response.content, ...prevPosts])
       }
     } catch (error) {
       console.log('Error fetching posts:', error)
@@ -46,7 +47,7 @@ export default function MainHomeScreen() {
   useFocusEffect(
     useCallback(() => {
       fetchPosts(page)
-    }, [page]), // 페이지가 바뀔 때마다 실행
+    }, [page, writeDone]), // 페이지가 바뀔 때마다 실행
   )
 
   // 스크롤이 끝에 도달했는지 확인하는 함수

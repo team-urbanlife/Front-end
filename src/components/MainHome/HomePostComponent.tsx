@@ -23,11 +23,16 @@ export default function HomePostComponent({ post }: prop) {
       <Image source={{ uri: post.thumbnail }} style={styles.picture} />
       {/*{ uri: post.picture } */}
       <View style={styles.textContainer}>
-        <Text style={text.nameText}>{post.name}</Text>
+        <Text style={text.nameText}>{post && post.userName}</Text>
         <Text style={text.titleText}>
           {post.title.length > 23
             ? post.title.substring(0, 23) + '...'
             : post.title}
+        </Text>
+        <Text style={text.contentText}>
+          {post.content.length > 23
+            ? post.content.substring(0, 23) + '...'
+            : post.content}
         </Text>
       </View>
       <View style={styles.profileImageContainer}>

@@ -27,7 +27,7 @@ export default function HomePostScreen({ postId }: Postprop) {
       }
     }
     getPostDetail()
-  }, [])
+  }, [liked])
   //날짜를 변환하는 함수
   const formatDate = (isoString: string): string => {
     const date = new Date(isoString)
@@ -44,11 +44,16 @@ export default function HomePostScreen({ postId }: Postprop) {
 
   const handlePostLike = async (postId: number) => {
     try {
-      const data = await postLikes(postId) // postLikes 호출
-      setLiked(true)
-      console.log(data)
+      const data = await postLikes(postId) // 서버에 좋아요 요청
+      if (data.status === 200) {
+        // 서버 응답이 성공하면
+        setLiked(!liked) // 좋아요 상태 업데이트
+        console.log('좋아요 반영됨:', data)
+      }
     } catch (error) {
       console.error('좋아요 실패:', error)
+    } finally {
+      setLiked(!liked)
     }
   }
 

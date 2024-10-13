@@ -36,8 +36,7 @@ export default function PlaceSearchComponent({
   date,
 }: PlaceSearchprop) {
   const navigation = useNavigation()
-
-  const { scheduleId } = useSchedule()
+  const { scheduleId, writeDone, setWriteDone } = useSchedule()
   console.log(detailedId, '아이디값 검색창에 잘 옴')
 
   const [name, setName] = useState<string>()
@@ -55,6 +54,7 @@ export default function PlaceSearchComponent({
         longitude: longitude,
       }
       console.log('보낼 상세 계획 데이터:', newSchedule)
+      setWriteDone(!writeDone)
       try {
         // 버튼이 눌렸을 때 post 요청
         await postDetailedSchedule(newSchedule, detailedId)
