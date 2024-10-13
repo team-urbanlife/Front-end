@@ -20,7 +20,7 @@ export default function HomePostComponent({ post }: prop) {
         navigation.navigate('HomePostScreen', { postId: post.postId })
       }}
     >
-      <Image source={require('@/assets/food.png')} style={styles.picture} />
+      <Image source={{ uri: post.thumbnail }} style={styles.picture} />
       {/*{ uri: post.picture } */}
       <View style={styles.textContainer}>
         <Text style={text.nameText}>{post.name}</Text>
@@ -32,7 +32,7 @@ export default function HomePostComponent({ post }: prop) {
       </View>
       <View style={styles.profileImageContainer}>
         <Image
-          source={require('@/assets/travel.png')}
+          source={{ uri: post.userProfileImage }}
           style={styles.profileImage}
         />
       </View>

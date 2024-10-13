@@ -6,7 +6,7 @@ import BackButtonHeader from '@/components/Common/backbuttonHeader'
 import { useLayoutEffect, useState } from 'react'
 import { HomePostDetailType } from '@/types/HomePostDetailType'
 import { fetchPostDetail } from './HomePostHttp'
-
+import { postLikes } from '@/api/Home/postLikesApi'
 interface Postprop {
   postId: number
 }
@@ -15,6 +15,8 @@ export default function HomePostScreen({ postId }: Postprop) {
   const navigation = useNavigation()
 
   const [post, setPost] = useState<HomePostDetailType | null>(null)
+  //좋아요 리랜더링 용도
+  const [liked, setLiked] = useState(false)
   useLayoutEffect(() => {
     async function getPostDetail() {
       try {
@@ -40,6 +42,16 @@ export default function HomePostScreen({ postId }: Postprop) {
   // 변환 일자
   //const formattedDate = formatDate(post.createdAt)
 
+  const handlePostLike = async (postId: number) => {
+    try {
+      const data = await postLikes(postId) // postLikes 호출
+      setLiked(true)
+      console.log(data)
+    } catch (error) {
+      console.error('좋아요 실패:', error)
+    }
+  }
+
   return (
     <View style={styles.container}>
       <BackButtonHeader />
@@ -50,7 +62,7 @@ export default function HomePostScreen({ postId }: Postprop) {
               {/*프로필 이미지 */}
               <Image
                 style={styles.profileImage}
-                source={require('@/assets/travel.png')}
+                source={{ uri: post.userProfileImage }}
               />
               {/*작성자와 작성시간 */}
               <View style={styles.textContainer}>
@@ -73,7 +85,7 @@ export default function HomePostScreen({ postId }: Postprop) {
               ) : (
                 <View style={styles.pictureContainer} key={index}>
                   <Image
-                    source={require('@/assets/food.png')}
+                    source={{ uri: content.text }}
                     style={styles.picture}
                   />
                 </View>
@@ -82,10 +94,33 @@ export default function HomePostScreen({ postId }: Postprop) {
           ))}
         </ScrollView>
       )}
-      <View>
-        <View>
-          <Text>{'조회수'}</Text>
-        </View>
+      <View style={styles.bottomContainer}>
+        {post && (
+          <View style={styles.flexRow}>
+            <View style={styles.Viewcontainer}>
+              <Text style={text.contentText}>{'조회수 ' + post.views}</Text>
+            </View>
+            <View style={styles.Viewcontainer}>
+              <Image
+                source={require('@/assets/home/like.png')}
+                style={styles.likeIcon}
+              />
+              <Text style={text.contentText}>{post.likeCount}</Text>
+            </View>
+            {/* {<View>
+            <Image />
+            <Text>{post.likeCount}</Text> 댓글 기능은 없음 현재 버전에서는
+          </View>} */}
+          </View>
+        )}
+        {post && (
+          <TouchableOpacity
+            style={styles.likeContainer}
+            onPress={() => handlePostLike(post.id)}
+          >
+            <Text style={text.likeText}>공감하기</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   )

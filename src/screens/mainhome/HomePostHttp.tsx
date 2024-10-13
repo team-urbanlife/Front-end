@@ -26,19 +26,6 @@ export async function storePost(postData: any) {
   return
 }
 
-export async function fetchPosts() {
-  const response = await axios.get(BACKEND_URL + '/v1/posts?page=1&size=4')
-  console.log('게시글 목록 조회', response.data)
-  const postS = []
-
-  for (const item of response.data.data.content) {
-    console.log('게시글 목록 조회 시 각각의 모집글 확인', item)
-    postS.push(item)
-  }
-
-  return postS
-}
-
 export async function fetchPostDetail(postId: number) {
   const response = await axios.get(
     BACKEND_URL + '/v1/posts/' + postId.toString(),

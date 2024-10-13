@@ -7,8 +7,9 @@ export type HomePostDetailType = {
   id: number
   title: string
   userName: string
-  profileImage: string
-  picture: string
+  userProfileImage: string
   contents: Block[]
+  views: number
   registeredDateTime: string
+  likeCount: number
 }

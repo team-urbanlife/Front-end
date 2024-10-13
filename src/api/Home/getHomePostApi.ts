@@ -1,14 +1,14 @@
 ///v1/schedules/1/schedule-details
 import { apiClient } from '../apiClient'
 
-export const getHomePost = async () => {
+export const getHomePost = async (page: number) => {
   try {
-    const response = await apiClient.get(`/posts?page=1&size=4`)
+    const response = await apiClient.get(`/posts?page=${page}&size=4`)
 
     if (response.status === 200) {
       console.log('게시글 홈 불러오기 성공')
     }
-    return response.data
+    return response.data.data
   } catch (error: any) {
     if (error.response) {
       console.error('Error response:', error.response.data) // 서버 응답을 확인
