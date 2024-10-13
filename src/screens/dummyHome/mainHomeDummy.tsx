@@ -1,5 +1,6 @@
 import { View, Text } from 'react-native'
-export function MainDummyHome() {
+
+export default function MainDummyHome() {
   return (
     <View>
       <Text></Text>

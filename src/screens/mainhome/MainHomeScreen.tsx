@@ -4,8 +4,29 @@ import { styles, text } from './Styles/MainHomeStyle'
 import HomePostComponent from '@/components/MainHome/HomePostComponent'
 import { ScrollView } from 'react-native-gesture-handler'
 import FloatingButton from '@/components/Common/floatingButton'
+import { useFocusEffect } from '@react-navigation/native'
+import { useState, useCallback } from 'react'
+import { fetchPosts } from './HomePostHttp'
 
 export default function MainHomeScreen() {
+  const [posts, setPosts] = useState<HomePostType[] | null>([])
+
+  // 화면에 포커스가 맞춰질 때마다 서버로부터 게시글 목록을 가져오기
+  useFocusEffect(
+    useCallback(() => {
+      async function getPosts() {
+        try {
+          const fetchedPosts: HomePostType[] = await fetchPosts()
+          console.log('메인 홈에서 게시글 목록 조회', fetchedPosts)
+          setPosts(fetchedPosts)
+        } catch (error) {
+          console.log('Error fetching posts:', error)
+        }
+      }
+      getPosts()
+    }, []), // 의존성 배열을 비워둬서 매번 실행
+  )
+
   return (
     <View style={styles.container}>
       {/* 헤더  */}
@@ -20,49 +41,11 @@ export default function MainHomeScreen() {
       <ScrollView
         style={{ paddingHorizontal: 10, marginBottom: 10, overflow: 'visible' }} //floating Buttton이 안보여서
       >
-        {homePosts.map((post, index) => (
-          <HomePostComponent post={post} key={index} />
+        {posts?.map((post, index) => (
+          <HomePostComponent post={post} key={index.toString()} />
         ))}
       </ScrollView>
       <FloatingButton route="HomePostWriteScreen" />
     </View>
   )
 }
-
-const homePosts: HomePostType[] = [
-  {
-    title: '재미있었던 오사카 여행 후기(어쩌구저쩌구이러쿵저러쿵)',
-    id: 1,
-    name: '지원',
-    profileImage: 'https://example.com/profiles/alice.jpg',
-    picture: 'https://example.com/posts/post1.jpg',
-  },
-  {
-    title: '재미있었던 오사카 여행 후기',
-    id: 2,
-    name: '예나',
-    profileImage: 'https://example.com/profiles/bob.jpg',
-    picture: 'https://example.com/posts/post2.jpg',
-  },
-  {
-    title: '재미있었던 오사카 여행 후기',
-    id: 3,
-    name: '수정',
-    profileImage: 'https://example.com/profiles/charlie.jpg',
-    picture: 'https://example.com/posts/post3.jpg',
-  },
-  {
-    title: 'Sunset Views',
-    id: 4,
-    name: '채은',
-    profileImage: 'https://example.com/profiles/david.jpg',
-    picture: 'https://example.com/posts/post4.jpg',
-  },
-  {
-    title: 'Mountain Adventure',
-    id: 5,
-    name: 'Eve',
-    profileImage: 'https://example.com/profiles/eve.jpg',
-    picture: 'https://example.com/posts/post5.jpg',
-  },
-]

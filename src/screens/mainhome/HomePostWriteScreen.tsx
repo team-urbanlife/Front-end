@@ -12,6 +12,9 @@ import { styles, text } from './Styles/HomePostWriteStyle'
 import * as ImagePicker from 'expo-image-picker'
 import { Block } from '@/types/HomePostDetailType'
 import { ScrollView } from 'react-native-gesture-handler'
+import axios from 'axios'
+import { storePost } from './HomePostHttp'
+//import { aaa } from './someOtherFile' // aaa 함수 import
 
 interface EditPostProps {
   postId: number
@@ -22,7 +25,6 @@ export default function HomePostWriteScreen() {
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState<string>('')
-
   const [attachedPhotos, setAttachedPhotos] = useState<string[]>([])
   const [isAnonymous, setIsAnonymous] = useState(false)
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions()
@@ -30,32 +32,19 @@ export default function HomePostWriteScreen() {
   const [createdAt, setCreatedAt] = useState(0)
   const [showAlert, setShowAlert] = useState(false)
 
-  //서버에 보낼 블록 타입이 T인경우 텍스트가 타입이 IMAGE인 경우 이미지 url
-  //리액트는 배열이나 객체의 직접적인 상태 변화를 감지하지 못함
   const [blocks, setBlocks] = useState<Block[]>([{ type: 'T', text: '' }])
 
   useEffect(() => {}, [])
 
   const handleLeftArrowPress = () => {
     navigation.goBack()
-    // setShowAlert(true)
-  }
-
-  const handleCancel = () => {
-    setShowAlert(false)
-    navigation.navigate('PostDetail' as never)
-  }
-
-  const handleContinue = () => {
-    setShowAlert(false)
   }
 
   const isUploadButtonDisabled = () => {
-    return !title.trim() || !content.length // 제목 또는 내용 중 하나라도 입력이 없으면 버튼 비활성
+    return !title.trim() || !content.length
   }
 
   const uploadImage = async (index: number) => {
-    // 갤러리 접근 권한
     if (!status?.granted) {
       const permission = await requestPermission()
       if (!permission.granted) {
@@ -63,85 +52,86 @@ export default function HomePostWriteScreen() {
       }
     }
 
-    // 이미지 블록 업로드 기능
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
-      quality: 1, //이미지 품질 최대 설정
+      quality: 1, // 이미지 품질 최대 설정
     })
-    if (result.canceled) {
-      return null // 이미지 업로드 취소한 경우
+
+    // 이미지 업로드가 취소되거나 assets가 없는 경우 예외 처리
+    if (result.canceled || !result.assets || result.assets.length === 0) {
+      return null
     }
-    // 이미지 블록을 해당 위치에 추가
-    const newBlocks = [...blocks]
-    newBlocks.splice(index + 1, 0, {
-      type: 'IMAGE',
-      text: result.assets[0].uri,
-    }) //인자로 받은 인덱스 다음부터 시작해서 제거 요소 없이 블럭 추가
-    newBlocks.splice(index + 2, 0, {
-      type: 'T',
-      text: '', // 이미지 아래에 빈 텍스트 블록 추가
-    })
-    setBlocks(newBlocks)
-    setAttachedPhotos((prevPhotos) => {
-      const newPhotos = [...prevPhotos]
-      newPhotos[index] = result.assets[0].uri // 해당 인덱스에 이미지 삽입
-      return newPhotos
-    })
-    console.log('블럭 업데이트', newBlocks)
+
+    try {
+      const formData = new FormData()
+
+      // 이미지가 있는 경우에만 uri 사용, 타입에 맞게 처리
+      formData.append('files', {
+        uri: result.assets[0].uri, // 이미지 URI
+        type: 'image/jpeg', // 이미지 타입
+        name: 'image.jpg', // 서버에 전달될 파일 이름
+      } as any) // TypeScript가 오류를 발생시키지 않도록 any 타입으로 처리
+
+      formData.append('dirName', 'post') // 예시로 'post' 디렉토리명
+
+      const response = await axios.post(
+        'https://dev.wegotoo.net/v1/s3',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Accept: 'application/json',
+          },
+        },
+      )
+
+      const serverImagePath = response.data.data[0]
+      const newBlocks = [...blocks]
+      newBlocks.splice(index + 1, 0, { type: 'IMAGE', text: serverImagePath })
+      newBlocks.splice(index + 2, 0, { type: 'T', text: '' })
+      setBlocks(newBlocks)
+
+      setAttachedPhotos((prevPhotos) => [...prevPhotos, serverImagePath])
+    } catch (error) {
+      console.error('이미지 업로드 중 오류 발생:', error)
+    }
   }
-  // 텍스트 블록 업데이트
+
   const updateTextBlock = (textValue: string, index: number) => {
     setContent(textValue)
-    const newBlocks = [...blocks] // 기존 블록 배열 복사
-    newBlocks[index].text = textValue // 해당 인덱스의 블록 텍스트만 업데이트
-    setBlocks(newBlocks) // 업데이트된 배열로 상태를 설정
+    const newBlocks = [...blocks]
+    newBlocks[index].text = textValue
+    setBlocks(newBlocks)
   }
+
   const handleDeletePhoto = (index: number) => {
     const updatedPhotos = [...attachedPhotos]
-    updatedPhotos.splice(index, 1) // 해당 인덱스의 사진 삭제
+    updatedPhotos.splice(index, 1)
     setAttachedPhotos(updatedPhotos)
+
     const newBlocks = [...blocks]
     newBlocks.splice(index, 1)
     setBlocks(newBlocks)
   }
 
-  const handleSubmit = () => {
-    setContent('')
-  }
-
-  //   const handlePostInfo = async () => {
-  //     try {
-  //
-  //       await updatePostApi(postInfo, postId)
-  //       console.log('PostInfo sent successfully:', postInfo)
-  //     } catch (error) {
-  //       console.error('Error sending PostInfo:', error)
-  //     }
-  //   }
-
-  const handleUploadButton = () => {
-    //handlePostInfo()
-    navigation.navigate('WeGoTooOverview' as never)
-  }
   const renderBlocks = () => {
     return blocks.map((block, index) => {
       if (block.type === 'T') {
         return (
-          //value값을 외부에서 controll하지 않음으로써 여러 개의 글 입력을 받는게 가능해짐
           <TextInput
+            key={`text-${index}`} // 고유한 key 추가
             style={text.contentText}
             placeholder={index === 0 ? '글을 입력해주세요' : ''}
             multiline={true}
             maxLength={2000}
             onChangeText={(text) => updateTextBlock(text, index)}
-            onSubmitEditing={() => handleSubmit()}
             autoFocus={true}
           />
         )
       } else if (block.type === 'IMAGE') {
         return (
-          <View key={index} style={styles.pictureContainer}>
+          <View key={index.toString()} style={styles.pictureContainer}>
             <Image source={{ uri: block.text }} style={styles.picture} />
             <TouchableOpacity
               style={styles.deleteIcon}
@@ -158,6 +148,23 @@ export default function HomePostWriteScreen() {
     })
   }
 
+  // 작성완료 버튼 핸들러
+  const handleComplete = async () => {
+    // blocks 배열을 aaa 함수에 전달하여 서버로 전송
+
+    const postData = {
+      title: title,
+      contents: blocks,
+    }
+
+    console.log('postData확인', postData)
+    const id = await storePost(postData)
+    console.log('postId여기서도 확인되?', id)
+    // 게시가 완료되면 홈으로 이동
+    //navigation.navigate('WeGoTooOverview' as never)
+    navigation.replace('HomePostScreen', { postId: id })
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -170,14 +177,13 @@ export default function HomePostWriteScreen() {
         <Text style={text.titleText}>여행 후기 작성</Text>
         <TouchableOpacity
           style={[styles.uploadButton]}
-          disabled={isUploadButtonDisabled()} // 버튼 비활성 상태 설정
-          onPress={handleUploadButton}
+          disabled={isUploadButtonDisabled()}
+          onPress={handleComplete} // 작성완료 버튼 핸들러 연결
         >
-          <View style={styles.leftArrow} />
+          <Text style={text.uploadButtonText}>작성완료</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.contentContainer}>
-        {/* 제목 입력 */}
         <View style={styles.titleContainer}>
           <TextInput
             style={text.contentTitleText}
@@ -189,7 +195,6 @@ export default function HomePostWriteScreen() {
           <View style={styles.titleBar} />
         </View>
         <View style={styles.photoUploadContainer}>
-          {/* 사진 첨부 버튼 */}
           <TouchableOpacity
             style={styles.photoPreview}
             onPress={() => uploadImage(blocks.length - 1)}
@@ -201,9 +206,7 @@ export default function HomePostWriteScreen() {
             <Text
               style={[
                 text.photoPreviewText,
-                {
-                  color: attachedPhotos.length > 0 ? '#52A55D' : '#555',
-                },
+                { color: attachedPhotos.length > 0 ? '#52A55D' : '#555' },
               ]}
             >
               {`${attachedPhotos.length}/20`}
@@ -213,19 +216,16 @@ export default function HomePostWriteScreen() {
         <ScrollView
           style={styles.contents}
           contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled" //스크롤시 키보드와의 상호작용 제한
+          keyboardShouldPersistTaps="handled"
         >
           {renderBlocks()}
-          {content && (
+          {/* {content && (
             <View style={styles.setCenter}>
-              <TouchableOpacity
-                style={styles.submitContainer}
-                onPress={handleUploadButton}
-              >
+              <TouchableOpacity style={styles.submitContainer}>
                 <Text style={text.submitText}>게시하기</Text>
               </TouchableOpacity>
             </View>
-          )}
+          )} */}
         </ScrollView>
       </View>
     </View>

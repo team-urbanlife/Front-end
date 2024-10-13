@@ -56,3 +56,41 @@ export function updateGathering(id: string, gatheringData: Gathering) {
 export function deleteGathering(id: string) {
   return axios.delete(BACKEND_URL + `/expenses/${id}.json`)
 }
+
+export async function fetchMyGatherings() {
+  const accessToken = await AsyncStorage.getItem('accessToken')
+  const response = await axios.get(BACKEND_URL + '/v1/users/accompanies', {
+    headers: {
+      Authorization: `Bearer ${accessToken}`, // 액세스 토큰을 헤더에 포함
+    },
+  })
+  //console.log('모집글 목록 조회', response.data)
+  const gatheringS = []
+
+  for (const item of response.data.data.content) {
+    console.log('나의 모집글 목록 조회 시 각각의 모집글 확인', item)
+    gatheringS.push(item)
+  }
+
+  return gatheringS
+}
+
+export async function doTest() {
+  const scheduleid = 1
+  const accessToken = await AsyncStorage.getItem('accessToken')
+  const response = await axios.post(
+    BACKEND_URL + `/v1/schedules/${scheduleid}/schedule-details`,
+    {
+      date: '2024-09-01',
+      name: '장소 이름',
+      latitude: 0.0,
+      longitude: 0.0,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`, // 액세스 토큰을 헤더에 포함
+      },
+    },
+  )
+  console.log(response)
+}

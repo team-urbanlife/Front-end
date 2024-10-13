@@ -5,10 +5,25 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  ScrollView, // Add ScrollView
+  ScrollView,
+  Modal,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import DateSelectionModal from './DateSelectionModal'
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native'
+import CustomCalendar from '../Common/Calendar' // Import CustomCalendar component
+//import { styles, text } from './Styles/schduleCalendarStyles'
+import {
+  styles as calStyles,
+  text,
+} from '@/screens/schedule/Styles/schduleCalendarStyles'
+// Define the types for the route params
+type RouteParams = {
+  params?: {
+    locationName?: string
+    latitude?: number
+    longitude?: number
+  }
+}
 
 interface GatheringRegisterFormProps {
   onSubmit: (gatheringData: GatheringData) => void
@@ -27,11 +42,6 @@ export interface GatheringData {
   endAge: number
   cost: number
   content: string
-}
-
-interface SelectedDates {
-  start: string
-  end: string
 }
 
 const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
@@ -67,14 +77,28 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
   const [selectedGender, setSelectedGender] = useState<string | null>(null)
   const [isDisabled, setIsDisabled] = useState(true)
   const [isModalVisible, setModalVisible] = useState(false)
-  const [selectedDates, setSelectedDates] = useState<SelectedDates>({
-    start: '',
-    end: '',
-  })
+
+  const [startDate, setStartDate] = useState<string>('')
+  const [endDate, setEndDate] = useState<string>('')
+
+  const navigation = useNavigation()
+  const route = useRoute<RouteProp<RouteParams, 'params'>>()
+
+  // Destructure location data passed through navigation
+  const {
+    locationName = '',
+    latitude = 0.0,
+    longitude = 0.0,
+  } = route.params || {}
 
   useEffect(() => {
     const gatheringData = {
+      startDate: startDate,
+      endDate: endDate,
       title: inputs.title.value,
+      location: locationName,
+      latitude: latitude,
+      longitude: longitude,
       personnel: inputs.personnel.value,
       gender: selectedGender,
       startAge: inputs.startAge.value,
@@ -82,15 +106,19 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
       cost: inputs.cost.value,
       content: inputs.content.value,
     }
-    const shouldDisable =
-      !gatheringData.title.trim() || !gatheringData.content.trim()
+
+    const shouldDisable = Object.values(gatheringData).some((value) => !value)
 
     setIsDisabled(shouldDisable)
-  }, [inputs, selectedGender])
-
-  function handleDateSelection(start: string, end: string) {
-    setSelectedDates({ start, end })
-  }
+  }, [
+    inputs,
+    selectedGender,
+    locationName,
+    latitude,
+    longitude,
+    startDate,
+    endDate,
+  ])
 
   function inputChangedHandler(
     inputIdentifier:
@@ -117,24 +145,27 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
           ? 'MAN'
           : selectedGender === '여자만'
             ? 'WOMAN'
-            : 'null', // Set default value
+            : 'null',
       startAge: +inputs.startAge.value,
       endAge: +inputs.endAge.value,
       cost: +inputs.cost.value,
       content: inputs.content.value,
-      startDate: selectedDates.start,
-      endDate: selectedDates.end,
-      location: '오사카',
-      latitude: 0.0,
-      longitude: 0.0,
+      startDate: startDate,
+      endDate: endDate,
+      location: locationName || '오사카', // Fallback to default if not selected
+      latitude: latitude || 0.0,
+      longitude: longitude || 0.0,
     }
 
     onSubmit(gatheringData)
   }
 
+  function navigateToLocationScreen() {
+    navigation.navigate('GatheringRegisterLocationSearch')
+  }
+
   return (
     <View style={styles.container}>
-      {/* Scrollable form content */}
       <ScrollView contentContainerStyle={styles.formContent}>
         <View style={styles.datePickerContainer}>
           <TouchableOpacity
@@ -143,18 +174,52 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
           >
             <Icon name="calendar-outline" size={16} color="#FF6B6B" />
             <Text style={styles.dateText}>
-              {selectedDates.start && selectedDates.end
-                ? `${selectedDates.start} ~ ${selectedDates.end}`
-                : '날짜 선택'}
+              {startDate && endDate ? `${startDate} ~ ${endDate}` : '날짜 선택'}
             </Text>
             <Icon name="chevron-down" size={16} color="#FF6B6B" />
           </TouchableOpacity>
 
-          <DateSelectionModal
-            isVisible={isModalVisible}
-            onClose={() => setModalVisible(false)}
-            onConfirm={handleDateSelection}
-          />
+          {/* Modal for Calendar */}
+          <Modal
+            visible={isModalVisible}
+            transparent={true}
+            animationType="slide"
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.calendarWrapper}>
+                {/* 달력 컴포넌트 */}
+                <CustomCalendar
+                  startDate={startDate}
+                  endDate={endDate}
+                  setStartDate={setStartDate}
+                  setEndDate={setEndDate}
+                />
+                {/* <TouchableOpacity
+          onPress={() => {
+            handlePostTravelSchedule()
+            navigation.navigate('SceduleSpot' as never)
+          }}
+          style={styles.submitContainer}
+        >
+          <Text style={text.buttonText}>날짜 선택하기</Text>
+        </TouchableOpacity> */}
+                {/* 날짜 선택 완료 버튼 */}
+                <TouchableOpacity
+                  onPress={() => setModalVisible(false)}
+                  style={[calStyles.submitContainer, { marginTop: 30 }]}
+                >
+                  <Text
+                    style={[
+                      text.confirmButtonText,
+                      { color: 'white', fontWeight: 'bold' },
+                    ]}
+                  >
+                    날짜 선택하기
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
 
         {/* Title Input */}
@@ -178,10 +243,15 @@ const GatheringRegisterForm: React.FC<GatheringRegisterFormProps> = ({
           </View>
 
           {/* Location Info */}
-          <View style={styles.infoItem}>
+          <TouchableOpacity
+            style={styles.infoItem}
+            onPress={navigateToLocationScreen}
+          >
             <Icon name="location-outline" size={20} color="#FF6B6B" />
-            <Text style={styles.infoText}>위치 정보</Text>
-          </View>
+            <Text style={styles.locationInfoText}>
+              {locationName ? locationName : '위치 정보'}
+            </Text>
+          </TouchableOpacity>
 
           {/* Personnel Info */}
           <View style={styles.infoItem}>
@@ -323,7 +393,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   formContent: {
-    paddingBottom: 100, // Ensures space for the button
+    paddingBottom: 100,
   },
   datePickerContainer: {
     marginBottom: 10,
@@ -343,6 +413,33 @@ const styles = StyleSheet.create({
     color: '#FF6B6B',
     fontSize: 16,
   },
+
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)', // 배경을 어둡게 하고 흰 여백 제거
+  },
+  calendarWrapper: {
+    backgroundColor: '#fff', // 달력과 버튼 배경 흰색
+    borderRadius: 10,
+    padding: 20,
+    width: '90%', // 화면의 90% 너비로 설정
+    alignItems: 'center', // 버튼과 달력을 중앙 정렬
+  },
+  confirmButton: {
+    marginTop: 20, // 버튼과 달력 사이 간격
+    backgroundColor: '#FF6B6B',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  confirmButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+
   inputContainer: {
     marginBottom: 20,
   },
@@ -389,6 +486,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
+  locationInfoText: {
+    marginLeft: 8,
+    color: '#FF6B6B',
+    fontSize: 16,
+    flex: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: '#C0C0C0',
+    paddingBottom: 4,
+  },
   infoText: {
     marginLeft: 8,
     color: '#333',
@@ -415,8 +521,8 @@ const styles = StyleSheet.create({
   submitButton: {
     position: 'absolute',
     bottom: 30,
-    width: '100%', // Increased width
-    height: 50, // Fixed height
+    width: '100%',
+    height: 50,
     backgroundColor: '#ff6347',
     borderRadius: 25,
     justifyContent: 'center',
