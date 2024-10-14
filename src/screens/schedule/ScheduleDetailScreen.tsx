@@ -121,7 +121,7 @@ export default function ScheduleDetail() {
         handleDetailedSchedule()
         shouldRerender && setShouldRerender(!shouldRerender)
       }
-    }, [scheduleId, shouldRerender]),
+    }, [scheduleId]),
   )
 
   //plans를 넣으면 plans가 배열이어서 같은 배열임에도 불구하고 계속 state가 변했다고 생각함 그래서 서버에 호출을 계속 보냄

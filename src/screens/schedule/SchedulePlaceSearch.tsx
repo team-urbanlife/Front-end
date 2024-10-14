@@ -102,9 +102,9 @@ export default function PlaceSearchComponent({
           // } else {
           //   console.log('No photos available for this place')
           // }
-          if (latitude && longitude && name && scheduleId) {
-            navigation.navigate('SceduleDetail' as never)
-          }
+
+          //상세일정에서 서버에 데이터를 호출할 때 포커스시에 데이터 요청을 하고 state를 리렌더링하기 때문에 조건 아래에서 네비게이션을 해줄 필요가 없었음
+          navigation.navigate('SceduleDetail' as never)
         }}
         query={{
           key: GOOGLE_PLACES_API_KEY,
