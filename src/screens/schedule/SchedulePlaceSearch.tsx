@@ -54,7 +54,7 @@ export default function PlaceSearchComponent({
         longitude: longitude,
       }
       console.log('보낼 상세 계획 데이터:', newSchedule)
-      setWriteDone(!writeDone)
+      setWriteDone(!writeDone) //바텀시트에 바로 반영이 되도록
       try {
         // 버튼이 눌렸을 때 post 요청
         await postDetailedSchedule(newSchedule, detailedId)
@@ -102,9 +102,9 @@ export default function PlaceSearchComponent({
           // } else {
           //   console.log('No photos available for this place')
           // }
-          if (latitude && longitude && name && scheduleId) {
-            navigation.navigate('SceduleDetail' as never)
-          }
+
+          //상세일정에서 서버에 데이터를 호출할 때 포커스시에 데이터 요청을 하고 state를 리렌더링하기 때문에 조건 아래에서 네비게이션을 해줄 필요가 없었음
+          navigation.navigate('SceduleDetail' as never)
         }}
         query={{
           key: GOOGLE_PLACES_API_KEY,

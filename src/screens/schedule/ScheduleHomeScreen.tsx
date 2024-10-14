@@ -33,7 +33,7 @@ export default function ScheduleHome() {
       console.log('서버에 호출이 가나?')
       if (response.data.content.length > 0) {
         setPlans((prevPlans) => [...response.data.content, ...prevPlans]) // 이전 데이터와 병합
-        console.log('pans??', plans)
+        console.log('pans??', response.data.content)
       } else {
         setHasMore(false) // 더 이상 불러올 데이터가 없을 때
       }
@@ -57,8 +57,7 @@ export default function ScheduleHome() {
   useFocusEffect(
     useCallback(() => {
       handleSchedule(page)
-
-      console.log('포커스르 받나?')
+      setPage(1)
     }, [page, writeDone]),
   )
   // 페이지가 변경되거나 화면이 포커스되었을 때 데이터 가져오기

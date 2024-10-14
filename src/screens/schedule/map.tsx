@@ -47,13 +47,20 @@ export default function AppleMap({ plans }: Props) {
       // 위치가 변경되었을 때, 상태를 업데이트하여 MapView의 region 변경
       if (plans && plans[0] && plans[0].detailedPlans) {
         setRegion({
-          latitude: plans[0].detailedPlans[0].latitude, // 기본 좌표 (서울)
-          longitude: plans[0].detailedPlans[0].longitude, // 기본 좌표 (서울)
+          latitude: plans[0].detailedPlans[0].latitude,
+          longitude: plans[0].detailedPlans[0].longitude,
+          latitudeDelta: 0.1,
+          longitudeDelta: 0.1,
+        })
+      } else {
+        setRegion({
+          latitude: 37.5665,
+          longitude: 126.978,
           latitudeDelta: 0.1,
           longitudeDelta: 0.1,
         })
       }
-    }, [plans]),
+    }, [plans, scheduleId]), //일정 세울 때 이전 일정의 위도,경도와 데이터를 받아와서 스케줄 아이디가 변경시에 다시 리랜더링 되게함
   )
 
   useEffect(() => {

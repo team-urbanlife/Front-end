@@ -91,7 +91,7 @@ const dummy = [
 ]
 
 export default function ScheduleDetail() {
-  const { scheduleId = 0 } = useSchedule()
+  const { scheduleId = 0, writeDone } = useSchedule()
   //메모 작성 이후 ui 반영이 바로 안됨
   const [shouldRerender, setShouldRerender] = useState(false)
   console.log('스케줄 아이디 상세페이지에서 어떻게 받아와지나', scheduleId)
@@ -103,12 +103,15 @@ export default function ScheduleDetail() {
     }
   }
   const [plans, setPlans] = useState<PlanData[]>([])
+
   const handleDetailedSchedule = async () => {
     if (!scheduleId) return // scheduleId가 없으면 함수 종료
     try {
       const response = await getDetailedPlans(scheduleId)
       setPlans(response.data) // 상태 업데이트
-      setPlanLength(response.data.length) // 배열 길이 저장
+
+      setShouldRerender(false)
+
       console.log(response.data, '받아온 plans')
     } catch (error) {
       console.error('Error Getting travel schedule:', error)
@@ -119,9 +122,8 @@ export default function ScheduleDetail() {
     useCallback(() => {
       if (scheduleId) {
         handleDetailedSchedule()
-        shouldRerender && setShouldRerender(!shouldRerender)
       }
-    }, [scheduleId, shouldRerender]),
+    }, [scheduleId, shouldRerender, writeDone]),
   )
 
   //plans를 넣으면 plans가 배열이어서 같은 배열임에도 불구하고 계속 state가 변했다고 생각함 그래서 서버에 호출을 계속 보냄
