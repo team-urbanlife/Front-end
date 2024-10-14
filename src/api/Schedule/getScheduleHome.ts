@@ -5,7 +5,6 @@ import { apiClient } from '../apiClient'
 export const getScheduleHome = async (page: number, size: number) => {
   try {
     let token = await AsyncStorage.getItem('accessToken')
-
     const response = await apiClient.get(
       `/schedules?page=${page}&size=${size}`,
       {

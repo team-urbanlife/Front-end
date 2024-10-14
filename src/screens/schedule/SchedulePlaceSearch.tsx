@@ -54,7 +54,7 @@ export default function PlaceSearchComponent({
         longitude: longitude,
       }
       console.log('보낼 상세 계획 데이터:', newSchedule)
-      setWriteDone(!writeDone)
+      setWriteDone(!writeDone) //바텀시트에 바로 반영이 되도록
       try {
         // 버튼이 눌렸을 때 post 요청
         await postDetailedSchedule(newSchedule, detailedId)
