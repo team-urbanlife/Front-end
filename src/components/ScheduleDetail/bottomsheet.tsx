@@ -129,6 +129,7 @@ export default function BottomSheet({
     }
   }
 
+  const { writeDone, setWriteDone } = useSchedule()
   return (
     <PanGestureHandler
       waitFor={[innerGestureHandlerRef]}
@@ -245,6 +246,16 @@ export default function BottomSheet({
                   </View>
                 )
               })}
+            <View style={styles.setCenter}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('WeGoTooOverview')
+                }}
+                style={styles.naviateContainer}
+              >
+                <Text style={text.navigateText}>일정 완료</Text>
+              </TouchableOpacity>
+            </View>
           </ScrollView>
         ) : (
           <View style={{ flex: 1, height: 'auto' }}>

@@ -39,6 +39,15 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     borderColor: GlobalStyles.colors.faintGray,
   },
+  naviateContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 389,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: 'rgba(240, 127, 89, 0.4)',
+    zIndex: 19,
+  },
   contentContainer: {
     position: 'absolute',
     top: 80,
@@ -97,10 +106,12 @@ export const text = {
     letterSpacing: -0.7,
     textDecorationLine: 'underline',
   },
-  businessInfoText: {
+  navigateText: {
     ...baseText,
-    color: '#949494',
+    color: 'white',
     textAlign: 'center',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 } as {
   [key: string]: StyleProp<TextStyle>

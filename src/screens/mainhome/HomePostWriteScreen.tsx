@@ -16,7 +16,7 @@ import axios from 'axios'
 import { storePost } from './HomePostHttp'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { RootStackParamList } from '../../../App'
-//import { aaa } from './someOtherFile' // aaa 함수 import
+import { useSchedule } from '@/context/ScheduleProvide'
 
 interface EditPostProps {
   postId: number
@@ -36,7 +36,7 @@ export default function HomePostWriteScreen() {
 
   const [blocks, setBlocks] = useState<Block[]>([{ type: 'T', text: '' }])
 
-  useEffect(() => {}, [])
+  const { writeDone, setWriteDone } = useSchedule()
 
   const handleLeftArrowPress = () => {
     navigation.goBack()
@@ -158,7 +158,7 @@ export default function HomePostWriteScreen() {
       title: title,
       contents: blocks,
     }
-
+    setWriteDone(!writeDone)
     console.log('postData확인', postData)
     const id = await storePost(postData)
     console.log('postId여기서도 확인되?', id)

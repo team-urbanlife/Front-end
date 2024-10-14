@@ -16,19 +16,24 @@ import { Schedule } from '@/types/ScheduleHomeType'
 import FloatingButton from '@/components/Common/floatingButton'
 import { getScheduleHome } from '@/api/Schedule/getScheduleHome'
 import { GlobalStyles } from '@/constants/colors'
+import { useSchedule } from '@/context/ScheduleProvide'
+
 export default function ScheduleHome() {
   const [plans, setPlans] = useState<Schedule[]>([]) // 여행 일정 데이터
   const [page, setPage] = useState(1) // 현재 페이지
   const [isLoading, setIsLoading] = useState(false) // 로딩 상태
   const [hasMore, setHasMore] = useState(true) // 더 불러올 데이터가 있는지 여부
+  const [size, setSize] = useState(4) // 기본 사이즈
+  const { writeDone, setWriteDone } = useSchedule()
 
   const handleSchedule = async (currentPage: number) => {
     try {
       setIsLoading(true) // 로딩 상태 설정
-      const response = await getScheduleHome(currentPage, 4) // API 호출 (페이지당 4개씩)
-
+      const response = await getScheduleHome(currentPage, size) // API 호출 (페이지당 4개씩)
+      console.log('서버에 호출이 가나?')
       if (response.data.content.length > 0) {
-        setPlans((prevPlans) => [...prevPlans, ...response.data.content]) // 이전 데이터와 병합
+        setPlans((prevPlans) => [...response.data.content, ...prevPlans]) // 이전 데이터와 병합
+        console.log('pans??', plans)
       } else {
         setHasMore(false) // 더 이상 불러올 데이터가 없을 때
       }
@@ -38,6 +43,7 @@ export default function ScheduleHome() {
       setIsLoading(false) // 로딩 완료
     }
   }
+
   // 스크롤이 끝에 도달했는지 확인하는 함수
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent
@@ -47,12 +53,16 @@ export default function ScheduleHome() {
       setPage((prevPage) => prevPage + 1) // 페이지 번호 증가
     }
   }
-  // 페이지가 변경될 때마다 새로운 데이터를 가져오기
+
   useFocusEffect(
     useCallback(() => {
       handleSchedule(page)
-    }, [page]),
+
+      console.log('포커스르 받나?')
+    }, [page, writeDone]),
   )
+  // 페이지가 변경되거나 화면이 포커스되었을 때 데이터 가져오기
+
   return (
     <View style={styles.container}>
       {/* 헤더 */}

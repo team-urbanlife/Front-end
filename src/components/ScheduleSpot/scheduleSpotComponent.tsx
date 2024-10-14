@@ -18,7 +18,7 @@ export default function ScheduleSpotComponent({
 }: SpotComponentProp) {
   const navigation = useNavigation()
   //전역 데이터로 받아온 스케줄 아이디
-  const { setScheduleId, scheduleId } = useSchedule()
+  const { setScheduleId, scheduleId, writeDone, setWriteDone } = useSchedule()
   //서버에 호출이 너무 많아서 post state로 관리
   const [hasPosted, setHasPosted] = useState<boolean>(false)
   const handlePostTravelSchedule = async (newCity: string) => {
@@ -28,6 +28,7 @@ export default function ScheduleSpotComponent({
         city: newCity,
       })
       setScheduleId(response.data.scheduleId)
+      setWriteDone(!writeDone)
       console.log('여행 post하고 받아온 id:', scheduleId)
       setHasPosted(true)
     } catch (error) {

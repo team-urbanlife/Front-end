@@ -227,7 +227,7 @@ export const text = {
   },
   contentText: {
     color: '#949494',
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: '400',
     lineHeight: 26,
     letterSpacing: -0.9,
